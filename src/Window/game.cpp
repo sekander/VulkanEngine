@@ -293,6 +293,7 @@ void Game::Render()
         	{
             update_flag = false;
     			  std::this_thread::sleep_for(50ms);
+            vk_render.clearScreen();
         		_data->machine->GetActiveState()->DeleteData();
         		_data->machine->AddState(St(new SplashState(*_data)), true);
         		_data->machine->ProcessState();
@@ -304,6 +305,7 @@ void Game::Render()
         	{
             update_flag = false;
     			  std::this_thread::sleep_for(50ms);
+            vk_render.clearScreen();
          		_data->machine->GetActiveState()->DeleteData();
          		_data->machine->AddState(St(new MainMenuState(*_data)), true);
          		_data->machine->ProcessState();
@@ -314,6 +316,7 @@ void Game::Render()
         	if(_data->state_switch == 2)
         	{
             update_flag = false;
+            vk_render.clearScreen();
     			  std::this_thread::sleep_for(50ms);
         		_data->machine->GetActiveState()->DeleteData();
         		_data->machine->AddState(St(new LoadingPlayState(*_data)), true);
@@ -325,6 +328,7 @@ void Game::Render()
         	if(_data->state_switch == 3)
         	{
             update_flag = false;
+            vk_render.clearScreen();
     			  std::this_thread::sleep_for(50ms);
         		_data->machine->GetActiveState()->DeleteData();
         		_data->machine->AddState(St(new GamePlayState(*_data)), true);
@@ -336,6 +340,7 @@ void Game::Render()
         	if(_data->state_switch == 4)
         	{
             update_flag = false;
+            vk_render.clearScreen();
     			  std::this_thread::sleep_for(50ms);
         		_data->machine->GetActiveState()->DeleteData();
         		_data->machine->AddState(St(new GameOverState(*_data)), true);
@@ -348,6 +353,7 @@ void Game::Render()
           if(_data->state_switch == 6)
         	{
             update_flag = false;
+            vk_render.clearScreen();
     			  std::this_thread::sleep_for(50ms);
         		_data->machine->GetActiveState()->DeleteData();
         		_data->machine->AddState(St(new TemplateState(*_data)), true);
@@ -482,6 +488,7 @@ void Game::processInput(GLFWwindow *window)
 				  _data->machine->GetActiveState()->DeleteData();
 			  }
 
+			  if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 
 
 

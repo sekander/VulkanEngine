@@ -1,0 +1,55 @@
+Assignment 1
+------------
+
+VulkanRenderer.h
+===================
+
+-Line 47
+	|-> Declare light data structure to hold position and colour
+
+-Line 119
+	|-> Declare light uniform buffer
+
+VulkanRenderer.cpp
+=====================
+
+
+-Line 254
+	|-> Destroy light uniform buffer 
+
+-Line 1057
+	|-> Create light descriptor pool size 
+
+-Line 1144
+	|-> Create light descriptor 
+
+-Line 1151
+	|-> Bind light descriptor 
+
+-Line 1195
+	|-> Updatee light uniform buffer
+
+shaderPhong.vert
+==================
+
+-Line 24
+	|-> Setup uniform buffer on shader
+
+-Line 49
+	|-> Pass lightcolour through ubo
+
+shaderPhong.frag
+===================
+
+-Line 30
+	|-> loop through all lights using phong algorithm
+
+main.cpp
+===========
+
+-Line 191
+	|-> Update lightdata through ubo and pushConstant
+	|-> Light pos[0] controlled by arror keys
+	|-> Light colour[0] produces green colour and is pushed to gpu using pushConstant
+	|-> Light colour[1] produces red colour
+	|-> Light colour[2] produces blue colour

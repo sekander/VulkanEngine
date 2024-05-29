@@ -1,0 +1,15 @@
+valgrind --tool=memcheck --leak-check=full ./vulkan_engine 
+
+==10121== HEAP SUMMARY:
+==10121==     in use at exit: 191,310 bytes in 2,542 blocks
+==10121==   total heap usage: 721,417 allocs, 707,412 frees, 382,440,082 bytes allocated
+
+==10121== LEAK SUMMARY:
+==10121==    definitely lost: 352 bytes in 4 blocks
+==10121==    indirectly lost: 0 bytes in 0 blocks
+==10121==      possibly lost: 0 bytes in 0 blocks
+==10121==    still reachable: 190,958 bytes in 2,538 blocks
+==10121==         suppressed: 0 bytes in 0 blocks
+==10121== Reachable blocks (those to which a pointer was found) are not shown.
+==10121== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+

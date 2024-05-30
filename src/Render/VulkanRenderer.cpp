@@ -294,7 +294,120 @@ void VulkanRenderer::cleanModels() {
     textureImages.clear();
     textureImageView.clear();
     textureImageMemory.clear();
+	
+	// Optionally, clean up mesh buffers if they are part of the model
+    for (auto& mesh : meshList) {
+        mesh.destroyBuffers();
+    }
+    meshList.clear();
+/* 
+	{
+			  // Texture descriptor pool and layout cleanup
+    vkDestroyDescriptorPool(mainDevice.logicalDevice, samplerDescriptorPool, nullptr);
+    vkDestroyDescriptorSetLayout(mainDevice.logicalDevice, samplerSetLayout, nullptr);
+    vkDestroySampler(mainDevice.logicalDevice, textureSampler, nullptr);
+
+    // Depth buffer cleanup
+    vkDestroyImageView(mainDevice.logicalDevice, depthBufferImageView, nullptr);
+    vkDestroyImage(mainDevice.logicalDevice, depthBufferImage, nullptr);
+    vkFreeMemory(mainDevice.logicalDevice, depthBufferImageMemory, nullptr);
+
+    // Descriptor pool and set layout cleanup
+    vkDestroyDescriptorPool(mainDevice.logicalDevice, descriptorPool, nullptr);
+    vkDestroyDescriptorSetLayout(mainDevice.logicalDevice, descriptorSetLayout, nullptr);
+
+    // Uniform buffers cleanup
+    for (size_t i = 0; i < swapChainImages.size(); i++) {
+        vkDestroyBuffer(mainDevice.logicalDevice, vpUniformBuffer[i], nullptr);
+        vkFreeMemory(mainDevice.logicalDevice, vpUniformBufferMemory[i], nullptr);
+
+        vkDestroyBuffer(mainDevice.logicalDevice, lightUniformBuffer[i], nullptr);
+        vkFreeMemory(mainDevice.logicalDevice, lightUniformBufferMemory[i], nullptr);
+
+        vkDestroyBuffer(mainDevice.logicalDevice, modelDUniformBuffer[i], nullptr);
+        vkFreeMemory(mainDevice.logicalDevice, modelDUniformBufferMemory[i], nullptr);
+    }
+    vpUniformBuffer.clear();
+    vpUniformBufferMemory.clear();
+    lightUniformBuffer.clear();
+    lightUniformBufferMemory.clear();
+    modelDUniformBuffer.clear();
+    modelDUniformBufferMemory.clear();
+
+    // Mesh buffers cleanup
+    for (auto& mesh : meshList) {
+        mesh.destroyBuffers();
+    }
+    meshList.clear();
+
+    // Synchronization objects cleanup
+    for (size_t i = 0; i < MAX_FRAME_DRAWS; i++) {
+        vkDestroySemaphore(mainDevice.logicalDevice, renderFinished[i], nullptr);
+        vkDestroySemaphore(mainDevice.logicalDevice, imageAvailable[i], nullptr);
+        vkDestroyFence(mainDevice.logicalDevice, drawFences[i], nullptr);
+    }
+    renderFinished.clear();
+    imageAvailable.clear();
+    drawFences.clear();
+
+    // Command pool cleanup
+    vkDestroyCommandPool(mainDevice.logicalDevice, graphicsCommandPool, nullptr);
+
+    // Framebuffers cleanup
+    for (auto framebuffer : swapChainFramebuffers) {
+        vkDestroyFramebuffer(mainDevice.logicalDevice, framebuffer, nullptr);
+    }
+    swapChainFramebuffers.clear();
+
+    // Pipeline cleanup
+    vkDestroyPipeline(mainDevice.logicalDevice, graphicsPipeline, nullptr);
+    vkDestroyPipelineLayout(mainDevice.logicalDevice, pipelineLayout, nullptr);
+
+    // Render pass cleanup
+    vkDestroyRenderPass(mainDevice.logicalDevice, renderPass, nullptr);
+
+    // Swapchain images and views cleanup
+    for (auto& swapChainImage : swapChainImages) {
+        vkDestroyImageView(mainDevice.logicalDevice, swapChainImage.imageView, nullptr);
+    }
+    swapChainImages.clear();
+
+    // Swapchain and surface cleanup
+    vkDestroySwapchainKHR(mainDevice.logicalDevice, swapchain, nullptr);
+    vkDestroySurfaceKHR(instance, surface, nullptr);
+
+    // Device and instance cleanup
+    vkDestroyDevice(mainDevice.logicalDevice, nullptr);
+    vkDestroyInstance(instance, nullptr);
+
+
+
+	}
+ */
+
 }
+
+void VulkanRenderer::removeModel(size_t index) {
+    // Ensure the index is valid
+    if (index >= modelList.size()) {
+        throw std::out_of_range("Index out of range");
+    }
+
+    // Wait until no actions are being run on the device before destroying resources
+    vkDeviceWaitIdle(mainDevice.logicalDevice);
+
+    // Destroy the model's Vulkan resources
+    modelList[index].destroyMeshModel();
+
+    // Remove the model from the list
+    modelList.erase(modelList.begin() + index);
+
+    // Optional: Recreate uniform buffers and descriptor sets if they depend on the model list
+	recreateSwapChain();
+    // recreateUniformBuffers();
+    // recreateDescriptorSets();
+}
+
 
 
 
@@ -891,6 +1004,29 @@ void VulkanRenderer::createDescriptorSets()
 
 void VulkanRenderer::updateUniformBuffers(uint32_t imageIndex)
 {
+
+  // Ensure modelList is not empty
+    if (modelList.empty()) {
+        throw std::runtime_error("Model list is empty. Cannot update uniform buffers.");
+    }
+
+    // for (size_t i = 0; i < modelList.size(); i++) {
+    //     auto thisModel = reinterpret_cast<ModelUniformBufferObject*>(modelTransferSpace + (i * modelUniformAlignment));
+        
+    //     // Ensure modelList[i] is valid before accessing it
+    //     if (i < modelList.size()) {
+    //         thisModel->model = modelList[i].getModel();
+    //     } else {
+    //         throw std::runtime_error("Invalid model index. Cannot update uniform buffers.");
+    //     }
+    // }
+
+
+
+
+
+
+
 	// Copy VP data
 	//Crete a random pointer in memory
 	void * data;

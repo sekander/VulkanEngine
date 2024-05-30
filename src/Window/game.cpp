@@ -431,30 +431,14 @@ void Game::Render()
     _data->gs.server_listening = false;
 }
 
-//error handling function
-void error_callback( int error, const char* description )
-{
-    fprintf( stderr, "Error: %s\n", description );
-}
-
-void key_callback( GLFWwindow* window, int key, int scancode, int action, int mods )
-{
-    if( key == GLFW_KEY_ESCAPE && action == GLFW_PRESS )
-    {
-        glfwSetWindowShouldClose( window, GLFW_TRUE );
-    }
-
-
-}
-
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 void Game::processInput(GLFWwindow *window)
 {
 		{	
 			//if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || _data->pd.touchPad_4 == 1)
-			if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS )
-		        glfwSetWindowShouldClose(window, true);
+/* 			if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS )
+		        glfwSetWindowShouldClose(window, true) */;
 		  
    	    	if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
 			{
@@ -490,13 +474,10 @@ void Game::processInput(GLFWwindow *window)
 				  _data->machine->GetActiveState()->DeleteData();
 			  }
 
-			  if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-
-
-
 			if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS || _data->gs.fullScreen )
 			//if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
       {
+        printf("Enter Full Screen\n");      
         _data->gs.windowMode = false;
         glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
         _data->gs.fullScreen = false;
@@ -504,6 +485,7 @@ void Game::processInput(GLFWwindow *window)
       else if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS || _data->gs.windowMode)
       //if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS)
       {
+        printf("Enter Window Screen\n");      
         _data->gs.fullScreen = false;
         glfwSetWindowMonitor(window, NULL, 0, 0, SCR_WIDTH, SCR_HEIGHT, 0);
         _data->gs.windowMode = false;
@@ -512,6 +494,28 @@ void Game::processInput(GLFWwindow *window)
 
 
 		}
+}
+
+//error handling function
+void error_callback( int error, const char* description )
+{
+    fprintf( stderr, "Error: %s\n", description );
+}
+
+void Game::key_callback( GLFWwindow* window, int key, int scancode, int action, int mods )
+{
+    if( key == GLFW_KEY_ESCAPE && action == GLFW_PRESS )
+    {
+        glfwSetWindowShouldClose( window, GLFW_TRUE );
+    }
+    if( key == GLFW_KEY_F && action == GLFW_PRESS )
+    {
+      printf("Enter Full Screen\n");      
+      // glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+      // window = glfwCreateWindow(1366, 768, "FullScreen", glfwGetPrimaryMonitor(),NULL);
+    }
+
+
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -566,6 +570,9 @@ GLFWwindow* Game::create_vulkan_window(std::string w_name, const int width, cons
     
     //Full Screen Mode   
     // window = glfwCreateWindow(width, height, w_name.c_str(), glfwGetPrimaryMonitor(),NULL);
+  //Window 
+    // window = glfwCreateWindow(800, 600, w_name.c_str(), glfwGetPrimaryMonitor(),NULL);
+    
 
 
 	monitor = glfwGetPrimaryMonitor();
@@ -573,6 +580,8 @@ GLFWwindow* Game::create_vulkan_window(std::string w_name, const int width, cons
 
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    glfwSetKeyCallback(window, key_callback);
 
     //Mouse Calls
     glfwSetCursorPosCallback(window, mouse_callback);

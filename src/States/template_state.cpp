@@ -83,7 +83,12 @@ void TemplateState::Init()
 
     auto v = static_cast<VulkanRenderer*>(_data->vk);
     if (v->modelList.size() > 0)
-        v->cleanModels();
+    {
+        // v->cleanModels();
+        v->recreateSwapChain();
+
+    }
+    
 	v->createMeshModel("Mario.obj", "mario_main.png");
     
 }
@@ -176,7 +181,7 @@ void TemplateState::Render(float delta)
             auto v = static_cast<VulkanRenderer*>(_data->vk);
             for (int i = 0; i < v->modelList.size(); i++)
             {
-                printf("Model Size: %d\n", v->modelList.size());
+                // printf("Model Size: %d\n", v->modelList.size());
                 glm::mat4 firstModel(1.0f);
 
                 firstModel = glm::translate(firstModel, glm::vec3(-1.0f + i, 0.0f, -2.5f));

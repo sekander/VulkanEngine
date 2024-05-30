@@ -25,6 +25,7 @@ int ObjectCounter::edge_actor_counter;
 int ObjectCounter::animation_actor_counter; 
 float ObjectCounter::verticies_counter;
 
+
 int main(void)
 {
 	std::shared_ptr<Game> g;

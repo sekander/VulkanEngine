@@ -37,8 +37,26 @@ public:
 	void clearScreen();
 	void cleanModels();
 	
+
 	void recreateSwapChain();
 
+	void removeModel(size_t index);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
 
 	~VulkanRenderer();
 

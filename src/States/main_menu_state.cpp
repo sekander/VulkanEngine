@@ -95,7 +95,11 @@ void MainMenuState::Init()
       // _data->gs.fullScreen = true;
     auto v = static_cast<VulkanRenderer*>(_data->vk);
     if (v->modelList.size() > 0)
-      v->cleanModels();
+    {
+      
+      // v->cleanModels();
+      v->recreateSwapChain();
+    }
 	  v->createMeshModel("Mario.obj", "mario_mime.png");
 	  //v->createMeshModel("Mario.obj", "mario_fire.png");
 }
@@ -161,10 +165,12 @@ void MainMenuState::Input(float delta)
     }
     if (glfwGetKey(_data->window, GLFW_KEY_H) == GLFW_PRESS)
     {
-      v->cleanModels();
+      // v->cleanModels();
+      v->removeModel(0);
       printf("Cleared Model Size: %d", v->modelList.size());
       
     }
+    
     
 
 }
@@ -217,7 +223,7 @@ void MainMenuState::Render(float delta)
   for (int i = 0; i < v->modelList.size(); i++){
     glm::mat4 firstModel(1.0f);
 
-    printf("Model Size: %d\n", v->modelList.size());
+    // printf("Model Size: %d\n", v->modelList.size());
     firstModel = glm::translate(firstModel, glm::vec3(-1.0f + i, 0.0f, -2.5f));
     firstModel = glm::rotate(firstModel, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     firstModel = glm::rotate(firstModel, glm::radians(mangle), glm::vec3(0.0f, 1.0f, 0.0f));

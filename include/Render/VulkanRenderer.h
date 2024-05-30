@@ -35,6 +35,8 @@ public:
 	void draw();
 	void cleanup();
 	void clearScreen();
+	void cleanModels();
+	
 	void recreateSwapChain();
 
 

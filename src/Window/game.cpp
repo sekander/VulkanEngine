@@ -289,9 +289,10 @@ void Game::Render()
 		// This if-statement only executes once every 60th of a second
         if ((now - lastFrameTime) >= fpsLimit)
         {
-        	if(_data->state_switch == 0)
+        	if(_data->state_switch == SPLASH_STATE)
         	{
             update_flag = false;
+            vk_render.clearScreen();
     			  std::this_thread::sleep_for(50ms);
         		_data->machine->GetActiveState()->DeleteData();
         		_data->machine->AddState(St(new SplashState(*_data)), true);
@@ -300,9 +301,10 @@ void Game::Render()
             	update_flag = true;
 				_data->state_switch = CURRENT;
         	}
-        	if(_data->state_switch == 1)
+        	if(_data->state_switch == MAIN_MENU_STATE)
         	{
             update_flag = false;
+            vk_render.clearScreen();
     			  std::this_thread::sleep_for(50ms);
          		_data->machine->GetActiveState()->DeleteData();
          		_data->machine->AddState(St(new MainMenuState(*_data)), true);
@@ -311,9 +313,10 @@ void Game::Render()
             update_flag = true;
 				_data->state_switch = CURRENT;
         	}
-        	if(_data->state_switch == 2)
+        	if(_data->state_switch == LOADING_PLAY_STATE)
         	{
             update_flag = false;
+            vk_render.clearScreen();
     			  std::this_thread::sleep_for(50ms);
         		_data->machine->GetActiveState()->DeleteData();
         		_data->machine->AddState(St(new LoadingPlayState(*_data)), true);
@@ -322,9 +325,10 @@ void Game::Render()
             update_flag = true;
 				_data->state_switch = CURRENT;
         	}
-        	if(_data->state_switch == 3)
+        	if(_data->state_switch == PLAY_STATE)
         	{
             update_flag = false;
+            vk_render.clearScreen();
     			  std::this_thread::sleep_for(50ms);
         		_data->machine->GetActiveState()->DeleteData();
         		_data->machine->AddState(St(new GamePlayState(*_data)), true);
@@ -333,9 +337,10 @@ void Game::Render()
             update_flag = true;
 				_data->state_switch = CURRENT;
         	}
-        	if(_data->state_switch == 4)
+        	if(_data->state_switch == GAME_OVER_STATE)
         	{
             update_flag = false;
+            vk_render.clearScreen();
     			  std::this_thread::sleep_for(50ms);
         		_data->machine->GetActiveState()->DeleteData();
         		_data->machine->AddState(St(new GameOverState(*_data)), true);
@@ -348,6 +353,7 @@ void Game::Render()
           if(_data->state_switch == 6)
         	{
             update_flag = false;
+            vk_render.clearScreen();
     			  std::this_thread::sleep_for(50ms);
         		_data->machine->GetActiveState()->DeleteData();
         		_data->machine->AddState(St(new TemplateState(*_data)), true);
@@ -448,15 +454,15 @@ void Game::processInput(GLFWwindow *window)
 			if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS )
 		        glfwSetWindowShouldClose(window, true);
 		  
-   	    	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+   	    	if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
 			{
 				_data->state_switch = SPLASH_STATE;
 		  	}
-		    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+		    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
 			{
 				_data->state_switch = MAIN_MENU_STATE;
 			}
-		    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+		    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
 			{
 				_data->state_switch = LOADING_PLAY_STATE;
 			}
@@ -467,12 +473,12 @@ void Game::processInput(GLFWwindow *window)
 			  }
         */
 
-			  if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
+			  if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
 			  {
 				  _data->state_switch = GAME_OVER_STATE;
 			  }
 			  
-        if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
 			  {
 				  _data->state_switch = TEMPLATE_STATE;
 			  }
@@ -485,7 +491,7 @@ void Game::processInput(GLFWwindow *window)
 
 
 
-			if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS || _data->gs.fullScreen )
+			if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS || _data->gs.fullScreen )
 			//if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
       {
         _data->gs.windowMode = false;

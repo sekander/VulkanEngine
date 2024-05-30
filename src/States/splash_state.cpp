@@ -53,13 +53,13 @@ SplashState::~SplashState()
 void SplashState::DeleteData()
 {
 //    delete _data.get()->ld;
-    printf("Deleting Game Play State\n");
+    printf("Deleting Splash State\n");
 }
 
 void SplashState::Init()
 {
 
-    printf("Hello Game Play\n");
+    printf("Hello Splash Play\n");
 	
 
 }

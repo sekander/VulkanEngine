@@ -565,7 +565,7 @@ GLFWwindow* Game::create_vulkan_window(std::string w_name, const int width, cons
   GLFWwindow* window = glfwCreateWindow(800, 600, w_name.c_str(), NULL, NULL);
     
     //Full Screen Mode   
-    //window = glfwCreateWindow(width, height, w_name.c_str(), glfwGetPrimaryMonitor(),NULL);
+    // window = glfwCreateWindow(width, height, w_name.c_str(), glfwGetPrimaryMonitor(),NULL);
 
 
 	monitor = glfwGetPrimaryMonitor();

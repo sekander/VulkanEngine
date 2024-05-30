@@ -82,6 +82,8 @@ void TemplateState::Init()
     //_data->vk.createMeshModel("Mario.obj", "mario_main.png");
 
     auto v = static_cast<VulkanRenderer*>(_data->vk);
+    if (v->modelList.size() > 0)
+        v->cleanModels();
 	v->createMeshModel("Mario.obj", "mario_main.png");
     
 }
@@ -170,17 +172,19 @@ void TemplateState::Render(float delta)
 
 			angle += 10.0f * deltaTime;
 			if(angle > 360.0f){angle -= 360.0f;}
-
-			glm::mat4 firstModel(1.0f);
-
-			firstModel = glm::translate(firstModel, glm::vec3(-1.0f, 0.0f, -2.5f));
-			firstModel = glm::rotate(firstModel, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-			firstModel = glm::rotate(firstModel, glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
-
-
+            
             auto v = static_cast<VulkanRenderer*>(_data->vk);
+            for (int i = 0; i < v->modelList.size(); i++)
+            {
+                printf("Model Size: %d\n", v->modelList.size());
+                glm::mat4 firstModel(1.0f);
 
-			v->updateModel(0, firstModel);
+                firstModel = glm::translate(firstModel, glm::vec3(-1.0f + i, 0.0f, -2.5f));
+                firstModel = glm::rotate(firstModel, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+                firstModel = glm::rotate(firstModel, glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
+
+                v->updateModel(i, firstModel);
+            }
 
 			wave0 = 1.0f * sin(2 * 3.14 * 0.001f * (int)(glfwGetTime() * 100)); 
 			wave1 = 1.0f * cos(2 * 3.14 * 0.001f * (int)(glfwGetTime() * 100)); 

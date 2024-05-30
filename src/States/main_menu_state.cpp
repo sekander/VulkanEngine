@@ -92,7 +92,10 @@ void MainMenuState::Init()
       z_cam = 0.0f;
       r_cam = 0.0f;
 
+      // _data->gs.fullScreen = true;
     auto v = static_cast<VulkanRenderer*>(_data->vk);
+    if (v->modelList.size() > 0)
+      v->cleanModels();
 	  v->createMeshModel("Mario.obj", "mario_mime.png");
 	  //v->createMeshModel("Mario.obj", "mario_fire.png");
 }
@@ -104,6 +107,7 @@ void MainMenuState::SoundUpdate()
 
 void MainMenuState::Input(float delta)
 {
+    auto v = static_cast<VulkanRenderer*>(_data->vk);
     //printf("Main Menu Input \n");
     if (glfwGetKey(_data->window, GLFW_KEY_RIGHT) == GLFW_PRESS)
     {
@@ -155,6 +159,13 @@ void MainMenuState::Input(float delta)
       if (cam_degree <= 0.0f)
         cam_degree = 360.0f;
     }
+    if (glfwGetKey(_data->window, GLFW_KEY_H) == GLFW_PRESS)
+    {
+      v->cleanModels();
+      printf("Cleared Model Size: %d", v->modelList.size());
+      
+    }
+    
 
 }
 
@@ -202,16 +213,17 @@ void MainMenuState::Render(float delta)
 
   // printf("Model Angle: %f\n", mangle);
 
-  glm::mat4 firstModel(1.0f);
-
-  firstModel = glm::translate(firstModel, glm::vec3(-1.0f, 0.0f, -2.5f));
-  firstModel = glm::rotate(firstModel, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-  firstModel = glm::rotate(firstModel, glm::radians(mangle), glm::vec3(0.0f, 1.0f, 0.0f));
-
-  
   auto v = static_cast<VulkanRenderer*>(_data->vk);
+  for (int i = 0; i < v->modelList.size(); i++){
+    glm::mat4 firstModel(1.0f);
 
-  v->updateModel(0, firstModel);
+    printf("Model Size: %d\n", v->modelList.size());
+    firstModel = glm::translate(firstModel, glm::vec3(-1.0f + i, 0.0f, -2.5f));
+    firstModel = glm::rotate(firstModel, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    firstModel = glm::rotate(firstModel, glm::radians(mangle), glm::vec3(0.0f, 1.0f, 0.0f));
+
+    v->updateModel(i, firstModel);
+  }
 
   mwave0 = 1.0f * sin(2 * 3.14 * 0.001f * (int)(glfwGetTime() * 100)); 
   mwave1 = 1.0f * cos(2 * 3.14 * 0.001f * (int)(glfwGetTime() * 100)); 

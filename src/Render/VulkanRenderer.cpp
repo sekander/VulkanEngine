@@ -269,6 +269,34 @@ void VulkanRenderer::cleanup()
 	vkDestroyInstance(instance, nullptr);
 }
 
+void VulkanRenderer::cleanModels() {
+    // Wait until no actions being run on device before destroying
+    vkDeviceWaitIdle(mainDevice.logicalDevice);
+
+    // Destroy models
+    for (auto& model : modelList) {
+        model.destroyMeshModel();
+    }
+    modelList.clear();
+
+    // Free aligned memory
+    if (modelTransferSpace != nullptr) {
+        _aligned_free(modelTransferSpace);
+        modelTransferSpace = nullptr;
+    }
+
+    // Texture cleanup
+    for (size_t i = 0; i < textureImages.size(); i++) {
+        vkDestroyImageView(mainDevice.logicalDevice, textureImageView[i], nullptr);
+        vkDestroyImage(mainDevice.logicalDevice, textureImages[i], nullptr);
+        vkFreeMemory(mainDevice.logicalDevice, textureImageMemory[i], nullptr);
+    }
+    textureImages.clear();
+    textureImageView.clear();
+    textureImageMemory.clear();
+}
+
+
 
 VulkanRenderer::~VulkanRenderer()
 {

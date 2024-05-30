@@ -294,6 +294,7 @@ void Game::Render()
             update_flag = false;
             vk_render.clearScreen();
     			  std::this_thread::sleep_for(50ms);
+            vk_render.clearScreen();
         		_data->machine->GetActiveState()->DeleteData();
         		_data->machine->AddState(St(new SplashState(*_data)), true);
         		_data->machine->ProcessState();
@@ -306,6 +307,7 @@ void Game::Render()
             update_flag = false;
             vk_render.clearScreen();
     			  std::this_thread::sleep_for(50ms);
+            vk_render.clearScreen();
          		_data->machine->GetActiveState()->DeleteData();
          		_data->machine->AddState(St(new MainMenuState(*_data)), true);
          		_data->machine->ProcessState();
@@ -488,6 +490,7 @@ void Game::processInput(GLFWwindow *window)
 				  _data->machine->GetActiveState()->DeleteData();
 			  }
 
+			  if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 
 
 

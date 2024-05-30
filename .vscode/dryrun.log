@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/fnky/C0de/GAME-ENGINES/Vulkan'
+make: Leaving directory '/home/fnky/C0de/GAME-ENGINES/Vulkan'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+

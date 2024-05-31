@@ -6,10 +6,16 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/fwd.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/string_cast.hpp>  // Include for glm::to_string
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+
 
 #include <stdexcept>
 #include <vector>
@@ -43,10 +49,19 @@ public:
 	void removeModel(size_t index);
 
 
-
-
-
-
+	//IMGUI IMPLEMENTATION
+	void createUICommandBuffers();
+	void recordUICommands(uint32_t bufferIdx);
+	void createUICommandPool(VkCommandPool *cmdPool, VkCommandPoolCreateFlags flags);
+	void createUIFramebuffers();
+	void createUIRenderPass(); 
+	void cleanupUIResources();
+	
+	std::vector<VkFramebuffer> uiFramebuffers;
+    VkRenderPass uiRenderPass;
+	VkCommandPool uiCommandPool;
+	std::vector<VkCommandBuffer> uiCommandBuffers;
+	VkDescriptorPool uiDescriptorPool;
 
 
 

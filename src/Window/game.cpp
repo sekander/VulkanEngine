@@ -54,6 +54,9 @@ Game::~Game(){
 void Game::Initialize()
 {
   _data->window = create_vulkan_window();
+  
+  //Instiate Camera
+  _data->cm = new Camera();
 
 	  _data->machine->AddState(St(new MainMenuState(*_data)), false);	
 //	  _data->machine->AddState(St(new GameOverState(*_data)), false);	

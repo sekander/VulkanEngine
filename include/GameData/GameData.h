@@ -4,7 +4,8 @@
 #include <iostream>
 #include <memory>
 
-#include "../../include/States/state_machine.h"
+#include "../States/state_machine.h"
+#include "../Camera/Camera.h"
 //#include "../../include/Loaders/LoadingGameObjects.h"
 
 ///#include "../Render/VulkanRenderer.h"
@@ -134,6 +135,7 @@ struct GameData
 	Levels					level;
 	Player_Data				pd;
 	Game_Setting 			gs;
+	Camera*					cm;
 	void*					vk;
 	//VulkanRenderer			vk;
 

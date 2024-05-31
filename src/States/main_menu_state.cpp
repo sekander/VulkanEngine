@@ -32,7 +32,6 @@
 Camera mcamera;
 
 
-float mx_cam, my_cam, mz_cam, mr_cam;
 float	mx = 1.0f;
 float	my = 1.0f;
 float	mz = 1.0f;
@@ -89,8 +88,11 @@ void MainMenuState::Init()
       printf("Hello Main Menu\n");
       x_cam = 0.0f;
       y_cam = 0.0f;
-      z_cam = 0.0f;
+      z_cam = 2.0f;
       r_cam = 0.0f;
+      xpos = 0.0f; 
+      ypos = 0.0f; 
+      zpos = 0.0f; 
 
       // _data->gs.fullScreen = true;
     auto v = static_cast<VulkanRenderer*>(_data->vk);
@@ -142,11 +144,13 @@ void MainMenuState::Input(float delta)
 
     if (glfwGetKey(_data->window, GLFW_KEY_Z) == GLFW_PRESS)
     {
+      printf("Z_cam: %f", z_cam);
       z_cam += 0.05;
     }
 
     if (glfwGetKey(_data->window, GLFW_KEY_X) == GLFW_PRESS)
     {
+      printf("Z_cam: %f", z_cam);
       z_cam -= 0.05;
     }
     
@@ -170,6 +174,22 @@ void MainMenuState::Input(float delta)
       printf("Cleared Model Size: %d", v->modelList.size());
       
     }
+    if (glfwGetKey(_data->window, GLFW_KEY_W) == GLFW_PRESS)
+    {
+      xpos += 0.01;
+    }
+    if (glfwGetKey(_data->window, GLFW_KEY_S) == GLFW_PRESS)
+    {
+      xpos -= 0.01;
+    }
+    if (glfwGetKey(_data->window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+      ypos += 0.01;  
+    }
+    if (glfwGetKey(_data->window, GLFW_KEY_D) == GLFW_PRESS)
+    {
+      ypos -= 0.01;  
+    }
     
     
 
@@ -177,14 +197,14 @@ void MainMenuState::Input(float delta)
 
 void MainMenuState::Update(float delta)
 {
-  mcamera.UpdateViewMatrix();
+/*   mcamera.UpdateViewMatrix();
   //mcamera.SetRotation(mz_cam);
   mcamera.SetRotation(r_cam);
   mcamera.SetPosition(glm::vec3(x_cam, y_cam, z_cam));
 
   mcamera.RotateAroundPosition(cam_degree, glm::vec3(-1.0f, 0.0f, -2.5f));
   //printf("Maim Menu Updatting...");
-
+ */
   //Input(delta);
   mangle += 1.0f;
 
@@ -206,29 +226,73 @@ void MainMenuState::Render(float delta)
 //  mcamera.UpdateViewMatrix();
   
 
-  float now = glfwGetTime();
+  
+   //_data->vk.draw();    
+
+			mcamera.UpdateViewMatrix();
+			mcamera.SetRotation(r_cam);
+      mcamera.SetPosition(glm::vec3(x_cam, y_cam, z_cam));
+      float now = glfwGetTime();
+
   //deltaTime = now - lastTime;
   //lastTime = now;
   // per-frame time logic
   //
   float current_frame = glfwGetTime();
 
-
-  // mangle += 10.0f * delta;
-  // if(mangle > 360.0f){mangle -= 360.0f;}
+   mangle += 10.0f * delta;
+    if (mangle > 360.0f) {  // Ensuring the angle doesn't exceed 360 degrees
+        mangle -= 360.0f;
+    }
 
   // printf("Model Angle: %f\n", mangle);
 
   auto v = static_cast<VulkanRenderer*>(_data->vk);
   for (int i = 0; i < v->modelList.size(); i++){
     glm::mat4 firstModel(1.0f);
+    // Model's initial position
+    // glm::vec3 modelPosition = glm::vec3(0.0f + i, 0.0f, 0.0f);
+    glm::vec3 modelPosition = glm::vec3(xpos + i, ypos, 0.0f);
+    std::cout << "Model position for model " << i << ": " 
+    << glm::to_string(modelPosition) << std::endl;
 
-    // printf("Model Size: %d\n", v->modelList.size());
-    firstModel = glm::translate(firstModel, glm::vec3(-1.0f + i, 0.0f, -2.5f));
-    firstModel = glm::rotate(firstModel, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    firstModel = glm::rotate(firstModel, glm::radians(mangle), glm::vec3(0.0f, 1.0f, 0.0f));
+    {
+    // firstModel = glm::translate(firstModel, glm::vec3(0.0f + i, 0.0f, 4.5f));
+    // Quaternion representing no rotation
+    glm::quat totalRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 
+    // Rotate 45 degrees around the Y-axis
+    glm::quat rotationY = glm::angleAxis(glm::radians(mangle), glm::vec3(0.0f, 1.0f, 0.0f));
+    // glm::quat rotationY = glm::angleAxis(glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    // glm::quat rotationY = glm::angleAxis(glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    totalRotation = rotationY * totalRotation;
+
+    // Rotate 30 degrees around the X-axis
+    glm::quat rotationX = glm::angleAxis(glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    totalRotation = rotationX * totalRotation;
+
+    // Rotate 60 degrees around the Z-axis
+    glm::quat rotationZ = glm::angleAxis(glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    totalRotation = rotationZ * totalRotation;
+
+    // Convert the total quaternion rotation to a rotation matrix
+    glm::mat4 rotationMatrix = glm::mat4(totalRotation);
+
+    // Apply the rotation to the model matrix
+    // modelMatrix = rotationMatrix * modelMatrix;
+    // firstModel = rotationMatrix * firstModel;
+    firstModel = glm::translate(firstModel, modelPosition);   // Translate to position
+    firstModel = glm::translate(firstModel, -modelPosition);  // Translate to origin (inverse)
+    firstModel = rotationMatrix * firstModel;                 // Apply rotation
+    firstModel = glm::translate(firstModel, modelPosition);   // Translate back to position
+
+
+    }
     v->updateModel(i, firstModel);
+    // std::cout << "Model Matrix for model " << i << ":\n" << glm::to_string(firstModel) << std::endl;
+    std::cout << "\nModel Matrix for model " << i  << std::endl;
+    printMat4(firstModel);
+
   }
 
   mwave0 = 1.0f * sin(2 * 3.14 * 0.001f * (int)(glfwGetTime() * 100)); 

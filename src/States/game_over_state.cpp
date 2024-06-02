@@ -6,9 +6,6 @@
 
 /////////////////////////////////////////////////////////////////////////////
 ///------------------------------IMGUI--------------------------------------
-#include "../../include/IMGUI/imgui.h"
-#include "../../include/IMGUI/imgui_impl_glfw.h"
-#include "../../include/IMGUI/imgui_impl_opengl3.h" 
 
 #include <cstdio>
 #include <math.h>

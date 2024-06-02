@@ -10,9 +10,9 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 /////////////////////////////////////////////////////////////////////////////
 ///------------------------------IMGUI--------------------------------------
-#include "../../include/IMGUI/imgui.h"
-#include "../../include/IMGUI/imgui_impl_glfw.h"
-#include "../../include/IMGUI/imgui_impl_opengl3.h" 
+// #include "../../include/IMGUI/imgui.h"
+// #include "../../include/IMGUI/imgui_impl_glfw.h"
+// #include "../../include/IMGUI/imgui_impl_opengl3.h" 
 
 using namespace std::chrono_literals;
 using namespace std;
@@ -45,9 +45,9 @@ Game::Game(){
 Game::~Game(){
   cout << "Deleting GAME !!!!!!!" << endl;
 
-  ImGui_ImplOpenGL3_Shutdown();
-  ImGui_ImplGlfw_Shutdown();
-  ImGui::DestroyContext();
+  // ImGui_ImplOpenGL3_Shutdown();
+  // ImGui_ImplGlfw_Shutdown();
+  // ImGui::DestroyContext();
 
 }
 
@@ -59,9 +59,9 @@ void Game::Initialize()
   _data->cm = new Camera();
 
 	  _data->machine->AddState(St(new MainMenuState(*_data)), false);	
+	  // _data->machine->AddState(St(new TemplateState(*_data)), false);	
 //	  _data->machine->AddState(St(new GameOverState(*_data)), false);	
 //	    _data->machine->AddState(St(new SplashState(*_data)), false);	
-//	  _data->machine->AddState(St(new TemplateState(*_data)), false);	
 //	  _data->machine->AddState(St(new LoadingPlayState(*_data)), false);	
 
   	//Create Vulkan Renderere Instance
@@ -89,9 +89,9 @@ void Game::Initialize()
       
       
       // Setup Dear ImGui context
-      IMGUI_CHECKVERSION();
-      ImGui::CreateContext();
-      ImGuiIO &io = ImGui::GetIO();
+      // IMGUI_CHECKVERSION();
+      // ImGui::CreateContext();
+      // ImGuiIO &io = ImGui::GetIO();
       // Setup Platform/Renderer bindings
       /*
       ImGui_ImplGlfw_InitForOpenGL(_data->window, true);

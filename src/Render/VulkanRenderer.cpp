@@ -131,12 +131,17 @@ void VulkanRenderer::draw()
 {
 	// -- GET NEXT IMAGE --
 	// Wait for given fence to signal (open) from last draw before continuing
+	//GET SEGMENTATION FAULT HERE
+	if (mainDevice.logicalDevice == nullptr)
+		printf("Main Device is NuULL");
+
 	vkWaitForFences(mainDevice.logicalDevice, 1, &drawFences[currentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max());
 	// Manually reset (close) fences
 	vkResetFences(mainDevice.logicalDevice, 1, &drawFences[currentFrame]);
 	
 	// Get index of next image to be drawn to, and signal semaphore when ready to be drawn to
 	uint32_t imageIndex;
+	//GET SEGMENTATION FAULT HERE
 	VkResult result = vkAcquireNextImageKHR(mainDevice.logicalDevice, swapchain, std::numeric_limits<uint64_t>::max(), imageAvailable[currentFrame], VK_NULL_HANDLE, &imageIndex);
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR  || result == VK_SUBOPTIMAL_KHR ) {
@@ -171,6 +176,7 @@ void VulkanRenderer::draw()
 	if (result != VK_SUCCESS)
 	{
 		throw std::runtime_error("Failed to submit Command Buffer to Queue!");
+		//return;
 	}
 
 
@@ -391,6 +397,7 @@ void VulkanRenderer::removeModel(size_t index) {
     // Ensure the index is valid
     if (index >= modelList.size()) {
         throw std::out_of_range("Index out of range");
+		//return;
     }
 
     // Wait until no actions are being run on the device before destroying resources
@@ -403,7 +410,7 @@ void VulkanRenderer::removeModel(size_t index) {
     modelList.erase(modelList.begin() + index);
 
     // Optional: Recreate uniform buffers and descriptor sets if they depend on the model list
-	recreateSwapChain();
+	// recreateSwapChain();
     // recreateUniformBuffers();
     // recreateDescriptorSets();
 }
@@ -1007,7 +1014,8 @@ void VulkanRenderer::updateUniformBuffers(uint32_t imageIndex)
 
   // Ensure modelList is not empty
     if (modelList.empty()) {
-        throw std::runtime_error("Model list is empty. Cannot update uniform buffers.");
+         throw std::runtime_error("Model list is empty. Cannot update uniform buffers.");
+		//return;
     }
 
     // for (size_t i = 0; i < modelList.size(); i++) {
@@ -2221,6 +2229,9 @@ void VulkanRenderer::clearScreen()
 
     // Acquire the next image from the swap chain
     uint32_t imageIndex;
+	//GET SEGMENTATION FAULT HERE
+	if (mainDevice.logicalDevice == nullptr || swapchain == nullptr)
+		printf("Main Device is NULL");
     VkResult result = vkAcquireNextImageKHR(mainDevice.logicalDevice, swapchain, UINT64_MAX, imageAvailable[currentFrame], VK_NULL_HANDLE, &imageIndex);
     if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
         throw std::runtime_error("Failed to acquire swap chain image.");

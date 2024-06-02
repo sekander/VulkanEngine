@@ -10,10 +10,6 @@ build/../src/Window/game.cpp.o: ../src/Window/game.cpp \
  ../src/Window/../../include/Window/../States/game_over_state.h \
  ../src/Window/../../include/Window/../States/loading_play_state.h \
  ../src/Window/../../include/Window/../States/template_state.h \
- ../src/Window/../../include/IMGUI/imgui.h \
- ../src/Window/../../include/IMGUI/imconfig.h \
- ../src/Window/../../include/IMGUI/imgui_impl_glfw.h \
- ../src/Window/../../include/IMGUI/imgui_impl_opengl3.h \
  ../src/Window/../../include/Render/VulkanRenderer.h \
  ../src/Window/../../include/Render/stb_image.h \
  ../src/Window/../../include/Render/Mesh.h \
@@ -30,10 +26,6 @@ build/../src/Window/game.cpp.o: ../src/Window/game.cpp \
 ../src/Window/../../include/Window/../States/game_over_state.h:
 ../src/Window/../../include/Window/../States/loading_play_state.h:
 ../src/Window/../../include/Window/../States/template_state.h:
-../src/Window/../../include/IMGUI/imgui.h:
-../src/Window/../../include/IMGUI/imconfig.h:
-../src/Window/../../include/IMGUI/imgui_impl_glfw.h:
-../src/Window/../../include/IMGUI/imgui_impl_opengl3.h:
 ../src/Window/../../include/Render/VulkanRenderer.h:
 ../src/Window/../../include/Render/stb_image.h:
 ../src/Window/../../include/Render/Mesh.h:

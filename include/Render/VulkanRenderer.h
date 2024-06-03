@@ -27,6 +27,13 @@
 #include "MeshModel.h"
 #include "Utilities.h"
 
+/////////////////////////////////////////////////////////////////////////////
+///------------------------------IMGUI--------------------------------------
+#include "../../include/IMGUI/imgui.h"
+#include "../../include/IMGUI/imgui_impl_glfw.h"
+#include "../../include/IMGUI/imgui_impl_vulkan.h"
+
+
 class VulkanRenderer
 {
 public:
@@ -50,19 +57,12 @@ public:
 
 
 	//IMGUI IMPLEMENTATION
-	void createUICommandBuffers();
-	void recordUICommands(uint32_t bufferIdx);
-	void createUICommandPool(VkCommandPool *cmdPool, VkCommandPoolCreateFlags flags);
-	void createUIFramebuffers();
-	void createUIRenderPass(); 
-	void cleanupUIResources();
-	
-	std::vector<VkFramebuffer> uiFramebuffers;
-    VkRenderPass uiRenderPass;
-	VkCommandPool uiCommandPool;
-	std::vector<VkCommandBuffer> uiCommandBuffers;
-	VkDescriptorPool uiDescriptorPool;
 
+
+	
+
+
+    // std::vector<VkFramebuffer> uiFramebuffers;
 
 
 
@@ -107,6 +107,13 @@ public:
 	}
 
 
+
+
+
+	
+	void initUI();
+    void drawUI();
+
 private:
 	GLFWwindow * window;
 
@@ -130,6 +137,11 @@ private:
 	VkQueue presentationQueue;
 	VkSurfaceKHR surface;
 	VkSwapchainKHR swapchain;
+		    // std::vector<VkImageView> swapchainImageViews;
+			    // VkExtent2D swapchainExtent;
+
+
+
 
 	std::vector<SwapchainImage> swapChainImages;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
@@ -278,6 +290,48 @@ private:
 	//int createTexture(std::string fileName);
 	// -- Loader Functions
 	stbi_uc * loadTextureFile(std::string fileName, int* width, int* height, VkDeviceSize* imageSize);
+
+
+
+
+
+
+
+    struct SwapchainConfiguration {
+        VkSurfaceCapabilitiesKHR capabilities;
+        std::vector<VkSurfaceFormatKHR> surfaceFormats;
+        std::vector<VkPresentModeKHR> presentModes;
+    };
+
+	// SwapchainConfiguration querySwapchainSupport(const VkPhysicalDevice &device);
+    SwapchainConfiguration querySwapchainSupport(const VkPhysicalDevice &physicalDevice);
+
+
+
+    uint32_t imageCount = 0;
+
+
+
+
+		//IMGUI IMPLEMENTATION
+	std::vector<VkFramebuffer> uiFramebuffers;
+    VkRenderPass uiRenderPass;
+	VkCommandPool uiCommandPool;
+	std::vector<VkCommandBuffer> uiCommandBuffers;
+	VkDescriptorPool uiDescriptorPool;
+
+	void createUICommandBuffers();
+	void recordUICommands(uint32_t bufferIdx);
+	void createUICommandPool(VkCommandPool *cmdPool, VkCommandPoolCreateFlags flags);
+	void createUIFramebuffers();
+	void createUIRenderPass(); 
+	void cleanupUIResources();
+	void createUIDescriptorPool();
+	// VkCommandBuffer beginSingleTimeCommands(VkCommandPool cmdPool);
+	// void endSingleTimeCommands(VkCommandBuffer commandBuffer, VkCommandPool cmdPool);
+
+    // static void drawUI();
+
 
 };
 

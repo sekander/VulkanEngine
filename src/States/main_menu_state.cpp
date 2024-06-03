@@ -225,6 +225,7 @@ void MainMenuState::Render(float delta)
 
   
    //_data->vk.draw();    
+   
 
 			mcamera.UpdateViewMatrix();
 			mcamera.SetRotation(r_cam);
@@ -245,6 +246,8 @@ void MainMenuState::Render(float delta)
   // printf("Model Angle: %f\n", mangle);
 
   auto v = static_cast<VulkanRenderer*>(_data->vk);
+  v->drawUI();
+
   for (int i = 0; i < v->modelList.size(); i++){
     glm::mat4 firstModel(1.0f);
     // Model's initial position

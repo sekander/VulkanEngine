@@ -8,11 +8,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
-/////////////////////////////////////////////////////////////////////////////
-///------------------------------IMGUI--------------------------------------
-// #include "../../include/IMGUI/imgui.h"
-// #include "../../include/IMGUI/imgui_impl_glfw.h"
-// #include "../../include/IMGUI/imgui_impl_opengl3.h" 
+
 
 using namespace std::chrono_literals;
 using namespace std;
@@ -71,6 +67,7 @@ void Game::Initialize()
       
       glfwSetWindowShouldClose(_data->window, true);
 	  }
+    vk_render.initUI();
 
 
 
@@ -418,6 +415,7 @@ void Game::Render()
 
     _data->machine->Clear();
     delete _data->machine;
+    vk_render.cleanup();
     delete _data; 
 
     glfwTerminate();

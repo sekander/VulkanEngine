@@ -14,7 +14,11 @@ build/../src/Window/game.cpp.o: ../src/Window/game.cpp \
  ../src/Window/../../include/Render/stb_image.h \
  ../src/Window/../../include/Render/Mesh.h \
  ../src/Window/../../include/Render/Utilities.h \
- ../src/Window/../../include/Render/MeshModel.h
+ ../src/Window/../../include/Render/MeshModel.h \
+ ../src/Window/../../include/Render/../../include/IMGUI/imgui.h \
+ ../src/Window/../../include/Render/../../include/IMGUI/imconfig.h \
+ ../src/Window/../../include/Render/../../include/IMGUI/imgui_impl_glfw.h \
+ ../src/Window/../../include/Render/../../include/IMGUI/imgui_impl_vulkan.h
 ../src/Window/../../include/Window/game.h:
 ../src/Window/../../include/Window/../GameData/GameData.h:
 ../src/Window/../../include/Window/../GameData/../States/state_machine.h:
@@ -31,3 +35,7 @@ build/../src/Window/game.cpp.o: ../src/Window/game.cpp \
 ../src/Window/../../include/Render/Mesh.h:
 ../src/Window/../../include/Render/Utilities.h:
 ../src/Window/../../include/Render/MeshModel.h:
+../src/Window/../../include/Render/../../include/IMGUI/imgui.h:
+../src/Window/../../include/Render/../../include/IMGUI/imconfig.h:
+../src/Window/../../include/Render/../../include/IMGUI/imgui_impl_glfw.h:
+../src/Window/../../include/Render/../../include/IMGUI/imgui_impl_vulkan.h:

@@ -475,23 +475,22 @@ void Game::processInput(GLFWwindow *window)
 				  _data->machine->GetActiveState()->DeleteData();
 			  }
 
-			if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS || _data->gs.fullScreen )
-			//if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
-      {
-        printf("Enter Full Screen\n");      
-        _data->gs.windowMode = false;
-        glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
-        _data->gs.fullScreen = false;
-      }
-      else if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS || _data->gs.windowMode)
-      //if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS)
-      {
-        printf("Enter Window Screen\n");      
-        _data->gs.fullScreen = false;
-        glfwSetWindowMonitor(window, NULL, 0, 0, SCR_WIDTH, SCR_HEIGHT, 0);
-        _data->gs.windowMode = false;
-
-      }
+			// if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS || _data->gs.fullScreen )
+			// //if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
+      // {
+      //   printf("Enter Full Screen\n");      
+      //   _data->gs.windowMode = false;
+      //   glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+      //   _data->gs.fullScreen = false;
+      // }
+      // else if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS || _data->gs.windowMode)
+      // //if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS)
+      // {
+      //   printf("Enter Window Screen\n");      
+      //   _data->gs.fullScreen = false;
+      //   glfwSetWindowMonitor(window, NULL, 0, 0, SCR_WIDTH, SCR_HEIGHT, 0);
+      //   _data->gs.windowMode = false;
+      // }
 
 
 		}
@@ -512,9 +511,14 @@ void Game::key_callback( GLFWwindow* window, int key, int scancode, int action, 
     if( key == GLFW_KEY_F && action == GLFW_PRESS )
     {
       printf("Enter Full Screen\n");      
-      // glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
-      // window = glfwCreateWindow(1366, 768, "FullScreen", glfwGetPrimaryMonitor(),NULL);
+      glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, 1366, 768, NULL);
     }
+    if( key == GLFW_KEY_G && action == GLFW_PRESS )
+    {
+      printf("Enter Full Screen\n");      
+      glfwSetWindowMonitor(window, NULL, 0, 0, 800, 600, 0);
+    }
+
 
 
 }

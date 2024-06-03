@@ -215,7 +215,6 @@ void VulkanRenderer::draw()
 
 	// Get next frame (use % MAX_FRAME_DRAWS to keep value below MAX_FRAME_DRAWS)
 	currentFrame = (currentFrame + 1) % MAX_FRAME_DRAWS;
-	// drawUI();
 }
 
 void VulkanRenderer::cleanup()
@@ -2642,7 +2641,7 @@ void VulkanRenderer::createUIDescriptorPool()
 
 void VulkanRenderer::drawUI()
 {
-	printf("IMGUI RENDERING\n");
+	// printf("IMGUI RENDERING\n");
   // Start the Dear ImGui frame
     ImGui_ImplVulkan_NewFrame();
     ImGui_ImplGlfw_NewFrame();

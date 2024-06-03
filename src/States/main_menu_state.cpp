@@ -61,7 +61,7 @@ MainMenuState::MainMenuState(GameData& data)
     
 }
 
-MainMenuState::~MainMenuState()
+MainMenuState::~MainMenuState() 
 {
     printf("Deleting Main Menu\n");
       // Cleanup
@@ -70,6 +70,7 @@ MainMenuState::~MainMenuState()
 	  //v->cleanup();
     v->recreateSwapChain();
 }
+
 
 void MainMenuState::DeleteData()
 {
@@ -246,7 +247,11 @@ void MainMenuState::Render(float delta)
   // printf("Model Angle: %f\n", mangle);
 
   auto v = static_cast<VulkanRenderer*>(_data->vk);
-  v->drawUI();
+  // v->drawUI( [this]() { this->_ui(); });
+  v->drawUI(nullptr);
+
+
+  
 
   for (int i = 0; i < v->modelList.size(); i++){
     glm::mat4 firstModel(1.0f);
@@ -447,4 +452,22 @@ void MainMenuState::Render(float delta)
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     ImGui::EndFrame();
     */
+}
+
+
+void MainMenuState::_ui()
+{
+   // Variables for the second window
+    static bool enable_feature = false;
+    static int slider_value = 0;
+
+    // Second window
+    ImGui::Begin("Another Window");
+    ImGui::Text("This is another window.");
+    ImGui::Checkbox("Enable Feature", &enable_feature);
+    ImGui::SliderInt("Value", &slider_value, 0, 100);
+    if (ImGui::Button("Reset")) {
+        slider_value = 0;
+    }
+    ImGui::End();
 }

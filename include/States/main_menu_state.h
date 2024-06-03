@@ -33,6 +33,8 @@ class MainMenuState : public State {
             }
         }
 
+        void _ui();
+
         ~MainMenuState();
     private :
         //GameDataRef _data;

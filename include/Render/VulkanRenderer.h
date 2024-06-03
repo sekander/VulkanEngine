@@ -112,7 +112,7 @@ public:
 
 	
 	void initUI();
-    void drawUI();
+    void drawUI(std::function<void()> customUIRenderCallback);
 
 private:
 	GLFWwindow * window;

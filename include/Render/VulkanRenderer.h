@@ -52,6 +52,9 @@ public:
 	
 
 	void recreateSwapChain();
+	void recreateGraphicsPipeline(const std::string& vertexShaderPath, 
+							 const std::string& fragmentShaderPath, 
+							 const std::string& geometryShaderPath /*= ""*/);
 
 	void removeModel(size_t index);
 
@@ -112,7 +115,7 @@ public:
 
 	
 	void initUI();
-    void drawUI(std::function<void()> customUIRenderCallback);
+    void drawUI(std::function<void()> customUIRenderCallback );
 
 private:
 	GLFWwindow * window;
@@ -138,7 +141,7 @@ private:
 	VkSurfaceKHR surface;
 	VkSwapchainKHR swapchain;
 		    // std::vector<VkImageView> swapchainImageViews;
-			    // VkExtent2D swapchainExtent;
+			    VkExtent2D swapchainExtent;
 
 
 
@@ -231,7 +234,10 @@ private:
 
     void cleanupSwapChain(); 
 
-	void createGraphicsPipeline();
+	// void createGraphicsPipeline();
+	void createGraphicsPipeline(const std::string& vertexShaderPath, 
+								const std::string& fragmentShaderPath, 
+								const std::string& geometryShaderPath /*= ""*/);
 	void createDepthBufferImage();
 	void createFramebuffers();
 	void createCommandPool();

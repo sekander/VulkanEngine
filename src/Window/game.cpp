@@ -30,12 +30,11 @@ VulkanRenderer vk_render;
 
 Game::Game(){
     
-    _data = new GameData();
+  _data = new GameData();
 
-    _data->vk = &vk_render;
+  _data->vk = &vk_render;
     
-    
-	  _data->machine =  new StateMachine();
+	_data->machine =  new StateMachine();
 
 }
 Game::~Game(){
@@ -181,9 +180,16 @@ void Game::Run()
   [this](){
     Update();
   });
+  
+  std::future<void> iotaFuture3 = std::async(std::launch::async,
+  [this](){
+    NetworkUpdate();
+  });
+
 
   iotaFuture.get();
   iotaFuture2.get();
+  iotaFuture3.get();
   //t.join();
   //t1.join();
 
@@ -192,6 +198,7 @@ void Game::Run()
 
 void Game::NetworkUpdate()
 {
+    std::cout << "Begin Network Loop" << std::endl;
 }
 
 
@@ -199,29 +206,14 @@ void Game::NetworkUpdate()
 void Game::SoundUpdate()
 {
     std::cout << "Begin Audio Loop" << std::endl;
- //   std::future<void> iotaFuture = std::async(std::launch::async,
- //   [this](){
-    //std::thread t([this]( ) {
-    
-
-
-        while(keepLooping)
+    while(keepLooping)
+    {
+      if(update_flag)
       {
-        if(update_flag)
-        {
-          //std::lock_guard<std::mutex> mtx(g_Mutex);
-          _data->machine->GetActiveState()->SoundUpdate();
-        }  
-      }
-   
-
- //   });
-
-
-    //iotaFuture.get();
-    //t.join();
-
-
+        //std::lock_guard<std::mutex> mtx(g_Mutex);
+        _data->machine->GetActiveState()->SoundUpdate();
+      }  
+    }
 }
 
 void Game::Update()
@@ -300,7 +292,7 @@ void Game::Render()
         		_data->machine->ProcessState();
         		_data->machine->GetActiveState()->Init();
             	update_flag = true;
-				_data->state_switch = CURRENT;
+				    _data->state_switch = CURRENT;
         	}
         	if(_data->state_switch == MAIN_MENU_STATE)
         	{
@@ -313,7 +305,7 @@ void Game::Render()
          		_data->machine->ProcessState();
         		_data->machine->GetActiveState()->Init();
             update_flag = true;
-				_data->state_switch = CURRENT;
+				    _data->state_switch = CURRENT;
         	}
         	if(_data->state_switch == LOADING_PLAY_STATE)
         	{
@@ -325,7 +317,7 @@ void Game::Render()
         		_data->machine->ProcessState();
         		_data->machine->GetActiveState()->Init();
             update_flag = true;
-				_data->state_switch = CURRENT;
+				    _data->state_switch = CURRENT;
         	}
         	if(_data->state_switch == PLAY_STATE)
         	{
@@ -337,7 +329,7 @@ void Game::Render()
         		_data->machine->ProcessState();
         		_data->machine->GetActiveState()->Init();
             update_flag = true;
-				_data->state_switch = CURRENT;
+				    _data->state_switch = CURRENT;
         	}
         	if(_data->state_switch == GAME_OVER_STATE)
         	{
@@ -349,7 +341,7 @@ void Game::Render()
         		_data->machine->ProcessState();
         		_data->machine->GetActiveState()->Init();
             update_flag = true;
-				_data->state_switch = CURRENT;
+				    _data->state_switch = CURRENT;
         	}
         	
           if(_data->state_switch == 6)
@@ -362,22 +354,8 @@ void Game::Render()
         		_data->machine->ProcessState();
         		_data->machine->GetActiveState()->Init();
             update_flag = true;
-				_data->state_switch = CURRENT;
+				    _data->state_switch = CURRENT;
         	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         // render
@@ -396,7 +374,7 @@ void Game::Render()
 		// set lastUpdateTime every iteration
         lastRenderTime = now;
 
-        //	glfwSetWindowShouldClose(_data->window, true);
+      // glfwSetWindowShouldClose(_data->window, true);
     }
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
@@ -436,16 +414,11 @@ void Game::Render()
 // ---------------------------------------------------------------------------------------------------------
 void Game::processInput(GLFWwindow *window)
 {
-		{	
-			//if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || _data->pd.touchPad_4 == 1)
-/* 			if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS )
-		        glfwSetWindowShouldClose(window, true) */;
-		  
-   	    	if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
-			{
-				_data->state_switch = SPLASH_STATE;
-		  	}
-		    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+  if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
+	{
+    _data->state_switch = SPLASH_STATE;
+	}
+	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
 			{
 				_data->state_switch = MAIN_MENU_STATE;
 			}
@@ -493,7 +466,6 @@ void Game::processInput(GLFWwindow *window)
       // }
 
 
-		}
 }
 
 //error handling function
@@ -598,6 +570,3 @@ GLFWwindow* Game::create_vulkan_window(std::string w_name, const int width, cons
 
   return window;
 }
-
-
-

@@ -13,3 +13,116 @@ valgrind --tool=memcheck --leak-check=full ./vulkan_engine
 ==10121== Reachable blocks (those to which a pointer was found) are not shown.
 ==10121== To see them, rerun with: --leak-check=full --show-leak-kinds=all
 
+Mon  3 Jun 02:33:00 MDT 2024
+
+==21070== 
+==21070== HEAP SUMMARY:
+==21070==     in use at exit: 228,012 bytes in 3,030 blocks
+==21070==   total heap usage: 43,797 allocs, 40,715 frees, 60,350,800 bytes allocated
+==21070== 
+==21070== 0 bytes in 1 blocks are definitely lost in loss record 1 of 2,248
+==21070==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==21070==    by 0x4005A22: malloc (rtld-malloc.h:56)
+==21070==    by 0x4005A22: _dl_find_object_update (dl-find_object.c:791)
+==21070==    by 0x400ECCF: dl_open_worker_begin (dl-open.c:735)
+==21070==    by 0x55C8A97: _dl_catch_exception (dl-error-skeleton.c:208)
+==21070==    by 0x400DF99: dl_open_worker (dl-open.c:782)
+==21070==    by 0x55C8A97: _dl_catch_exception (dl-error-skeleton.c:208)
+==21070==    by 0x400E34D: _dl_open (dl-open.c:883)
+==21070==    by 0x54E463B: dlopen_doit (dlopen.c:56)
+==21070==    by 0x55C8A97: _dl_catch_exception (dl-error-skeleton.c:208)
+==21070==    by 0x55C8B62: _dl_catch_error (dl-error-skeleton.c:227)
+==21070==    by 0x54E412D: _dlerror_run (dlerror.c:138)
+==21070==    by 0x54E46C7: dlopen_implementation (dlopen.c:71)
+==21070==    by 0x54E46C7: dlopen@@GLIBC_2.34 (dlopen.c:81)
+==21070== 
+==21070== 48 bytes in 1 blocks are possibly lost in loss record 1,816 of 2,248
+==21070==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==21070==    by 0x6A2EBC1: ???
+==21070==    by 0x681E966: ???
+==21070==    by 0x681EA8B: ???
+==21070==    by 0x681F3E3: ???
+==21070==    by 0x1262A5: VulkanRenderer::createGraphicsPipeline() (VulkanRenderer.cpp:1449)
+==21070==    by 0x12104D: VulkanRenderer::recreateSwapChain() (VulkanRenderer.cpp:123)
+==21070==    by 0x16E788: MainMenuState::Init() (main_menu_state.cpp:97)
+==21070==    by 0x15E21C: Game::Initialize() (game.cpp:80)
+==21070==    by 0x1FF435: main (main.cpp:38)
+==21070== 
+==21070== 64 bytes in 1 blocks are definitely lost in loss record 2,154 of 2,248
+==21070==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==21070==    by 0x1724DD: __gnu_cxx::new_allocator<glm::mat<4, 4, float, (glm::qualifier)0> >::allocate(unsigned long, void const*) (new_allocator.h:127)
+==21070==    by 0x172236: std::allocator_traits<std::allocator<glm::mat<4, 4, float, (glm::qualifier)0> > >::allocate(std::allocator<glm::mat<4, 4, float, (glm::qualifier)0> >&, unsigned long) (alloc_traits.h:464)
+==21070==    by 0x17206B: std::_Vector_base<glm::mat<4, 4, float, (glm::qualifier)0>, std::allocator<glm::mat<4, 4, float, (glm::qualifier)0> > >::_M_allocate(unsigned long) (stl_vector.h:346)
+==21070==    by 0x1714B0: void std::vector<glm::mat<4, 4, float, (glm::qualifier)0>, std::allocator<glm::mat<4, 4, float, (glm::qualifier)0> > >::_M_realloc_insert<glm::mat<4, 4, float, (glm::qualifier)0> const&>(__gnu_cxx::__normal_iterator<glm::mat<4, 4, float, (glm::qualifier)0>*, std::vector<glm::mat<4, 4, float, (glm::qualifier)0>, std::allocator<glm::mat<4, 4, float, (glm::qualifier)0> > > >, glm::mat<4, 4, float, (glm::qualifier)0> const&) (vector.tcc:440)
+==21070==    by 0x170E1B: std::vector<glm::mat<4, 4, float, (glm::qualifier)0>, std::allocator<glm::mat<4, 4, float, (glm::qualifier)0> > >::push_back(glm::mat<4, 4, float, (glm::qualifier)0> const&) (stl_vector.h:1198)
+==21070==    by 0x16F6DB: MainMenuState::Render(float) (main_menu_state.cpp:301)
+==21070==    by 0x15F01E: Game::Render() (game.cpp:365)
+==21070==    by 0x1FF4DF: main (main.cpp:55)
+==21070== 
+==21070== 152 bytes in 1 blocks are definitely lost in loss record 2,204 of 2,248
+==21070==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==21070==    by 0x15E0EC: Game::Initialize() (game.cpp:54)
+==21070==    by 0x1FF435: main (main.cpp:38)
+==21070== 
+==21070== 304 bytes in 1 blocks are possibly lost in loss record 2,212 of 2,248
+==21070==    at 0x484DCD3: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==21070==    by 0x6A2E624: ???
+==21070==    by 0x681C41A: ???
+==21070==    by 0x681C865: ???
+==21070==    by 0x681E845: ???
+==21070==    by 0x681EB7C: ???
+==21070==    by 0x681F3E3: ???
+==21070==    by 0x1262A5: VulkanRenderer::createGraphicsPipeline() (VulkanRenderer.cpp:1449)
+==21070==    by 0x12104D: VulkanRenderer::recreateSwapChain() (VulkanRenderer.cpp:123)
+==21070==    by 0x16E788: MainMenuState::Init() (main_menu_state.cpp:97)
+==21070==    by 0x15E21C: Game::Initialize() (game.cpp:80)
+==21070==    by 0x1FF435: main (main.cpp:38)
+==21070== 
+==21070== 513 bytes in 1 blocks are definitely lost in loss record 2,220 of 2,248
+==21070==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==21070==    by 0x526D0BD: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+==21070==    by 0x526EB4F: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_append(char const*, unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30)
+==21070==    by 0x17052F: MainMenuState::printMat4ToString[abi:cxx11](glm::mat<4, 4, float, (glm::qualifier)0> const&) (main_menu_state.h:36)
+==21070==    by 0x16F698: MainMenuState::Render(float) (main_menu_state.cpp:300)
+==21070==    by 0x15F01E: Game::Render() (game.cpp:365)
+==21070==    by 0x1FF4DF: main (main.cpp:55)
+==21070== 
+==21070== 600 bytes in 1 blocks are definitely lost in loss record 2,221 of 2,248
+==21070==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==21070==    by 0x6919200: ???
+==21070==    by 0x6805F84: ???
+==21070==    by 0x126047: VulkanRenderer::createGraphicsPipeline() (VulkanRenderer.cpp:1401)
+==21070==    by 0x12099D: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:29)
+==21070==    by 0x15E180: Game::Initialize() (game.cpp:63)
+==21070==    by 0x1FF435: main (main.cpp:38)
+==21070== 
+==21070== 4,824 (4,472 direct, 352 indirect) bytes in 1 blocks are definitely lost in loss record 2,242 of 2,248
+==21070==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==21070==    by 0x681EDED: ???
+==21070==    by 0x681F3E3: ???
+==21070==    by 0x12621A: VulkanRenderer::createGraphicsPipeline() (VulkanRenderer.cpp:1443)
+==21070==    by 0x12099D: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:29)
+==21070==    by 0x15E180: Game::Initialize() (game.cpp:63)
+==21070==    by 0x1FF435: main (main.cpp:38)
+==21070== 
+==21070== 4,824 (4,472 direct, 352 indirect) bytes in 1 blocks are definitely lost in loss record 2,243 of 2,248
+==21070==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==21070==    by 0x681EDED: ???
+==21070==    by 0x681F3E3: ???
+==21070==    by 0x1262A5: VulkanRenderer::createGraphicsPipeline() (VulkanRenderer.cpp:1449)
+==21070==    by 0x12099D: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:29)
+==21070==    by 0x15E180: Game::Initialize() (game.cpp:63)
+==21070==    by 0x1FF435: main (main.cpp:38)
+==21070== 
+==21070== LEAK SUMMARY:
+==21070==    definitely lost: 10,273 bytes in 7 blocks
+==21070==    indirectly lost: 704 bytes in 4 blocks
+==21070==      possibly lost: 352 bytes in 2 blocks
+==21070==    still reachable: 216,683 bytes in 3,017 blocks
+==21070==         suppressed: 0 bytes in 0 blocks
+==21070== Reachable blocks (those to which a pointer was found) are not shown.
+==21070== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==21070== 
+==21070== For lists of detected and suppressed errors, rerun with: -s
+==21070== ERROR SUMMARY: 12 errors from 12 contexts (suppressed: 0 from 0)
+

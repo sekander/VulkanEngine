@@ -91,14 +91,18 @@ void MainMenuState::Init()
       xpos = 0.0f; 
       ypos = 0.0f; 
       zpos = 0.0f; 
+      ui_rotation_control_x = 0.0f;
+      ui_rotation_control_y = 0.0f;
+      ui_rotation_control_z = 0.0f;
 
       // _data->gs.fullScreen = true;
     auto v = static_cast<VulkanRenderer*>(_data->vk);
+        v->recreateSwapChain();
     if (v->modelList.size() > 0)
     {
       
       // v->cleanModels();
-      v->recreateSwapChain();
+      // v->recreateSwapChain();
     }
 	  v->createMeshModel("Mario.obj", "mario_mime.png");
 	  //v->createMeshModel("Mario.obj", "mario_fire.png");
@@ -113,83 +117,95 @@ void MainMenuState::Input(float delta)
 {
     auto v = static_cast<VulkanRenderer*>(_data->vk);
     //printf("Main Menu Input \n");
-    if (glfwGetKey(_data->window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-    {
-	    x_cam -=0.05;
-      mx -= 5;
+   
+     // Get the current time
+    long long now = currentTimeMillis();
+
+    // Helper function to check if enough time has passed since the last press
+    auto canPressKey = [&](int key) {
+        if (now - lastKeyPressTime[key] >= KEY_DELAY) {
+            lastKeyPressTime[key] = now;
+            return true;
+        }
+        return false;
+    };
+
+
+    //Camera Controls
+    //#############################################################
+    //#############################################################
+    if (glfwGetKey(_data->window, GLFW_KEY_RIGHT) == GLFW_PRESS ) {
+        x_cam -= 0.05;
+        mx -= 5;
     }
-    if (glfwGetKey(_data->window, GLFW_KEY_LEFT) == GLFW_PRESS)
-    {
-	    x_cam +=0.05;
+    if (glfwGetKey(_data->window, GLFW_KEY_LEFT) == GLFW_PRESS ) {
+        x_cam += 0.05;
     }
-    if (glfwGetKey(_data->window, GLFW_KEY_UP) == GLFW_PRESS)
-    {
-	    y_cam +=0.05;
+    if (glfwGetKey(_data->window, GLFW_KEY_UP) == GLFW_PRESS ) {
+        y_cam += 0.05;
     }
-    if (glfwGetKey(_data->window, GLFW_KEY_DOWN) == GLFW_PRESS)
-    {
-	    y_cam -=0.05;
+    if (glfwGetKey(_data->window, GLFW_KEY_DOWN) == GLFW_PRESS ) {
+        y_cam -= 0.05;
     }
-    if (glfwGetKey(_data->window, GLFW_KEY_E) == GLFW_PRESS)
-    {
-	    r_cam +=0.01;
+    if (glfwGetKey(_data->window, GLFW_KEY_E) == GLFW_PRESS ) {
+        r_cam += 0.01;
+    }
+    if (glfwGetKey(_data->window, GLFW_KEY_Q) == GLFW_PRESS ) {
+        r_cam -= 0.01;
+    }
+    if (glfwGetKey(_data->window, GLFW_KEY_Z) == GLFW_PRESS ) {
+        printf("Z_cam: %f", z_cam);
+        z_cam += 0.05;
+    }
+    if (glfwGetKey(_data->window, GLFW_KEY_X) == GLFW_PRESS ) {
+        printf("Z_cam: %f", z_cam);
+        z_cam -= 0.05;
+    }
+    // if (glfwGetKey(_data->window, GLFW_KEY_J) == GLFW_PRESS ) {
+    //     cam_degree += 1.0f;
+    //     if (cam_degree >= 360.0f)
+    //         cam_degree = 0.0f;
+    // }
+    // if (glfwGetKey(_data->window, GLFW_KEY_L) == GLFW_PRESS ) {
+    //     cam_degree -= 1.0f;
+    //     if (cam_degree <= 0.0f)
+    //         cam_degree = 360.0f;
+    // }
+
+
+    
+    if (glfwGetKey(_data->window, GLFW_KEY_W) == GLFW_PRESS ) {
+        xpos += 0.01;
+    }
+    if (glfwGetKey(_data->window, GLFW_KEY_S) == GLFW_PRESS ) {
+        xpos -= 0.01;
+    }
+    if (glfwGetKey(_data->window, GLFW_KEY_A) == GLFW_PRESS ) {
+        ypos += 0.01;
+    }
+    if (glfwGetKey(_data->window, GLFW_KEY_D) == GLFW_PRESS) {
+        ypos -= 0.01;
     }
 
-    if (glfwGetKey(_data->window, GLFW_KEY_Q) == GLFW_PRESS)
-    {
-	    r_cam -=0.01;
+
+
+
+    if (glfwGetKey(_data->window, GLFW_KEY_H) == GLFW_PRESS && canPressKey(GLFW_KEY_H)) {
+        // v->cleanModels();
+        printf("Cleared Model Size: %d", v->modelList.size());
+        //v->cleanModels();
+        // v->removeModel(0);
+		    v->recreateGraphicsPipeline("Shaders/phongVert.spv","Shaders/phongFrag.spv", "Shaders/geo.spv");
+    }
+    if (glfwGetKey(_data->window, GLFW_KEY_J) == GLFW_PRESS && canPressKey(GLFW_KEY_J)) {
+	    v->createMeshModel("Mario.obj", "mario_mime.png");
+    }
+    if (glfwGetKey(_data->window, GLFW_KEY_P) == GLFW_PRESS && canPressKey(GLFW_KEY_P)) {
+      quaternion_options++;
+      if (quaternion_options > 9)
+        quaternion_options = 1;
     }
 
-    if (glfwGetKey(_data->window, GLFW_KEY_Z) == GLFW_PRESS)
-    {
-      printf("Z_cam: %f", z_cam);
-      z_cam += 0.05;
-    }
-
-    if (glfwGetKey(_data->window, GLFW_KEY_X) == GLFW_PRESS)
-    {
-      printf("Z_cam: %f", z_cam);
-      z_cam -= 0.05;
-    }
-    
-    if (glfwGetKey(_data->window, GLFW_KEY_A) == GLFW_PRESS)
-    {
-      cam_degree += 1.0f;
-      if (cam_degree >= 360.0f)
-        cam_degree = 0.0f;
-    }
-    
-    if (glfwGetKey(_data->window, GLFW_KEY_D) == GLFW_PRESS)
-    {
-      cam_degree -= 1.0f;
-      if (cam_degree <= 0.0f)
-        cam_degree = 360.0f;
-    }
-    if (glfwGetKey(_data->window, GLFW_KEY_H) == GLFW_PRESS)
-    {
-      // v->cleanModels();
-      v->removeModel(0);
-      printf("Cleared Model Size: %d", v->modelList.size());
-      
-    }
-    if (glfwGetKey(_data->window, GLFW_KEY_W) == GLFW_PRESS)
-    {
-      xpos += 0.01;
-    }
-    if (glfwGetKey(_data->window, GLFW_KEY_S) == GLFW_PRESS)
-    {
-      xpos -= 0.01;
-    }
-    if (glfwGetKey(_data->window, GLFW_KEY_A) == GLFW_PRESS)
-    {
-      ypos += 0.01;  
-    }
-    if (glfwGetKey(_data->window, GLFW_KEY_D) == GLFW_PRESS)
-    {
-      ypos -= 0.01;  
-    }
-    
-    
 
 }
 
@@ -247,56 +263,68 @@ void MainMenuState::Render(float delta)
   // printf("Model Angle: %f\n", mangle);
 
   auto v = static_cast<VulkanRenderer*>(_data->vk);
-  // v->drawUI( [this]() { this->_ui(); });
-  v->drawUI(nullptr);
+  v->drawUI( [this]() { this->_ui(); });
+  // v->drawUI(nullptr);
 
 
   
 
-  for (int i = 0; i < v->modelList.size(); i++){
+  for (int i = 0; i < v->modelList.size(); i++)
+  {
     glm::mat4 firstModel(1.0f);
     // Model's initial position
-    // glm::vec3 modelPosition = glm::vec3(0.0f + i, 0.0f, 0.0f);
-    glm::vec3 modelPosition = glm::vec3(xpos + i, ypos, 0.0f);
-    std::cout << "Model position for model " << i << ": " 
-    << glm::to_string(modelPosition) << std::endl;
+    glm::vec3 modelPosition = glm::vec3(xpos + i, ypos, zpos);
+
+
+    // Define the center of rotation (if it's different from modelPosition)
+    glm::vec3 rotationCenter = glm::vec3(0.0f); // Change this if needed
+
+      // Translate to the model's position
+    firstModel = glm::translate(firstModel, modelPosition);
+
+    // Translate to the center of rotation
+    firstModel = glm::translate(firstModel, rotationCenter);
 
     {
-    // firstModel = glm::translate(firstModel, glm::vec3(0.0f + i, 0.0f, 4.5f));
     // Quaternion representing no rotation
     glm::quat totalRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 
-    // Rotate 45 degrees around the Y-axis
-    glm::quat rotationY = glm::angleAxis(glm::radians(mangle), glm::vec3(0.0f, 1.0f, 0.0f));
-    // glm::quat rotationY = glm::angleAxis(glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    // glm::quat rotationY = glm::angleAxis(glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::quat rotationY = glm::angleAxis(glm::radians((i == 0) ? ui_rotation_control_y: -mangle), glm::vec3(0.0f, 1.0f, 0.0f));
+
     totalRotation = rotationY * totalRotation;
 
     // Rotate 30 degrees around the X-axis
-    glm::quat rotationX = glm::angleAxis(glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    glm::quat rotationX = glm::angleAxis(glm::radians(ui_rotation_control_x), glm::vec3(1.0f, 0.0f, 0.0f));
     totalRotation = rotationX * totalRotation;
 
     // Rotate 60 degrees around the Z-axis
-    glm::quat rotationZ = glm::angleAxis(glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::quat rotationZ = glm::angleAxis(glm::radians(ui_rotation_control_z), glm::vec3(0.0f, 0.0f, 1.0f));
     totalRotation = rotationZ * totalRotation;
 
     // Convert the total quaternion rotation to a rotation matrix
     glm::mat4 rotationMatrix = glm::mat4(totalRotation);
 
     // Apply the rotation to the model matrix
-    // modelMatrix = rotationMatrix * modelMatrix;
-    // firstModel = rotationMatrix * firstModel;
-    firstModel = glm::translate(firstModel, modelPosition);   // Translate to position
-    firstModel = glm::translate(firstModel, -modelPosition);  // Translate to origin (inverse)
-    firstModel = rotationMatrix * firstModel;                 // Apply rotation
-    firstModel = glm::translate(firstModel, modelPosition);   // Translate back to position
+    if (i == 0){
+      firstModel = rotationMatrix * firstModel;                 // Apply rotation
+      matrixData = demonstrateQuaternionProperties(quaternion_options, firstModel);
+      firstModel = glm::translate(firstModel, -rotationCenter);   // Translate back to position
+    }
+    else{
+      // Apply translation and rotation to the model matrix
+      // firstModel = rotationMatrix * firstModel;                 // Apply rotation
+      firstModel =  glm::rotate(firstModel, glm::radians(-mangle), glm::vec3(0.0f, 1.0f, 0.0f));
+      firstModel = glm::translate(firstModel, -rotationCenter);  // Translate to position
+    }
 
 
     }
     v->updateModel(i, firstModel);
     // std::cout << "Model Matrix for model " << i << ":\n" << glm::to_string(firstModel) << std::endl;
-    std::cout << "\nModel Matrix for model " << i  << std::endl;
-    printMat4(firstModel);
+    // std::cout << "\nModel Matrix for model " << i  << std::endl;
+    matrixData += printMat4ToString(firstModel);
+    matrixData += glm::to_string(modelPosition);
+    models.push_back(firstModel);
 
   }
 
@@ -454,6 +482,174 @@ void MainMenuState::Render(float delta)
     */
 }
 
+std::string MainMenuState::demonstrateQuaternionProperties(int choice, glm::mat4& modelMatrix) {
+    std::string output;
+    glm::mat4 matrix = modelMatrix; // Use the provided model matrix
+
+    switch(choice) {
+        case 1: { // Unit quaternion
+            output = "";
+            glm::quat rotationQuat = glm::angleAxis(glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            output += printQuaternion(rotationQuat, "Rotation Quaternion (45 degrees around Y-axis)");
+            output += "Length of quaternion: " + std::to_string(glm::length(rotationQuat)) + "\n";
+            glm::mat4 rotationMatrix = glm::mat4_cast(rotationQuat);
+            glm::mat4 transformedMatrix = rotationMatrix * matrix;
+            modelMatrix = rotationMatrix * matrix;
+            output += printMatrix(matrix, "Original Matrix");
+            output += printMatrix(transformedMatrix, "Transformed Matrix");
+            output += "\n";
+            break;
+        }
+        case 2: { // Identity quaternion
+            output = "";
+            glm::quat identityQuat = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+            output += printQuaternion(identityQuat, "Identity Quaternion");
+            glm::mat4 identityMatrix = glm::mat4_cast(identityQuat);
+            glm::mat4 transformedMatrix = identityMatrix * matrix;
+            modelMatrix = identityMatrix * matrix;
+            output += printMatrix(matrix, "Original Matrix");
+            output += printMatrix(transformedMatrix, "Transformed Matrix");
+            output += "\n";
+            break;
+        }
+        case 3: { // Conjugate quaternion
+            output = "";
+            glm::quat rotationQuat = glm::angleAxis(glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            glm::quat conjugateQuat = glm::conjugate(rotationQuat);
+            output += printQuaternion(rotationQuat, "Rotation Quaternion (45 degrees around Y-axis)");
+            output += printQuaternion(conjugateQuat, "Conjugate of Rotation Quaternion");
+            glm::mat4 conjugateMatrix = glm::mat4_cast(conjugateQuat);
+            glm::mat4 transformedMatrix = conjugateMatrix * matrix;
+            modelMatrix = conjugateMatrix * matrix;
+            output += printMatrix(matrix, "Original Matrix");
+            output += printMatrix(transformedMatrix, "Transformed Matrix");
+            output += "\n";
+            break;
+        }
+        case 4: { // Inverse quaternion
+            output = "";
+            glm::quat rotationQuat = glm::angleAxis(glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            glm::quat inverseQuat = glm::inverse(rotationQuat);
+            output += printQuaternion(rotationQuat, "Rotation Quaternion (45 degrees around Y-axis)");
+            output += printQuaternion(inverseQuat, "Inverse of Rotation Quaternion");
+            glm::mat4 inverseMatrix = glm::mat4_cast(inverseQuat);
+            glm::mat4 transformedMatrix = inverseMatrix * matrix;
+            modelMatrix = inverseMatrix * matrix;
+            output += printMatrix(matrix, "Original Matrix");
+            output += printMatrix(transformedMatrix, "Transformed Matrix");
+            output += "\n";
+            break;
+        }
+        case 5: { // Apply quaternion and its inverse to rotate a point
+            output = "";
+            glm::quat rotationQuat = glm::angleAxis(glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            glm::quat inverseQuat = glm::inverse(rotationQuat);
+            glm::vec3 point(1.0f, 0.0f, 0.0f);
+            glm::vec3 rotatedPoint = rotationQuat * point;
+            glm::vec3 originalPoint = inverseQuat * rotatedPoint;
+            output += printQuaternion(rotationQuat, "Rotation Quaternion (45 degrees around Y-axis)");
+            output += "Original Point: (" + std::to_string(point.x) + ", " + std::to_string(point.y) + ", " + std::to_string(point.z) + ")\n";
+            output += "Rotated Point: (" + std::to_string(rotatedPoint.x) + ", " + std::to_string(rotatedPoint.y) + ", " + std::to_string(rotatedPoint.z) + ")\n";
+            output += "Point after applying inverse: (" + std::to_string(originalPoint.x) + ", " + std::to_string(originalPoint.y) + ", " + std::to_string(originalPoint.z) + ")\n";
+            output += "\n";
+            break;
+        }
+        case 6: { // Two possible representations for the same rotation
+            output = "";
+            glm::quat rotationQuat = glm::angleAxis(glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            glm::quat negativeQuat = -rotationQuat;
+            output += printQuaternion(rotationQuat, "Rotation Quaternion (45 degrees around Y-axis)");
+            output += printQuaternion(negativeQuat, "Negative of Rotation Quaternion");
+            if (glm::angle(rotationQuat) == glm::angle(negativeQuat) &&
+                glm::axis(rotationQuat) == glm::axis(negativeQuat)) {
+                output += "q and -q represent the same rotation\n";
+            }
+            glm::mat4 rotationMatrix = glm::mat4_cast(rotationQuat);
+            glm::mat4 negativeMatrix = glm::mat4_cast(negativeQuat);
+            glm::mat4 transformedMatrix1 = rotationMatrix * matrix;
+            glm::mat4 transformedMatrix2 = negativeMatrix * matrix;
+            modelMatrix = transformedMatrix1 * matrix;
+            
+            output += printMatrix(matrix, "Original Matrix");
+            output += printMatrix(transformedMatrix1, "Transformed Matrix (q)");
+            output += printMatrix(transformedMatrix2, "Transformed Matrix (-q)");
+            output += "\n";
+            break;
+        }
+        case 7: { // Combining rotations
+            output = "";
+            glm::quat rotationQuat = glm::angleAxis(glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            glm::quat rotationQuat2 = glm::angleAxis(glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            glm::quat combinedQuat = rotationQuat2 * rotationQuat;
+            output += printQuaternion(rotationQuat, "Rotation Quaternion 1 (45 degrees around Y-axis)");
+            output += printQuaternion(rotationQuat2, "Rotation Quaternion 2 (30 degrees around Y-axis)");
+            output += printQuaternion(combinedQuat, "Combined Rotation Quaternion (45 degrees + 30 degrees around Y-axis)");
+            glm::mat4 combinedMatrix = glm::mat4_cast(combinedQuat);
+            glm::mat4 transformedMatrix = combinedMatrix * matrix;
+            modelMatrix = combinedMatrix * matrix;
+            output += printMatrix(matrix, "Original Matrix");
+            output += printMatrix(transformedMatrix, "Transformed Matrix");
+            output += "\n";
+            break;
+        }
+        case 8: { // Associativity of quaternion multiplication
+            output = "";
+            glm::quat rotationQuat = glm::angleAxis(glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            glm::quat rotationQuat2 = glm::angleAxis(glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            glm::quat rotationQuat3 = glm::angleAxis(glm::radians(15.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            glm::quat associativeQuat1 = (rotationQuat3 * rotationQuat2) * rotationQuat;
+            glm::quat associativeQuat2 = rotationQuat3 * (rotationQuat2 * rotationQuat);
+            output += printQuaternion(rotationQuat, "Rotation Quaternion 1 (45 degrees around Y-axis)");
+            output += printQuaternion(rotationQuat2, "Rotation Quaternion 2 (30 degrees around Y-axis)");
+            output += printQuaternion(rotationQuat3, "Rotation Quaternion 3 (15 degrees around Y-axis)");
+            output += printQuaternion(associativeQuat1, "Associative Quaternion 1");
+            output += printQuaternion(associativeQuat2, "Associative Quaternion 2");
+            if (associativeQuat1 == associativeQuat2) {
+                output += "Quaternion multiplication is associative\n";
+            }
+            glm::mat4 associativeMatrix1 = glm::mat4_cast(associativeQuat1);
+            glm::mat4 associativeMatrix2 = glm::mat4_cast(associativeQuat2);
+            glm::mat4 transformedMatrix1 = associativeMatrix1 * matrix;
+            glm::mat4 transformedMatrix2 = associativeMatrix2 * matrix;
+            modelMatrix = associativeMatrix1 * matrix;
+            output += printMatrix(matrix, "Original Matrix");
+            output += printMatrix(transformedMatrix1, "Transformed Matrix (Associative 1)");
+            output += printMatrix(transformedMatrix2, "Transformed Matrix (Associative 2)");
+            output += "\n";
+            break;
+        }
+        case 9: { // Non-commutativity of quaternion multiplication
+            output = "";
+            glm::quat rotationQuat = glm::angleAxis(glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            glm::quat rotationQuat2 = glm::angleAxis(glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            glm::quat nonCommQuat1 = rotationQuat2 * rotationQuat;
+            glm::quat nonCommQuat2 = rotationQuat * rotationQuat2;
+            output += printQuaternion(rotationQuat, "Rotation Quaternion 1 (45 degrees around Y-axis)");
+            output += printQuaternion(rotationQuat2, "Rotation Quaternion 2 (30 degrees around Y-axis)");
+            output += printQuaternion(nonCommQuat1, "Non-commutative Quaternion 1 (q2 * q1)");
+            output += printQuaternion(nonCommQuat2, "Non-commutative Quaternion 2 (q1 * q2)");
+            if (nonCommQuat1 != nonCommQuat2) {
+                output += "Quaternion multiplication is not commutative\n";
+            }
+            glm::mat4 nonCommMatrix1 = glm::mat4_cast(nonCommQuat1);
+            glm::mat4 nonCommMatrix2 = glm::mat4_cast(nonCommQuat2);
+            glm::mat4 transformedMatrix1 = nonCommMatrix1 * matrix;
+            glm::mat4 transformedMatrix2 = nonCommMatrix2 * matrix;
+            modelMatrix = transformedMatrix1 * matrix;
+            output += printMatrix(matrix, "Original Matrix");
+            output += printMatrix(transformedMatrix1, "Transformed Matrix (Non-commutative 1)");
+            output += printMatrix(transformedMatrix2, "Transformed Matrix (Non-commutative 2)");
+            output += "\n";
+            break;
+        }
+        default: {
+            output += "Invalid choice\n";
+            break;
+        }
+    }
+    return output;
+}
+
 
 void MainMenuState::_ui()
 {
@@ -462,12 +658,60 @@ void MainMenuState::_ui()
     static int slider_value = 0;
 
     // Second window
-    ImGui::Begin("Another Window");
-    ImGui::Text("This is another window.");
-    ImGui::Checkbox("Enable Feature", &enable_feature);
-    ImGui::SliderInt("Value", &slider_value, 0, 100);
-    if (ImGui::Button("Reset")) {
-        slider_value = 0;
+    auto v = static_cast<VulkanRenderer*>(_data->vk);
+
+    // Start a new ImGui window
+    ImGui::Begin("Model Matrices");
+
+    // Iterate over all models in the modelList and display their matrices
+    for (int i = 0; i < v->modelList.size(); i++) {
+        ImGui::Text("Model %d Matrix:", i);
+        ImGui::Text(matrixData.c_str());
+        // ImGui_PrintMat4(models[i]); // Assuming you store matrices in a list called modelMatrices
+        ImGui::Separator(); // Add a separator between models
     }
+    // // Buttons to increase and decrease quaternion options
+    // if (ImGui::Button("Increase Quaternion Options")) {
+    //     quaternion_options++;
+    //     if (quaternion_options > 9)
+    //       quaternion_options = 1;
+    // }
+    // if (ImGui::Button("Decrease Quaternion Options")) {
+    //     quaternion_options--;
+    //     if (quaternion_options > 9)
+    //       quaternion_options = 1;
+    // }
+
+    ImGui::Text("Select Quaternion Option:");
+    for (int i = 1; i < 9; ++i) {
+        if (ImGui::RadioButton((quaternion_title_options[i]).c_str(), &quaternion_options, i)) {
+            // If the radio button is clicked, update the quaternion option
+            quaternion_options = i;
+        }
+    }
+
+
+    // Slider for X position
+    ImGui::SliderFloat("X Position", &xpos, -10.0f, 10.0f);
+
+    // Slider for Y position
+    ImGui::SliderFloat("Y Position", &ypos, -10.0f, 10.0f);
+
+    // Slider for Z position
+    ImGui::SliderFloat("Z Position", &zpos, -10.0f, 10.0f);
+    
+    // Slider for Quaternion rotation
+    ImGui::SliderFloat("X Quaternion Theta ", &ui_rotation_control_x, 0.0f, 360.0f);
+    ImGui::SliderFloat("Y Quaternion Theta ", &ui_rotation_control_y, 0.0f, 360.0f);
+    ImGui::SliderFloat("Z Quaternion Theta ", &ui_rotation_control_z, 0.0f, 360.0f);
+
+
+    // ImGui::Text("Model Matrix for model ");
+    // printMat4(firstModel);
+    // ImGui::Checkbox("Enable Feature", &enable_feature);
+    // ImGui::SliderInt("Value", &slider_value, 0, 100);
+    // if (ImGui::Button("Reset")) {
+    //     slider_value = 0;
+    // }
     ImGui::End();
 }

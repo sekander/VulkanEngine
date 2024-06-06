@@ -26,8 +26,8 @@ int VulkanRenderer::init(GLFWwindow * newWindow)
 		createRenderPass();
 		createDescriptorSetLayout();
 		createPushConstantRange();
-		createGraphicsPipeline();
-		
+		//createGraphicsPipeline("Shaders/phongVert.spv","Shaders/phongFrag.spv", "Shaders/geo.spv");
+        createGraphicsPipeline("Shaders/normalVert.spv", "Shaders/normalFrag.spv", "Shaders/geo.spv");
 		//recreateSwapChain();
 		createDepthBufferImage();
 		
@@ -120,7 +120,9 @@ void VulkanRenderer::recreateSwapChain()
         	createFramebuffers();
 		createSynchronisation();
 		
-		createGraphicsPipeline();
+		// createGraphicsPipeline();
+		// createGraphicsPipeline("Shaders/phongVert.spv","Shaders/phongFrag.spv", "Shaders/geo.spv");
+        createGraphicsPipeline("Shaders/normalVert.spv", "Shaders/normalFrag.spv", "Shaders/geo.spv");
 	// Grab and record the draw data for Dear Imgui
     // ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), uiCommandBuffers[bufferIdx]);
 
@@ -135,6 +137,14 @@ void VulkanRenderer::recreateSwapChain()
 
 }
 
+void VulkanRenderer::recreateGraphicsPipeline(const std::string &vertexShaderPath, const std::string &fragmentShaderPath, const std::string &geometryShaderPath)
+{
+	 // Destroy existing graphics pipeline
+    vkDestroyPipeline(mainDevice.logicalDevice, graphicsPipeline, nullptr);
+
+    // Recreate graphics pipeline with new shaders
+    createGraphicsPipeline(vertexShaderPath, fragmentShaderPath, geometryShaderPath);
+}
 void VulkanRenderer::draw()
 {
 	// -- GET NEXT IMAGE --
@@ -443,6 +453,7 @@ void VulkanRenderer::removeModel(size_t index) {
     // Destroy the model's Vulkan resources
     modelList[index].destroyMeshModel();
 
+	printf("DELETING MODEL : %d", index);
     // Remove the model from the list
     modelList.erase(modelList.begin() + index);
 
@@ -1144,10 +1155,10 @@ void VulkanRenderer::updateUniformBuffers(uint32_t imageIndex)
 {
 
   // Ensure modelList is not empty
-    if (modelList.empty()) {
-         throw std::runtime_error("Model list is empty. Cannot update uniform buffers.");
-		//return;
-    }
+    // if (modelList.empty()) {
+    //      throw std::runtime_error("Model list is empty. Cannot update uniform buffers.");
+	// 	//return;
+    // }
 
     // for (size_t i = 0; i < modelList.size(); i++) {
     //     auto thisModel = reinterpret_cast<ModelUniformBufferObject*>(modelTransferSpace + (i * modelUniformAlignment));
@@ -1194,19 +1205,25 @@ void VulkanRenderer::updateUniformBuffers(uint32_t imageIndex)
 	vkUnmapMemory(mainDevice.logicalDevice, modelDUniformBufferMemory[imageIndex]);
 }
 
-void VulkanRenderer::createGraphicsPipeline()
+// void VulkanRenderer::createGraphicsPipeline()
+void VulkanRenderer::createGraphicsPipeline(const std::string& vertexShaderPath, 
+								const std::string& fragmentShaderPath, 
+								const std::string& geometryShaderPath /*= ""*/)
 {
 	// Read in SPIR-V code of shaders
 //	auto vertexShaderCode = readFile("Shaders/vert.spv");
 //	auto fragmentShaderCode = readFile("Shaders/frag.spv");
-	auto vertexShaderCode = readFile("Shaders/phongVert.spv");
-	auto fragmentShaderCode = readFile("Shaders/phongFrag.spv");
+	// auto vertexShaderCode = readFile("Shaders/phongVert.spv");
+	auto vertexShaderCode = readFile(vertexShaderPath);
+	// auto fragmentShaderCode = readFile("Shaders/phongFrag.spv");
+	auto fragmentShaderCode = readFile(fragmentShaderPath);
 
 //	auto vertexShaderCode = readFile("Shaders/normalVert.spv");
 //	auto fragmentShaderCode = readFile("Shaders/normalFrag.spv");
 
 	//Assignment 4 ##############################
-	auto geoShaderCode = readFile("Shaders/geo.spv");
+	auto geoShaderCode = readFile(geometryShaderPath);
+	// auto geoShaderCode = readFile("Shaders/geo.spv");
 
   	std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
   	std::vector<VkPipelineShaderStageCreateInfo> normalShaderStages;

@@ -81,10 +81,11 @@ void TemplateState::Init()
     //_data->vk.createMeshModel("Mario.obj", "mario_main.png");
 
     auto v = static_cast<VulkanRenderer*>(_data->vk);
+        v->recreateSwapChain();
     if (v->modelList.size() > 0)
     {
         // v->cleanModels();
-        v->recreateSwapChain();
+        // v->recreateSwapChain();
 
     }
     
@@ -232,6 +233,7 @@ void TemplateState::Render(float delta)
 			if(m_angle > 360.0f){m_angle -= 360.0f;}
             
             auto v = static_cast<VulkanRenderer*>(_data->vk);
+            v->drawUI(nullptr);
             for (int i = 0; i < v->modelList.size(); i++)
             {
                 // printf("Model Size: %d\n", v->modelList.size());

@@ -195,7 +195,7 @@ void MainMenuState::Input(float delta)
         printf("Cleared Model Size: %d", v->modelList.size());
         //v->cleanModels();
         // v->removeModel(0);
-		    v->recreateGraphicsPipeline("Shaders/phongVert.spv","Shaders/phongFrag.spv", "Shaders/geo.spv");
+		v->recreateGraphicsPipeline("Shaders/tex_vert.spv","Shaders/tex_frag.spv", "Shaders/geo.spv");
     }
     if (glfwGetKey(_data->window, GLFW_KEY_J) == GLFW_PRESS && canPressKey(GLFW_KEY_J)) {
 	    v->createMeshModel("Mario.obj", "mario_mime.png");
@@ -332,16 +332,19 @@ void MainMenuState::Render(float delta)
   mwave1 = 1.0f * cos(2 * 3.14 * 0.001f * (int)(glfwGetTime() * 100)); 
   mwave2 = 1.0f * sin(2 * 3.14 * 0.0001f * (int)(glfwGetTime() * 100)); 
 
-  //vk_render.pushData.push_constant_colour = vec4(1.0f, 1.0f, 0.0f, 0.0f);	
+  v->pushData.push_constant_colour = vec4(1.0f, 0.0f, 1.0f, 0.0f);	
   //Move Red light with keyboard
   v->lightData.position[0] = glm::vec3(mx, my, mz);
   
 
   //Red Light
+//   v->lightData.colour[0] = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);	
   v->lightData.colour[0] = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);	
   //Blue Light
+//   v->lightData.colour[1]   = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
   v->lightData.colour[1]   = glm::vec4(0.0f, 0.0f, abs(mwave0), 0.0f);
   //Green Light
+//   v->lightData.colour[2]   = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
   v->lightData.colour[2]   = glm::vec4(0.0f, abs(mwave1), 0.0f, 0.0f);
   v->draw();
 

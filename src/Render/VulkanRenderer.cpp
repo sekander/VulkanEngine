@@ -1,4 +1,5 @@
 #include "../../include/Render/VulkanRenderer.h"
+#include <cstddef>
 #include <vulkan/vulkan_core.h>
  
 #define _aligned_malloc(size, alignment) aligned_alloc(alignment, size)
@@ -121,8 +122,11 @@ void VulkanRenderer::recreateSwapChain()
 		createSynchronisation();
 		
 		// createGraphicsPipeline();
+		createGraphicsPipeline("Shaders/phongVert.spv","Shaders/phongFrag.spv", "Shaders/normalPhongG.spv");
+		// createGraphicsPipeline("Shaders/vert.spv","Shaders/frag.spv", "Shaders/normalPhongG.spv");
+		// createGraphicsPipeline("Shaders/tex_vert.spv","Shaders/tex_frag.spv", "Shaders/normalPhongG.spv");
 		// createGraphicsPipeline("Shaders/phongVert.spv","Shaders/phongFrag.spv", "Shaders/geo.spv");
-        createGraphicsPipeline("Shaders/normalVert.spv", "Shaders/normalFrag.spv", "Shaders/geo.spv");
+        // createGraphicsPipeline("Shaders/normalVert.spv", "Shaders/normalFrag.spv", "Shaders/geo.spv");
 	// Grab and record the draw data for Dear Imgui
     // ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), uiCommandBuffers[bufferIdx]);
 
@@ -1259,7 +1263,7 @@ void VulkanRenderer::createGraphicsPipeline(const std::string& vertexShaderPath,
 	geoShaderCreateInfo.stage = VK_SHADER_STAGE_GEOMETRY_BIT;					// Shader Stage name
 	geoShaderCreateInfo.module = geoShaderModule;							// Shader module to be used by stage
 	geoShaderCreateInfo.pName = "main";										// Entry point in to shader
-//	shaderStages.push_back(geoShaderCreateInfo);
+	// shaderStages.push_back(geoShaderCreateInfo);
 	//normalShaderStages.push_back(geoShaderCreateInfo);
 	
 	
@@ -1701,7 +1705,15 @@ void VulkanRenderer::recordCommands(uint32_t currentIndex)
 
 			// Begin Render Pass
 			vkCmdBeginRenderPass(commandBuffers[currentIndex], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
-
+				// if (graphicsPipeline == nullptr)
+					// printf("Graphics pipeline is null");
+				 if (graphicsPipeline == VK_NULL_HANDLE) {
+    			    std::cerr << "Graphics pipeline is null!" << std::endl;
+    			    vkCmdEndRenderPass(commandBuffers[currentIndex]);
+    			    vkEndCommandBuffer(commandBuffers[currentIndex]);
+    			    return;
+    			}
+			
 				// Bind Pipeline to be used in render pass
 				vkCmdBindPipeline(commandBuffers[currentIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 

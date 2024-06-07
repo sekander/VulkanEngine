@@ -12,7 +12,7 @@
 struct UboModel {
 	glm::mat4 model;
 	glm::mat4 normMat;
-//	glm::vec3 colour;
+	// glm::vec3 colour;
 };
 
 class Mesh

@@ -94,6 +94,7 @@ void MainMenuState::Init()
       ui_rotation_control_x = 0.0f;
       ui_rotation_control_y = 0.0f;
       ui_rotation_control_z = 0.0f;
+      selectedColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // Default color is white
 
       // _data->gs.fullScreen = true;
     auto v = static_cast<VulkanRenderer*>(_data->vk);
@@ -131,48 +132,7 @@ void MainMenuState::Input(float delta)
     };
 
 
-    //Camera Controls
-    //#############################################################
-    //#############################################################
-    if (glfwGetKey(_data->window, GLFW_KEY_RIGHT) == GLFW_PRESS ) {
-        x_cam -= 0.05;
-        mx -= 5;
-    }
-    if (glfwGetKey(_data->window, GLFW_KEY_LEFT) == GLFW_PRESS ) {
-        x_cam += 0.05;
-    }
-    if (glfwGetKey(_data->window, GLFW_KEY_UP) == GLFW_PRESS ) {
-        y_cam += 0.05;
-    }
-    if (glfwGetKey(_data->window, GLFW_KEY_DOWN) == GLFW_PRESS ) {
-        y_cam -= 0.05;
-    }
-    if (glfwGetKey(_data->window, GLFW_KEY_E) == GLFW_PRESS ) {
-        r_cam += 0.01;
-    }
-    if (glfwGetKey(_data->window, GLFW_KEY_Q) == GLFW_PRESS ) {
-        r_cam -= 0.01;
-    }
-    if (glfwGetKey(_data->window, GLFW_KEY_Z) == GLFW_PRESS ) {
-        printf("Z_cam: %f", z_cam);
-        z_cam += 0.05;
-    }
-    if (glfwGetKey(_data->window, GLFW_KEY_X) == GLFW_PRESS ) {
-        printf("Z_cam: %f", z_cam);
-        z_cam -= 0.05;
-    }
-    // if (glfwGetKey(_data->window, GLFW_KEY_J) == GLFW_PRESS ) {
-    //     cam_degree += 1.0f;
-    //     if (cam_degree >= 360.0f)
-    //         cam_degree = 0.0f;
-    // }
-    // if (glfwGetKey(_data->window, GLFW_KEY_L) == GLFW_PRESS ) {
-    //     cam_degree -= 1.0f;
-    //     if (cam_degree <= 0.0f)
-    //         cam_degree = 360.0f;
-    // }
-
-
+    
     
     if (glfwGetKey(_data->window, GLFW_KEY_W) == GLFW_PRESS ) {
         xpos += 0.01;
@@ -230,59 +190,13 @@ void MainMenuState::Update(float delta)
     fade -= 0.01f;
   }
 
-}
-
-bool menu_screen = false;
-
-void MainMenuState::Render(float delta)
-{
-//  mcamera.UpdateViewMatrix();
-  
-
-  
-   //_data->vk.draw();    
-   
-
-			mcamera.UpdateViewMatrix();
-			mcamera.SetRotation(r_cam);
-      mcamera.SetPosition(glm::vec3(x_cam, y_cam, z_cam));
-      mcamera.RotateAroundPosition(cam_degree, glm::vec3(-1.0f, 0.0f, -2.5f));
-      float now = glfwGetTime();
-
-  //deltaTime = now - lastTime;
-  //lastTime = now;
-  // per-frame time logic
-  //
-  float current_frame = glfwGetTime();
-
-   mangle += 10.0f * delta;
-    if (mangle > 360.0f) {  // Ensuring the angle doesn't exceed 360 degrees
-        mangle -= 360.0f;
-    }
-
-  // printf("Model Angle: %f\n", mangle);
-
-  auto v = static_cast<VulkanRenderer*>(_data->vk);
-  // v->drawUI(nullptr);
-  // Declare vectors to store matrix data for each model
-  std::vector<std::string> quaternionData(v->modelList.size());
-  std::vector<std::string> modelPostionData(v->modelList.size());
-  std::vector<std::string> modelData(v->modelList.size());
-  // std::vector<std::string> matrixData(v->modelList.size());
-
-  // Declare a vector to store matrix data for each model
-  // matrixData.resize(v->modelList.size());
-
-  // v->drawUI( [this]() { this->_ui(matrixData); });
-  v->drawUI( [&]() { this->_ui(matrixData); });
-  
+ auto v = static_cast<VulkanRenderer*>(_data->vk);
 
   for (int i = 0; i < v->modelList.size(); i++)
   {
-    // std::string matrixData;
     // std::string quaternionData;
     // std::string modelPostionData; 
-    // std::string modelData;
+    std::string matrixDataInfo;
 
 
     glm::mat4 firstModel(1.0f);
@@ -321,6 +235,7 @@ void MainMenuState::Render(float delta)
     // Apply the rotation to the model matrix
     if (i == 0){
       firstModel = rotationMatrix * firstModel;                 // Apply rotation
+      matrixDataInfo +=  demonstrateQuaternionProperties(quaternion_options, firstModel);
 
       // quaternionData[i] += demonstrateQuaternionProperties(quaternion_options, firstModel);
       // matrixData[i] += demonstrateQuaternionProperties(quaternion_options, firstModel);
@@ -339,21 +254,136 @@ void MainMenuState::Render(float delta)
     //std::cout << "Model Matrix for model " << i << ":\n" << glm::to_string(firstModel) << std::endl;
     std::cout << "\nModel Matrix for model " << i  << std::endl;
     std::cout << "###############################" << i  << std::endl;
-    // std::cout << demonstrateQuaternionProperties(quaternion_options, firstModel) << std::endl;
+
+    matrixDataInfo += printMat4ToString(firstModel);
+    matrixDataInfo += glm::to_string(modelPosition);
+    std::cout << matrixDataInfo << std::endl;
     // modelData[i] += printMat4ToString(firstModel);
     // modelPostionData[i] += glm::to_string(modelPosition);
     // std::string collectedModelData = quaternionData[i] + modelData[i] + modelPostionData[i];
-    // matrixData.push_back(collectedModelData);
+    // matrixData.push_back(matrixDataInfo);
 
     models.push_back(firstModel);
 
   }
+}
+
+bool menu_screen = false;
+
+void MainMenuState::Render(float delta)
+{
+	mcamera.UpdateViewMatrix();
+	mcamera.SetRotation(r_cam);
+  mcamera.SetPosition(glm::vec3(x_cam, y_cam, z_cam));
+  mcamera.RotateAroundPosition(cam_degree, glm::vec3(-1.0f, 0.0f, -2.5f));
+  float now = glfwGetTime();
+
+  
+  //
+  float current_frame = glfwGetTime();
+  auto v = static_cast<VulkanRenderer*>(_data->vk);
+
+  // for(auto& model : models)
+  // {
+  //   //if (model != nullptr)
+  //   {
+  //     std::string matrixDataInfo;
+  //     matrixDataInfo += printMat4ToString(model);
+  //     glm::vec3 currentPosition = glm::vec3(model[3]);
+  //     matrixDataInfo += glm::to_string(currentPosition);
+  //     // matrixData.push_back(matrixDataInfo);
+  //   }
+  // }
+  // // for (int i = 0; i < v->modelList.size(); i++)
+  // {
+  //     std::string matrixDataInfo;
+  //     matrixDataInfo += printMat4ToString(models[i]);
+  //     glm::vec3 currentPosition = glm::vec3(models[i][3]);
+  //     matrixDataInfo += glm::to_string(currentPosition);
+  //     matrixData.push_back(matrixDataInfo);
+  // }
+
+
+
+
+
+
+
+  v->drawUI( [&]() { this->_ui(matrixData); });
+
+  //  mangle += 10.0f * delta;
+  //   if (mangle > 360.0f) {  // Ensuring the angle doesn't exceed 360 degrees
+  //       mangle -= 360.0f;
+  //   }
+  // // printf("Model Angle: %f\n", mangle);
+  // // v->drawUI(nullptr);
+  // // Declare vectors to store matrix data for each model
+  // std::vector<std::string> quaternionData(v->modelList.size());
+  // std::vector<std::string> modelPostionData(v->modelList.size());
+  // std::vector<std::string> modelData(v->modelList.size());
+  // // std::vector<std::string> matrixData(v->modelList.size());
+  // // Declare a vector to store matrix data for each model
+  // // matrixData.resize(v->modelList.size());
+  // // v->drawUI( [this]() { this->_ui(matrixData); });
+  // for (int i = 0; i < v->modelList.size(); i++)
+  // {
+  //   // std::string matrixData;
+  //   // std::string quaternionData;
+  //   // std::string modelPostionData; 
+  //   // std::string modelData;
+  //   glm::mat4 firstModel(1.0f);
+  //   // Model's initial position
+  //   glm::vec3 modelPosition = glm::vec3(xpos + i, ypos, zpos);
+  //   // Define the center of rotation (if it's different from modelPosition)
+  //   glm::vec3 rotationCenter = glm::vec3(0.0f); // Change this if needed
+  //     // Translate to the model's position
+  //   firstModel = glm::translate(firstModel, modelPosition);
+  //   // Translate to the center of rotation
+  //   firstModel = glm::translate(firstModel, rotationCenter);
+  //   {
+  //   // Quaternion representing no rotation
+  //   glm::quat totalRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+  //   glm::quat rotationY = glm::angleAxis(glm::radians((i == 0) ? ui_rotation_control_y: -mangle), glm::vec3(0.0f, 1.0f, 0.0f));
+  //   totalRotation = rotationY * totalRotation;
+  //   // Rotate 30 degrees around the X-axis
+  //   glm::quat rotationX = glm::angleAxis(glm::radians(ui_rotation_control_x), glm::vec3(1.0f, 0.0f, 0.0f));
+  //   totalRotation = rotationX * totalRotation;
+  //   // Rotate 60 degrees around the Z-axis
+  //   glm::quat rotationZ = glm::angleAxis(glm::radians(ui_rotation_control_z), glm::vec3(0.0f, 0.0f, 1.0f));
+  //   totalRotation = rotationZ * totalRotation;
+  //   // Convert the total quaternion rotation to a rotation matrix
+  //   glm::mat4 rotationMatrix = glm::mat4(totalRotation);
+  //   // Apply the rotation to the model matrix
+  //   if (i == 0){
+  //     firstModel = rotationMatrix * firstModel;                 // Apply rotation
+  //     // quaternionData[i] += demonstrateQuaternionProperties(quaternion_options, firstModel);
+  //     // matrixData[i] += demonstrateQuaternionProperties(quaternion_options, firstModel);
+  //     firstModel = glm::translate(firstModel, -rotationCenter);   // Translate back to position
+  //   }
+  //   else{
+  //     // Apply translation and rotation to the model matrix
+  //     // firstModel = rotationMatrix * firstModel;                 // Apply rotation
+  //     firstModel =  glm::rotate(firstModel, glm::radians(-mangle), glm::vec3(0.0f, 1.0f, 0.0f));
+  //     firstModel = glm::translate(firstModel, -rotationCenter);  // Translate to position
+  //   }
+  //   }
+  //   v->updateModel(i, firstModel);
+  //   //std::cout << "Model Matrix for model " << i << ":\n" << glm::to_string(firstModel) << std::endl;
+  //   std::cout << "\nModel Matrix for model " << i  << std::endl;
+  //   std::cout << "###############################" << i  << std::endl;
+  //   // std::cout << demonstrateQuaternionProperties(quaternion_options, firstModel) << std::endl;
+  //   // modelData[i] += printMat4ToString(firstModel);
+  //   // modelPostionData[i] += glm::to_string(modelPosition);
+  //   // std::string collectedModelData = quaternionData[i] + modelData[i] + modelPostionData[i];
+  //   // matrixData.push_back(collectedModelData);
+  //   models.push_back(firstModel);
+  // }
 
   mwave0 = 1.0f * sin(2 * 3.14 * 0.001f * (int)(glfwGetTime() * 100)); 
   mwave1 = 1.0f * cos(2 * 3.14 * 0.001f * (int)(glfwGetTime() * 100)); 
   mwave2 = 1.0f * sin(2 * 3.14 * 0.0001f * (int)(glfwGetTime() * 100)); 
 
-  v->pushData.push_constant_colour = vec4(1.0f, 1.0f, 0.0f, 0.0f);	
+  // v->pushData.push_constant_colour = vec4(1.0f, 1.0f, 0.0f, 0.0f);	
   //Move Red light with keyboard
   v->lightData.position[0] = glm::vec3(mx, my, mz);
   
@@ -725,6 +755,9 @@ void MainMenuState::_ui(std::vector<std::string> gui_data)
     // Start a new ImGui window
     ImGui::Begin("Model Controls");
 
+
+      ImGui::ColorPicker4("Pick a Color", (float*)&selectedColor, ImGuiColorEditFlags_Float);
+      v->pushData.push_constant_colour = vec4(selectedColor.x, selectedColor.y, selectedColor.z, 0.0f);	
       // Button to clear models
       if (ImGui::Button("Clear Models")) {
           v->cleanModels();
@@ -737,7 +770,7 @@ void MainMenuState::_ui(std::vector<std::string> gui_data)
 
     // Pulldown list to select model and texture
     static int selectedItem = 0;
-    static const char* items[] = { "Model 1", "Model 2", "Model 3" }; // Add model names here
+    static const char* items[] = { "Model 1", "Model 2", "Model 3" , "Model 4"}; // Add model names here
     if (ImGui::Combo("Select Model", &selectedItem, items, IM_ARRAYSIZE(items))) {
         // Load selected model based on selectedItem
         switch (selectedItem) {
@@ -753,6 +786,12 @@ void MainMenuState::_ui(std::vector<std::string> gui_data)
                 break;
             case 2:
               v->createMeshModel("Mario.obj", "mario_mime.png");
+                // Load Model 3
+                // v->loadModel("model3.obj", "texture3.png");
+                break;
+            case 3:
+              v->createMeshModel("Dragon.3ds", "Dragon_ground_color.jpg");
+
                 // Load Model 3
                 // v->loadModel("model3.obj", "texture3.png");
                 break;

@@ -148,4 +148,5 @@ class MainMenuState : public State {
     float ui_rotation_control_y;
     float ui_rotation_control_z;
     float fade = 1.0f;
+    ImVec4 selectedColor; 
 };

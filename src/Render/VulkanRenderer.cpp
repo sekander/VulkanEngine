@@ -122,8 +122,8 @@ void VulkanRenderer::recreateSwapChain()
 		createSynchronisation();
 		
 		// createGraphicsPipeline();
-		createGraphicsPipeline("Shaders/phongVert.spv","Shaders/phongFrag.spv", "Shaders/normalPhongG.spv");
-		// createGraphicsPipeline("Shaders/vert.spv","Shaders/frag.spv", "Shaders/normalPhongG.spv");
+		createGraphicsPipeline("Shaders/vert.spv","Shaders/frag.spv", "Shaders/normalPhongG.spv");
+		// createGraphicsPipeline("Shaders/phongVert.spv","Shaders/phongFrag.spv", "Shaders/normalPhongG.spv");
 		// createGraphicsPipeline("Shaders/tex_vert.spv","Shaders/tex_frag.spv", "Shaders/normalPhongG.spv");
 		// createGraphicsPipeline("Shaders/phongVert.spv","Shaders/phongFrag.spv", "Shaders/geo.spv");
         // createGraphicsPipeline("Shaders/normalVert.spv", "Shaders/normalFrag.spv", "Shaders/geo.spv");
@@ -2696,7 +2696,7 @@ void VulkanRenderer::drawUI(std::function<void()> customUIRenderCallback = nullp
 				recreateGraphicsPipeline("Shaders/phongVert.spv","Shaders/phongFrag.spv", "Shaders/normalPhongG.spv");
                 break;
             case 3:
-				recreateGraphicsPipeline("Shaders/vert.spv","Shaders/basic_frag_shader.spv", "Shaders/normalPhongG.spv");
+				recreateGraphicsPipeline("Shaders/phong_vert.spv","Shaders/phong_frag.spv", "Shaders/normalPhongG.spv");
                 break;
             // Add more cases as needed for additional shaders
         }

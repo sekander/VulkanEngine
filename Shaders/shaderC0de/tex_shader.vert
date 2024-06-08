@@ -26,7 +26,7 @@ layout (push_constant) uniform PushColour {
 
 void main() {
     texCoords = tex;
-	gl_Position = uboViewProjection.view * uboModel.model * vec4(inPosition, 1.0);
+	gl_Position = uboViewProjection.projection * uboViewProjection.view * uboModel.model * vec4(inPosition, 1.0);
     //fragColor = inColor;
     fragColor = pushColour.colour.rgb;
 }

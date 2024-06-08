@@ -1,0 +1,7 @@
+-- Add Lines to represent x y and z
+-- Check if model list is empty before calling delete model 
+-- Add more different shaders 
+-- Add option to change properties of each model 
+-- Improve camera spin/rotate around point 
+-- Fix Model String Data bug 
+-- print software stats/runtime memory usages 

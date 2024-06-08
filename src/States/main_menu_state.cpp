@@ -195,7 +195,6 @@ void MainMenuState::Input(float delta)
         printf("Cleared Model Size: %d", v->modelList.size());
         //v->cleanModels();
         // v->removeModel(0);
-		v->recreateGraphicsPipeline("Shaders/tex_vert.spv","Shaders/tex_frag.spv", "Shaders/geo.spv");
     }
     if (glfwGetKey(_data->window, GLFW_KEY_J) == GLFW_PRESS && canPressKey(GLFW_KEY_J)) {
 	    v->createMeshModel("Mario.obj", "mario_mime.png");
@@ -247,6 +246,7 @@ void MainMenuState::Render(float delta)
 			mcamera.UpdateViewMatrix();
 			mcamera.SetRotation(r_cam);
       mcamera.SetPosition(glm::vec3(x_cam, y_cam, z_cam));
+      mcamera.RotateAroundPosition(cam_degree, glm::vec3(-1.0f, 0.0f, -2.5f));
       float now = glfwGetTime();
 
   //deltaTime = now - lastTime;
@@ -263,14 +263,28 @@ void MainMenuState::Render(float delta)
   // printf("Model Angle: %f\n", mangle);
 
   auto v = static_cast<VulkanRenderer*>(_data->vk);
-  v->drawUI( [this]() { this->_ui(); });
   // v->drawUI(nullptr);
+  // Declare vectors to store matrix data for each model
+  std::vector<std::string> quaternionData(v->modelList.size());
+  std::vector<std::string> modelPostionData(v->modelList.size());
+  std::vector<std::string> modelData(v->modelList.size());
+  // std::vector<std::string> matrixData(v->modelList.size());
 
+  // Declare a vector to store matrix data for each model
+  // matrixData.resize(v->modelList.size());
 
+  // v->drawUI( [this]() { this->_ui(matrixData); });
+  v->drawUI( [&]() { this->_ui(matrixData); });
   
 
   for (int i = 0; i < v->modelList.size(); i++)
   {
+    // std::string matrixData;
+    // std::string quaternionData;
+    // std::string modelPostionData; 
+    // std::string modelData;
+
+
     glm::mat4 firstModel(1.0f);
     // Model's initial position
     glm::vec3 modelPosition = glm::vec3(xpos + i, ypos, zpos);
@@ -307,7 +321,9 @@ void MainMenuState::Render(float delta)
     // Apply the rotation to the model matrix
     if (i == 0){
       firstModel = rotationMatrix * firstModel;                 // Apply rotation
-      matrixData = demonstrateQuaternionProperties(quaternion_options, firstModel);
+
+      // quaternionData[i] += demonstrateQuaternionProperties(quaternion_options, firstModel);
+      // matrixData[i] += demonstrateQuaternionProperties(quaternion_options, firstModel);
       firstModel = glm::translate(firstModel, -rotationCenter);   // Translate back to position
     }
     else{
@@ -320,10 +336,15 @@ void MainMenuState::Render(float delta)
 
     }
     v->updateModel(i, firstModel);
-    // std::cout << "Model Matrix for model " << i << ":\n" << glm::to_string(firstModel) << std::endl;
-    // std::cout << "\nModel Matrix for model " << i  << std::endl;
-    matrixData += printMat4ToString(firstModel);
-    matrixData += glm::to_string(modelPosition);
+    //std::cout << "Model Matrix for model " << i << ":\n" << glm::to_string(firstModel) << std::endl;
+    std::cout << "\nModel Matrix for model " << i  << std::endl;
+    std::cout << "###############################" << i  << std::endl;
+    // std::cout << demonstrateQuaternionProperties(quaternion_options, firstModel) << std::endl;
+    // modelData[i] += printMat4ToString(firstModel);
+    // modelPostionData[i] += glm::to_string(modelPosition);
+    // std::string collectedModelData = quaternionData[i] + modelData[i] + modelPostionData[i];
+    // matrixData.push_back(collectedModelData);
+
     models.push_back(firstModel);
 
   }
@@ -332,19 +353,16 @@ void MainMenuState::Render(float delta)
   mwave1 = 1.0f * cos(2 * 3.14 * 0.001f * (int)(glfwGetTime() * 100)); 
   mwave2 = 1.0f * sin(2 * 3.14 * 0.0001f * (int)(glfwGetTime() * 100)); 
 
-  v->pushData.push_constant_colour = vec4(1.0f, 0.0f, 1.0f, 0.0f);	
+  v->pushData.push_constant_colour = vec4(1.0f, 1.0f, 0.0f, 0.0f);	
   //Move Red light with keyboard
   v->lightData.position[0] = glm::vec3(mx, my, mz);
   
 
   //Red Light
-//   v->lightData.colour[0] = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);	
   v->lightData.colour[0] = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);	
   //Blue Light
-//   v->lightData.colour[1]   = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
   v->lightData.colour[1]   = glm::vec4(0.0f, 0.0f, abs(mwave0), 0.0f);
   //Green Light
-//   v->lightData.colour[2]   = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
   v->lightData.colour[2]   = glm::vec4(0.0f, abs(mwave1), 0.0f, 0.0f);
   v->draw();
 
@@ -654,7 +672,7 @@ std::string MainMenuState::demonstrateQuaternionProperties(int choice, glm::mat4
 }
 
 
-void MainMenuState::_ui()
+void MainMenuState::_ui(std::vector<std::string> gui_data)
 {
    // Variables for the second window
     static bool enable_feature = false;
@@ -664,16 +682,25 @@ void MainMenuState::_ui()
     auto v = static_cast<VulkanRenderer*>(_data->vk);
 
     // Start a new ImGui window
-    ImGui::Begin("Model Matrices");
-
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.1f)); // Set background color with transparency
+    ImGui::Begin("Model Data");
     // Iterate over all models in the modelList and display their matrices
+    // for (auto& modelData : matrixData)
+    // {
+    //     //ImGui::Text("Model Matrix Data:");
+    //     //ImGui::Text(modelData.c_str());
+    //     //ImGui::Separator(); // Add a separator between models
+    // }
     for (int i = 0; i < v->modelList.size(); i++) {
         ImGui::Text("Model %d Matrix:", i);
-        ImGui::Text(matrixData.c_str());
-        // ImGui_PrintMat4(models[i]); // Assuming you store matrices in a list called modelMatrices
+        // ImGui::Text(matrixData.c_str());
+        if (!gui_data.empty())
+          // ImGui::Text(matrixData_package[i].c_str());
+          ImGui::Text(gui_data[i].c_str());
+        // ImGui_PrintMat4(models[i]); // Assuming you store matrices in a list calleid modelMatrices
         ImGui::Separator(); // Add a separator between models
     }
-    // // Buttons to increase and decrease quaternion options
+    // Buttons to increase and decrease quaternion options
     // if (ImGui::Button("Increase Quaternion Options")) {
     //     quaternion_options++;
     //     if (quaternion_options > 9)
@@ -684,6 +711,86 @@ void MainMenuState::_ui()
     //     if (quaternion_options > 9)
     //       quaternion_options = 1;
     // }
+
+
+    // ImGui::Text("Model Matrix for model ");
+    // printMat4(firstModel);
+    // ImGui::Checkbox("Enable Feature", &enable_feature);
+    // ImGui::SliderInt("Value", &slider_value, 0, 100);
+    // if (ImGui::Button("Reset")) {
+    //     slider_value = 0;
+    // }
+    ImGui::End();
+    ImGui::PopStyleColor(); // Restore default window background color
+    // Start a new ImGui window
+    ImGui::Begin("Model Controls");
+
+      // Button to clear models
+      if (ImGui::Button("Clear Models")) {
+          v->cleanModels();
+      }
+      if (ImGui::Button("Delete Model")) {
+         v->removeModel(0);
+      }
+
+
+
+    // Pulldown list to select model and texture
+    static int selectedItem = 0;
+    static const char* items[] = { "Model 1", "Model 2", "Model 3" }; // Add model names here
+    if (ImGui::Combo("Select Model", &selectedItem, items, IM_ARRAYSIZE(items))) {
+        // Load selected model based on selectedItem
+        switch (selectedItem) {
+            case 0:
+              v->createMeshModel("Mario.obj", "mario_main.png");
+                // Load Model 1
+                // v->loadModel("model1.obj", "texture1.png");
+                break;
+            case 1:
+              v->createMeshModel("Mario.obj", "mario_fire.png");
+                // Load Model 2
+                // v->loadModel("model2.obj", "texture2.png");
+                break;
+            case 2:
+              v->createMeshModel("Mario.obj", "mario_mime.png");
+                // Load Model 3
+                // v->loadModel("model3.obj", "texture3.png");
+                break;
+            // Add more cases for additional models
+        }
+    }
+
+    // Mode selection
+    static int mode = 0;
+    static const char* modes[] = { "Mode 1", "Mode 2", "Mode 3" }; // Add mode names here
+    if (ImGui::Combo("Select Mode", &mode, modes, IM_ARRAYSIZE(modes))) {
+        // Set mode based on selection
+        switch (mode) {
+            case 0:
+                // Set mode to Mode 1
+                // v->setMode(MODE1);
+                break;
+            case 1:
+                // Set mode to Mode 2
+                // v->setMode(MODE2);
+                break;
+            case 2:
+                // Set mode to Mode 3
+                // v->setMode(MODE3);
+                break;
+            // Add more cases for additional modes
+        }
+    }
+
+
+
+
+
+
+
+
+
+
 
     ImGui::Text("Select Quaternion Option:");
     for (int i = 1; i < 9; ++i) {
@@ -708,13 +815,24 @@ void MainMenuState::_ui()
     ImGui::SliderFloat("Y Quaternion Theta ", &ui_rotation_control_y, 0.0f, 360.0f);
     ImGui::SliderFloat("Z Quaternion Theta ", &ui_rotation_control_z, 0.0f, 360.0f);
 
+    ImGui::End();
+    ImGui::Begin("Camera Controls");
+     ImGui::Text("Use Arrow Keys or Joystick to Control Camera:");
 
-    // ImGui::Text("Model Matrix for model ");
-    // printMat4(firstModel);
-    // ImGui::Checkbox("Enable Feature", &enable_feature);
-    // ImGui::SliderInt("Value", &slider_value, 0, 100);
-    // if (ImGui::Button("Reset")) {
-    //     slider_value = 0;
-    // }
+    // X Position
+    ImGui::SliderFloat("X Position", &x_cam, -10.0f, 10.0f);
+
+    // Y Position
+    ImGui::SliderFloat("Y Position", &y_cam, -10.0f, 10.0f);
+
+    // Z Position
+    ImGui::SliderFloat("Z Position", &z_cam, -10.0f, 10.0f);
+
+    // Rotation
+    ImGui::SliderAngle("Rotation", &r_cam, -180.0f, 180.0f);
+
+    // Camera Rotation (in degrees)
+    ImGui::SliderAngle("Camera Degree", &cam_degree, 0.0f, 360.0f);
+
     ImGui::End();
 }

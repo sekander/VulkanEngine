@@ -29,14 +29,17 @@ class MainMenuState : public State {
         void DeleteData();
         
 
-        std::string matrixData;
+        std::vector<std::string> matrixData;
+        // std::string matrixData;
+        // std::string matrixData[10];
+        // std::vector<std::string> matrixData_package;
 
         // Delay time in milliseconds
         const long long KEY_DELAY = 200;
 
         std::unordered_map<int, long long> lastKeyPressTime;
 
-        void _ui();
+        void _ui(std::vector<std::string> gui_data);
 
         ~MainMenuState();
     private :

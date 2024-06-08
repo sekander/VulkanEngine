@@ -502,6 +502,8 @@ void Game::framebuffer_size_callback(GLFWwindow* window, int width, int height)
     // make sure the viewport matches the new window dimensions; note that widthand 
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
+    printf("Window Width: %d", width);
+    printf("Window Height: %d", height);
 }
 
 
@@ -543,7 +545,7 @@ GLFWwindow* Game::create_vulkan_window(std::string w_name, const int width, cons
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
  	//Window Mode
-  GLFWwindow* window = glfwCreateWindow(800, 600, w_name.c_str(), NULL, NULL);
+  GLFWwindow* window = glfwCreateWindow(1000, 800, w_name.c_str(), NULL, NULL);
     
     //Full Screen Mode   
     // window = glfwCreateWindow(width, height, w_name.c_str(), glfwGetPrimaryMonitor(),NULL);

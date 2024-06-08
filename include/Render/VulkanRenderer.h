@@ -340,5 +340,26 @@ private:
     // static void drawUI();
 
 
+
+// //Line Drawing
+// // Define Vertex Structure
+// struct LineVertex {
+//     glm::vec3 position;
+//     glm::vec3 color;
+// };
+
+// // Create Vertex Buffer
+// std::vector<LineVertex> lineVertices = {
+//     // X-axis (red)
+//     {glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)},
+//     {glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)},
+//     // Y-axis (green)
+//     {glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)},
+//     {glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)},
+//     // Z-axis (blue)
+//     {glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)},
+//     {glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 1.0f)}
+// };
+
 };
 

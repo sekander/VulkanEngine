@@ -337,10 +337,10 @@ void VulkanRenderer::cleanModels() {
     modelList.clear();
 
     // Free aligned memory
-    if (modelTransferSpace != nullptr) {
-        _aligned_free(modelTransferSpace);
-        modelTransferSpace = nullptr;
-    }
+    // if (modelTransferSpace != nullptr) {
+    //     _aligned_free(modelTransferSpace);
+    //     modelTransferSpace = nullptr;
+    // }
 
     // Texture cleanup
     for (size_t i = 0; i < textureImages.size(); i++) {
@@ -1197,10 +1197,13 @@ void VulkanRenderer::updateUniformBuffers(uint32_t imageIndex)
 	//############################################################################################################
 	
 	// Copy Model data
-	for (size_t i = 0; i < modelList.size(); i++)
+	if (!modelList.empty())
 	{
-		UboModel * thisModel = (UboModel *)((uint64_t)modelTransferSpace + (i * modelUniformAlignment));
-		thisModel->model = modelList[i].getModel();
+		for (size_t i = 0; i < modelList.size(); i++)
+		{
+			UboModel * thisModel = (UboModel *)((uint64_t)modelTransferSpace + (i * modelUniformAlignment));
+			thisModel->model = modelList[i].getModel();
+		}
 	}
 
 	// Map the list of model data
@@ -1212,22 +1215,12 @@ void VulkanRenderer::updateUniformBuffers(uint32_t imageIndex)
 // void VulkanRenderer::createGraphicsPipeline()
 void VulkanRenderer::createGraphicsPipeline(const std::string& vertexShaderPath, 
 								const std::string& fragmentShaderPath, 
-								const std::string& geometryShaderPath /*= ""*/)
+								const std::string& geometryShaderPath)
 {
 	// Read in SPIR-V code of shaders
-//	auto vertexShaderCode = readFile("Shaders/vert.spv");
-//	auto fragmentShaderCode = readFile("Shaders/frag.spv");
-	// auto vertexShaderCode = readFile("Shaders/phongVert.spv");
 	auto vertexShaderCode = readFile(vertexShaderPath);
-	// auto fragmentShaderCode = readFile("Shaders/phongFrag.spv");
 	auto fragmentShaderCode = readFile(fragmentShaderPath);
-
-//	auto vertexShaderCode = readFile("Shaders/normalVert.spv");
-//	auto fragmentShaderCode = readFile("Shaders/normalFrag.spv");
-
-	//Assignment 4 ##############################
 	auto geoShaderCode = readFile(geometryShaderPath);
-	// auto geoShaderCode = readFile("Shaders/geo.spv");
 
   	std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
   	std::vector<VkPipelineShaderStageCreateInfo> normalShaderStages;
@@ -1759,6 +1752,7 @@ void VulkanRenderer::recordCommands(uint32_t currentIndex)
 
 						// Execute pipeline
 						vkCmdDrawIndexed(commandBuffers[currentIndex], thisModel.getMesh(k)->getIndexCount(), 1, 0, 0, 0);
+						// vkCmdDraw(commandBuffers[currentIndex], static_cast<uint32_t>(lineVertices.size()), 1, 0, 0);
 					}
 				}
 
@@ -2680,16 +2674,33 @@ void VulkanRenderer::drawUI(std::function<void()> customUIRenderCallback = nullp
     static int counter = 0;
 
     ImGui::Begin("Renderer Options");
-    ImGui::Text("This is some useful text.");
-    ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-    if (ImGui::Button("Button")) {
-        counter++;
-    }
-    ImGui::SameLine();
-    ImGui::Text("counter = %d", counter);
-
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
+
+    // Add a combo box for selecting shaders
+    static const char* items[] = { "Shader 1", "Shader 2", "Shader 3" , "Shader 4"};
+    static int selectedItem = 0;
+
+    if (ImGui::Combo("Select Shader", &selectedItem, items, IM_ARRAYSIZE(items)))
+    {
+        // Custom function execution when a shader is selected
+        switch (selectedItem)
+        {
+            case 0:
+				recreateGraphicsPipeline("Shaders/vert.spv","Shaders/frag.spv", "Shaders/normalPhongG.spv");
+                break;
+            case 1:
+		 		recreateGraphicsPipeline("Shaders/tex_vert.spv","Shaders/tex_frag.spv", "Shaders/normalPhongG.spv");
+                break;
+            case 2:
+				recreateGraphicsPipeline("Shaders/phongVert.spv","Shaders/phongFrag.spv", "Shaders/normalPhongG.spv");
+                break;
+            case 3:
+				recreateGraphicsPipeline("Shaders/vert.spv","Shaders/basic_frag_shader.spv", "Shaders/normalPhongG.spv");
+                break;
+            // Add more cases as needed for additional shaders
+        }
+    }
     ImGui::End();
 
 

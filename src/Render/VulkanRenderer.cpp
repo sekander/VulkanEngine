@@ -2693,10 +2693,10 @@ void VulkanRenderer::drawUI(std::function<void()> customUIRenderCallback = nullp
 		 		recreateGraphicsPipeline("Shaders/tex_vert.spv","Shaders/tex_frag.spv", "Shaders/normalPhongG.spv");
                 break;
             case 2:
-				recreateGraphicsPipeline("Shaders/phongVert.spv","Shaders/phongFrag.spv", "Shaders/normalPhongG.spv");
+				recreateGraphicsPipeline("Shaders/phong_vert.spv","Shaders/phong_frag.spv", "Shaders/normalPhongG.spv");
                 break;
             case 3:
-				recreateGraphicsPipeline("Shaders/phong_vert.spv","Shaders/phong_frag.spv", "Shaders/normalPhongG.spv");
+				recreateGraphicsPipeline("Shaders/toon_vert.spv","Shaders/metal_frag.spv", "Shaders/normalPhongG.spv");
                 break;
             // Add more cases as needed for additional shaders
         }

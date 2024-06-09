@@ -15,6 +15,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 
+
+struct modelData {
+    std::string name;
+    glm::mat4 model;
+    std::string data;
+};
+
+
 class MainMenuState : public State {
 
     public :
@@ -57,7 +65,7 @@ class MainMenuState : public State {
                                                    "Associativity of quaternion multiplication",
                                                    "Non-commutativity of quaternion multiplication"};
 
-        std::vector<glm::mat4> models;
+        // std::vector<glm::mat4> models;
 
         std::string demonstrateQuaternionProperties(int choice, glm::mat4& modelMatrix);
 
@@ -149,4 +157,8 @@ class MainMenuState : public State {
     float ui_rotation_control_z;
     float fade = 1.0f;
     ImVec4 selectedColor; 
+
+    // Index to keep track of the selected model
+    int selectedModelIndex = 0;
+    int previousModelListSize;
 };

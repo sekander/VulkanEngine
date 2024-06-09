@@ -6,3 +6,4 @@
 -- Add mouse camera controls 
 -- Add ps5 controls
 -- Give each model created a unique name and is visible in gui
+-- Apply shaders to selected models and change shader property respectively 

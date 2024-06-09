@@ -371,23 +371,20 @@ void MainMenuState::Render(float delta)
     if (matrixData.empty())
     {
       matrixData.push_back(matrixDataInfo);
+      // models[i].name = "Model: " + std::to_string(i);
       models.push_back(model);
     }
     else if(v->modelList.size() > previousModelListSize)
     {
       matrixData.push_back(matrixDataInfo);
+      // models[i].name = "Model: " + std::to_string(i);
       models.push_back(model);
     }
     else{
+      //Update Model Data
       matrixData[i] = matrixDataInfo;
-      models[i].name = "Model: " + std::to_string(i);
       models[i].data = matrixDataInfo;
-      // if (selectedModelIndex == i)
-        // models[i].position = glm::vec3(xpos, ypos, zpos);
-      // models[i].position = modelPosition;
-      // models[i].position.x = modelPosition.x + xpos;
-      // models[i].position.y = modelPosition.y + ypos;
-      // models[i].position.z = modelPosition.z + zpos;
+      models[i].name = "Model: " + std::to_string(i);
 
 
         std::cout << "Name: " << models[i].name << std::endl;

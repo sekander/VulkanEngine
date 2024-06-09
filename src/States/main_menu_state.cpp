@@ -292,22 +292,25 @@ void MainMenuState::Render(float delta)
     mangle = 0.0f;
 
  for (int i = 0; i < v->modelList.size(); i++)
-  {
-    // std::string quaternionData;
-    // std::string modelPostionData; 
+ {
+    modelData model;
     std::string matrixDataInfo;
 
 
     glm::mat4 firstModel(1.0f);
     // Model's initial position
-    glm::vec3 modelPosition = glm::vec3(xpos + i, ypos, zpos);
+    // model.position = glm::vec3(xpos + i, ypos, zpos);
+    // model.position = glm::vec3(0.0f + i, 0.0f, 0.0f);
+    // glm::vec3 modelPosition = glm::vec3(xpos + i, ypos, zpos);
 
 
     // Define the center of rotation (if it's different from modelPosition)
     glm::vec3 rotationCenter = glm::vec3(0.0f); // Change this if needed
 
       // Translate to the model's position
-    firstModel = glm::translate(firstModel, modelPosition);
+    // firstModel = glm::translate(firstModel, modelPosition);
+    if(!models.empty())
+      firstModel = glm::translate(firstModel, models[i].position);
 
     // Translate to the center of rotation
     firstModel = glm::translate(firstModel, rotationCenter);
@@ -316,17 +319,26 @@ void MainMenuState::Render(float delta)
     // Quaternion representing no rotation
     glm::quat totalRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 
-    glm::quat rotationY = glm::angleAxis(glm::radians((i == 0) ? ui_rotation_control_y: 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::quat rotationY;
+    if(!models.empty())
+      rotationY = glm::angleAxis(glm::radians((i == 0) ? models[i].rotation_control_ui_y: 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     // glm::quat rotationY = glm::angleAxis(glm::radians((i == 0) ? ui_rotation_control_y: -mangle), glm::vec3(0.0f, 1.0f, 0.0f));
 
     totalRotation = rotationY * totalRotation;
 
     // Rotate 30 degrees around the X-axis
-    glm::quat rotationX = glm::angleAxis(glm::radians(ui_rotation_control_x), glm::vec3(1.0f, 0.0f, 0.0f));
+    glm::quat rotationX;
+    if(!models.empty())
+      // rotationX = glm::angleAxis(glm::radians(ui_rotation_control_x), glm::vec3(1.0f, 0.0f, 0.0f));
+      rotationX = glm::angleAxis(glm::radians(models[i].rotation_control_ui_x), glm::vec3(1.0f, 0.0f, 0.0f));
+    
     totalRotation = rotationX * totalRotation;
 
     // Rotate 60 degrees around the Z-axis
-    glm::quat rotationZ = glm::angleAxis(glm::radians(ui_rotation_control_z), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::quat rotationZ;
+    
+    if(!models.empty())
+      rotationZ = glm::angleAxis(glm::radians(models[i].rotation_control_ui_z), glm::vec3(0.0f, 0.0f, 1.0f));
     totalRotation = rotationZ * totalRotation;
 
     // Convert the total quaternion rotation to a rotation matrix
@@ -336,14 +348,11 @@ void MainMenuState::Render(float delta)
     if (i == 0){
       firstModel = rotationMatrix * firstModel;                 // Apply rotation
       matrixDataInfo +=  demonstrateQuaternionProperties(quaternion_options, firstModel);
-
-      // quaternionData[i] += demonstrateQuaternionProperties(quaternion_options, firstModel);
-      // matrixData[i] += demonstrateQuaternionProperties(quaternion_options, firstModel);
       firstModel = glm::translate(firstModel, -rotationCenter);   // Translate back to position
     }
     else{
       // Apply translation and rotation to the model matrix
-      // firstModel = rotationMatrix * firstModel;                 // Apply rotation
+      firstModel = rotationMatrix * firstModel;                 // Apply rotation
       firstModel =  glm::rotate(firstModel, glm::radians(-mangle), glm::vec3(0.0f, 1.0f, 0.0f));
       firstModel = glm::translate(firstModel, -rotationCenter);  // Translate to position
     }
@@ -352,31 +361,41 @@ void MainMenuState::Render(float delta)
     }
     v->updateModel(i, firstModel);
     //std::cout << "Model Matrix for model " << i << ":\n" << glm::to_string(firstModel) << std::endl;
-    std::cout << "\nModel Matrix for model " << i  << std::endl;
-    std::cout << "###############################" << i  << std::endl;
+    // std::cout << "\nModel Matrix for model " << i  << std::endl;
+    // std::cout << "###############################" << i  << std::endl;
 
     matrixDataInfo += printMat4ToString(firstModel);
-    matrixDataInfo += glm::to_string(modelPosition);
-    std::cout << matrixDataInfo << std::endl;
+    // matrixDataInfo += glm::to_string(modelPosition);
+    matrixDataInfo += glm::to_string(model.position);
 
     if (matrixData.empty())
     {
       matrixData.push_back(matrixDataInfo);
-      // models.push_back(firstModel);
+      models.push_back(model);
     }
     else if(v->modelList.size() > previousModelListSize)
     {
       matrixData.push_back(matrixDataInfo);
-      // models.push_back(firstModel);
+      models.push_back(model);
     }
     else{
       matrixData[i] = matrixDataInfo;
+      models[i].name = "Model: " + std::to_string(i);
+      models[i].data = matrixDataInfo;
+      // if (selectedModelIndex == i)
+        // models[i].position = glm::vec3(xpos, ypos, zpos);
+      // models[i].position = modelPosition;
+      // models[i].position.x = modelPosition.x + xpos;
+      // models[i].position.y = modelPosition.y + ypos;
+      // models[i].position.z = modelPosition.z + zpos;
+
+
+        std::cout << "Name: " << models[i].name << std::endl;
+        // std::cout << "Data: " << models[i].data << std::endl;
+        std::cout << "Position: (" << models[i].position.x << ", " << models[i].position.y << ", " << models[i].position.z << ")" << std::endl;
+
     }
 
-    printf("Size of Matrix Data: %d\n", matrixData.size() );
-
-    // models.push_back(firstModel);
-    // printf("Size of Model Data: %d\n", models.size() );
 
     previousModelListSize = v->modelList.size();
   }
@@ -873,18 +892,20 @@ void MainMenuState::_ui(std::vector<std::string> gui_data)
 
 
     // Slider for X position
-    ImGui::SliderFloat("X Position", &xpos, -10.0f, 10.0f);
+    // ImGui::SliderFloat("X Position", &xpos, -10.0f, 10.0f);
+    ImGui::SliderFloat("X Position", &models[selectedModelIndex].position.x, -10.0f, 10.0f);
 
     // Slider for Y position
-    ImGui::SliderFloat("Y Position", &ypos, -10.0f, 10.0f);
+    // ImGui::SliderFloat("Y Position", &ypos, -10.0f, 10.0f);
+    ImGui::SliderFloat("Y Position", &models[selectedModelIndex].position.y, -10.0f, 10.0f);
 
     // Slider for Z position
-    ImGui::SliderFloat("Z Position", &zpos, -10.0f, 10.0f);
+    ImGui::SliderFloat("Z Position", &models[selectedModelIndex].position.z, -10.0f, 10.0f);
     
     // Slider for Quaternion rotation
-    ImGui::SliderFloat("X Quaternion Theta ", &ui_rotation_control_x, 0.0f, 360.0f);
-    ImGui::SliderFloat("Y Quaternion Theta ", &ui_rotation_control_y, 0.0f, 360.0f);
-    ImGui::SliderFloat("Z Quaternion Theta ", &ui_rotation_control_z, 0.0f, 360.0f);
+    ImGui::SliderFloat("X Quaternion Theta ", &models[selectedModelIndex].rotation_control_ui_x, 0.0f, 360.0f);
+    ImGui::SliderFloat("Y Quaternion Theta ", &models[selectedModelIndex].rotation_control_ui_y, 0.0f, 360.0f);
+    ImGui::SliderFloat("Z Quaternion Theta ", &models[selectedModelIndex].rotation_control_ui_z, 0.0f, 360.0f);
 
     ImGui::End();
     ImGui::Begin("Camera Controls");

@@ -18,8 +18,12 @@
 
 struct modelData {
     std::string name;
-    glm::mat4 model;
     std::string data;
+    glm::mat4 model;
+    glm::vec3 position = glm::vec3(0.0f);
+    float rotation_control_ui_x = 0.0f;
+    float rotation_control_ui_y = 0.0f;
+    float rotation_control_ui_z = 0.0f;
 };
 
 
@@ -38,6 +42,7 @@ class MainMenuState : public State {
         
 
         std::vector<std::string> matrixData;
+        std::vector<modelData> models;
         // std::string matrixData;
         // std::string matrixData[10];
         // std::vector<std::string> matrixData_package;

@@ -3,3 +3,6 @@
 -- Add more different shaders 
 -- Improve camera spin/rotate around point 
 -- print software stats/runtime memory usages 
+-- Add mouse camera controls 
+-- Add ps5 controls
+-- Give each model created a unique name and is visible in gui

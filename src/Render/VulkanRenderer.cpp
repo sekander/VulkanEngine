@@ -2705,6 +2705,40 @@ void VulkanRenderer::drawUI(std::function<void()> customUIRenderCallback = nullp
 
 
 
+    ImGui::Begin("Window Options");
+		//Full-Screen
+    //   glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, 1366, 768, NULL);
+    //   glfwSetWindowMonitor(window, NULL, 0, 0, 800, 600, 0);
+    
+		//Put these outside the function
+	  static bool fullscreen = false;
+	  static bool windowed = true;
+      static int width = 800;
+      static int height = 600;
+	  if (ImGui::RadioButton("Full-Screen", fullscreen)) {
+        // glfwSetWindowMonitor(window, fullscreen ? glfwGetPrimaryMonitor() : nullptr, 0, 0, 1366, 768, GLFW_DONT_CARE);
+      	glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, 1366, 768, NULL);
+        // windowed = !fullscreen;
+		// 
+      }
+
+      if (ImGui::RadioButton("Windowed", windowed)) {
+        // glfwSetWindowMonitor(window, windowed ? nullptr : glfwGetPrimaryMonitor(), 0, 0, width, height, GLFW_DONT_CARE);
+        glfwSetWindowMonitor(window, NULL, 0, 0, 800, 600, 0);
+        // fullscreen = !windowed;
+      }
+ 
+		ImGui::Separator();
+
+
+		ImGui::InputInt("Width", &width);
+		ImGui::InputInt("Height", &height);
+
+		if (ImGui::Button("Apply")) {
+			glfwSetWindowSize(window, width, height);
+		}	
+		
+	ImGui::End();
 
 
 	if (customUIRenderCallback)

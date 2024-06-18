@@ -66,6 +66,12 @@ void TemplateState::DeleteData()
     printf("Deleting Template State\n");
     //ss_actor->GetComponent<RenderComponent>()->onDestroy();
 
+    auto v = static_cast<VulkanRenderer*>(_data->vk);
+    if (v->modelList.size() > 0)
+    {
+        v->cleanModels();
+    }
+    
 }
 
 void TemplateState::Init()

@@ -77,6 +77,11 @@ void MainMenuState::DeleteData()
 //    delete _data.get()->ld;
       printf("Deleting Main Menu DATA\n");
 
+    auto v = static_cast<VulkanRenderer*>(_data->vk);
+    if (v->modelList.size() > 0)
+    {
+        v->cleanModels();
+    }
 
 }
 
@@ -390,7 +395,6 @@ void MainMenuState::Render(float delta)
         std::cout << "Name: " << models[i].name << std::endl;
         // std::cout << "Data: " << models[i].data << std::endl;
         std::cout << "Position: (" << models[i].position.x << ", " << models[i].position.y << ", " << models[i].position.z << ")" << std::endl;
-
     }
 
 

@@ -202,6 +202,7 @@ private:
 	// - Pipeline
 	//use a vector
 	VkPipeline graphicsPipeline;
+	VkPipeline graphicsPipeline_2;
 	VkPipelineLayout pipelineLayout;
 	VkRenderPass renderPass;
 
@@ -236,9 +237,12 @@ private:
     void cleanupSwapChain(); 
 
 	// void createGraphicsPipeline();
-	void createGraphicsPipeline(const std::string& vertexShaderPath, 
+	// void createGraphicsPipeline(const std::string& vertexShaderPath, 
+								// const std::string& fragmentShaderPath, 
+								// const std::string& geometryShaderPath /*= ""*/);
+	VkPipeline createGraphicsPipeline(const std::string& vertexShaderPath, 
 								const std::string& fragmentShaderPath, 
-								const std::string& geometryShaderPath /*= ""*/);
+								const std::string& geometryShaderPath);
 	void createDepthBufferImage();
 	void createFramebuffers();
 	void createCommandPool();

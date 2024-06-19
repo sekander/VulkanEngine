@@ -28,7 +28,11 @@ int VulkanRenderer::init(GLFWwindow * newWindow)
 		createDescriptorSetLayout();
 		createPushConstantRange();
 		//createGraphicsPipeline("Shaders/phongVert.spv","Shaders/phongFrag.spv", "Shaders/geo.spv");
-        createGraphicsPipeline("Shaders/normalVert.spv", "Shaders/normalFrag.spv", "Shaders/geo.spv");
+        // graphicsPipeline = createGraphicsPipeline("Shaders/normalVert.spv", "Shaders/normalFrag.spv", "Shaders/geo.spv");
+		graphicsPipeline = createGraphicsPipeline("Shaders/vert.spv","Shaders/frag.spv", "Shaders/normalPhongG.spv");
+		graphicsPipeline_2 =createGraphicsPipeline("Shaders/phong_vert.spv","Shaders/phong_frag.spv", "Shaders/normalPhongG.spv");
+		
+		
 		//recreateSwapChain();
 		createDepthBufferImage();
 		
@@ -83,6 +87,12 @@ void VulkanRenderer::updateModel(int modelId, glm::mat4 newModel)
 	{
 		vkDestroyFramebuffer(mainDevice.logicalDevice, framebuffer, nullptr);
 	}
+	 // Destroy graphics pipeline
+    // vkDestroyPipeline(mainDevice.logicalDevice, graphicsPipeline, nullptr);
+    
+    // Destroy pipeline layout
+    // vkDestroyPipelineLayout(mainDevice.logicalDevice, pipelineLayout, nullptr);
+   
 
 	vkDestroyRenderPass(mainDevice.logicalDevice, renderPass, nullptr);	
 
@@ -122,7 +132,7 @@ void VulkanRenderer::recreateSwapChain()
 		createSynchronisation();
 		
 		// createGraphicsPipeline();
-		createGraphicsPipeline("Shaders/vert.spv","Shaders/frag.spv", "Shaders/normalPhongG.spv");
+		// createGraphicsPipeline("Shaders/vert.spv","Shaders/frag.spv", "Shaders/normalPhongG.spv");
 		// createGraphicsPipeline("Shaders/phongVert.spv","Shaders/phongFrag.spv", "Shaders/normalPhongG.spv");
 		// createGraphicsPipeline("Shaders/tex_vert.spv","Shaders/tex_frag.spv", "Shaders/normalPhongG.spv");
 		// createGraphicsPipeline("Shaders/phongVert.spv","Shaders/phongFrag.spv", "Shaders/geo.spv");
@@ -147,7 +157,9 @@ void VulkanRenderer::recreateGraphicsPipeline(const std::string &vertexShaderPat
     vkDestroyPipeline(mainDevice.logicalDevice, graphicsPipeline, nullptr);
 
     // Recreate graphics pipeline with new shaders
-    createGraphicsPipeline(vertexShaderPath, fragmentShaderPath, geometryShaderPath);
+    //createGraphicsPipeline(vertexShaderPath, fragmentShaderPath, geometryShaderPath);
+	graphicsPipeline = createGraphicsPipeline(vertexShaderPath, fragmentShaderPath, geometryShaderPath);
+
 }
 void VulkanRenderer::draw()
 {
@@ -261,6 +273,7 @@ void VulkanRenderer::cleanup()
 	{
 		modelList[i].destroyMeshModel();
 	}
+    modelList.clear();
 
 	_aligned_free(modelTransferSpace);
 
@@ -275,6 +288,11 @@ void VulkanRenderer::cleanup()
 		vkDestroyImage(mainDevice.logicalDevice, textureImages[i], nullptr);
 		vkFreeMemory(mainDevice.logicalDevice, textureImageMemory[i], nullptr);
 	}
+    
+	textureImages.clear();
+    textureImageView.clear();
+    textureImageMemory.clear();
+	
 
 
 
@@ -302,6 +320,7 @@ void VulkanRenderer::cleanup()
 	{
 		meshList[i].destroyBuffers();
 	}
+    meshList.clear();
 	for (size_t i = 0; i < MAX_FRAME_DRAWS; i++)
 	{
 		vkDestroySemaphore(mainDevice.logicalDevice, renderFinished[i], nullptr);
@@ -1212,11 +1231,16 @@ void VulkanRenderer::updateUniformBuffers(uint32_t imageIndex)
 	vkUnmapMemory(mainDevice.logicalDevice, modelDUniformBufferMemory[imageIndex]);
 }
 
-// void VulkanRenderer::createGraphicsPipeline()
-void VulkanRenderer::createGraphicsPipeline(const std::string& vertexShaderPath, 
+// // void VulkanRenderer::createGraphicsPipeline()
+// void VulkanRenderer::createGraphicsPipeline(const std::string& vertexShaderPath, 
+// 								const std::string& fragmentShaderPath, 
+// 								const std::string& geometryShaderPath)
+VkPipeline VulkanRenderer::createGraphicsPipeline(const std::string& vertexShaderPath, 
 								const std::string& fragmentShaderPath, 
 								const std::string& geometryShaderPath)
 {
+	VkPipeline pipeLine;
+
 	// Read in SPIR-V code of shaders
 	auto vertexShaderCode = readFile(vertexShaderPath);
 	auto fragmentShaderCode = readFile(fragmentShaderPath);
@@ -1454,23 +1478,25 @@ void VulkanRenderer::createGraphicsPipeline(const std::string& vertexShaderPath,
 	//pipelineCreateInfo.basePipelineIndex = -1;				// or index of pipeline being created to derive from (in case creating multiple at once)
 
 	// Create Graphics Pipeline
-	result = vkCreateGraphicsPipelines(mainDevice.logicalDevice, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &graphicsPipeline);
+	// result = vkCreateGraphicsPipelines(mainDevice.logicalDevice, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &graphicsPipeline);
+	result = vkCreateGraphicsPipelines(mainDevice.logicalDevice, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &pipeLine);
 	if (result != VK_SUCCESS)
 	{
 		throw std::runtime_error("Failed to create a Graphics Pipeline!");
 	}
 
-	result = vkCreateGraphicsPipelines(mainDevice.logicalDevice, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &normalsPipeline);
-	if (result != VK_SUCCESS)
-	{
-		throw std::runtime_error("Failed to create a Graphics Pipeline!");
-	}
+	// result = vkCreateGraphicsPipelines(mainDevice.logicalDevice, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &normalsPipeline);
+	// if (result != VK_SUCCESS)
+	// {
+	// 	throw std::runtime_error("Failed to create a Graphics Pipeline!");
+	// }
 	
 	// Destroy Shader Modules, no longer needed after Pipeline created
 	vkDestroyShaderModule(mainDevice.logicalDevice, fragmentShaderModule, nullptr);
 	vkDestroyShaderModule(mainDevice.logicalDevice, vertexShaderModule, nullptr);
+	vkDestroyShaderModule(mainDevice.logicalDevice, geoShaderModule, nullptr);
 
-
+	return pipeLine;
 
 /*
 
@@ -1526,7 +1552,6 @@ void VulkanRenderer::createGraphicsPipeline(const std::string& vertexShaderPath,
 
 
 
-	vkDestroyShaderModule(mainDevice.logicalDevice, geoShaderModule, nullptr);
 }
 
 void VulkanRenderer::createDepthBufferImage()
@@ -1700,15 +1725,15 @@ void VulkanRenderer::recordCommands(uint32_t currentIndex)
 			vkCmdBeginRenderPass(commandBuffers[currentIndex], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 				// if (graphicsPipeline == nullptr)
 					// printf("Graphics pipeline is null");
-				 if (graphicsPipeline == VK_NULL_HANDLE) {
-    			    std::cerr << "Graphics pipeline is null!" << std::endl;
-    			    vkCmdEndRenderPass(commandBuffers[currentIndex]);
-    			    vkEndCommandBuffer(commandBuffers[currentIndex]);
-    			    return;
-    			}
+				//  if (graphicsPipeline == VK_NULL_HANDLE) {
+    			//     std::cerr << "Graphics pipeline is null!" << std::endl;
+    			//     vkCmdEndRenderPass(commandBuffers[currentIndex]);
+    			//     vkEndCommandBuffer(commandBuffers[currentIndex]);
+    			//     return;
+    			// }
 			
 				// Bind Pipeline to be used in render pass
-				vkCmdBindPipeline(commandBuffers[currentIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+				//vkCmdBindPipeline(commandBuffers[currentIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
 				//Iterate through each model object
 				for (size_t j = 0; j < modelList.size(); j++)
@@ -1718,6 +1743,15 @@ void VulkanRenderer::recordCommands(uint32_t currentIndex)
 
 					for(size_t k = 0; k < thisModel.getMeshCount(); k++)
 					{
+						
+						// Bind Pipeline to be used in render pass
+						//vkCmdBindPipeline(commandBuffers[currentIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+						if (j == 0)
+							vkCmdBindPipeline(commandBuffers[currentIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+						else
+							vkCmdBindPipeline(commandBuffers[currentIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline_2);
+
+						
 
 						VkBuffer vertexBuffers[] = { thisModel.getMesh(k)->getVertexBuffer() };					// Buffers to bind
 						VkDeviceSize offsets[] = { 0 };												// Offsets into buffers being bound

@@ -66,9 +66,9 @@ MainMenuState::~MainMenuState()
     printf("Deleting Main Menu\n");
       // Cleanup
 //    DeleteData();
-    auto v = static_cast<VulkanRenderer*>(_data->vk);
+    // auto v = static_cast<VulkanRenderer*>(_data->vk);
 	  //v->cleanup();
-    v->recreateSwapChain();
+    // v->recreateSwapChain();
 }
 
 
@@ -392,9 +392,9 @@ void MainMenuState::Render(float delta)
       models[i].name = "Model: " + std::to_string(i);
 
 
-        std::cout << "Name: " << models[i].name << std::endl;
+        // std::cout << "Name: " << models[i].name << std::endl;
         // std::cout << "Data: " << models[i].data << std::endl;
-        std::cout << "Position: (" << models[i].position.x << ", " << models[i].position.y << ", " << models[i].position.z << ")" << std::endl;
+        // std::cout << "Position: (" << models[i].position.x << ", " << models[i].position.y << ", " << models[i].position.z << ")" << std::endl;
     }
 
 

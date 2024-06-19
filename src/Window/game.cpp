@@ -53,8 +53,8 @@ void Game::Initialize()
   //Instiate Camera
   _data->cm = new Camera();
 
-	  _data->machine->AddState(St(new MainMenuState(*_data)), false);	
-	  // _data->machine->AddState(St(new TemplateState(*_data)), false);	
+	  // _data->machine->AddState(St(new MainMenuState(*_data)), false);	
+	  _data->machine->AddState(St(new TemplateState(*_data)), false);	
 //	  _data->machine->AddState(St(new GameOverState(*_data)), false);	
 //	    _data->machine->AddState(St(new SplashState(*_data)), false);	
 //	  _data->machine->AddState(St(new LoadingPlayState(*_data)), false);	
@@ -388,12 +388,13 @@ void Game::Render()
     std::this_thread::sleep_for(50ms);
 
 		_data->gs.connection_established = false;
+    vk_render.cleanup();
     _data->machine->GetActiveState()->DeleteData();
     //_data->gs.connection_established = false;
 
     _data->machine->Clear();
     delete _data->machine;
-    vk_render.cleanup();
+    // vk_render.cleanup();
     delete _data; 
 
     glfwTerminate();

@@ -32,6 +32,7 @@ void StateMachine::RemoveState()
 void StateMachine::Clear()
 {
     printf("Clearing States\n");
+    
     _newStates.reset();
 }
 

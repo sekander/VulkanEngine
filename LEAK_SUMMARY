@@ -126,3 +126,487 @@ Mon  3 Jun 02:33:00 MDT 2024
 ==21070== For lists of detected and suppressed errors, rerun with: -s
 ==21070== ERROR SUMMARY: 12 errors from 12 contexts (suppressed: 0 from 0)
 
+Tue Jun 18 07:33:23 PM UTC 2024
+
+==3466== Memcheck, a memory error detector
+==3466== Copyright (C) 2002-2024, and GNU GPL'd, by Julian Seward et al.
+==3466== Using Valgrind-3.23.0 and LibVEX; rerun with -h for copyright info
+==3466== Command: ./final_program
+==3466== 
+Default Constructor
+Main Menu State!
+==3466== realloc() with size 0
+==3466==    at 0x4849E20: realloc (vg_replace_malloc.c:1800)
+==3466==    by 0x70B8C0F: ??? (in /usr/lib/libnvidia-glcore.so.550.90.07)
+==3466==    by 0x6550986: ??? (in /usr/lib/libGLX_nvidia.so.550.90.07)
+==3466==    by 0x65AA6A1: ??? (in /usr/lib/libGLX_nvidia.so.550.90.07)
+==3466==    by 0x6550012: ??? (in /usr/lib/libGLX_nvidia.so.550.90.07)
+==3466==    by 0x40053DC: _dl_init (dl-init.c:121)
+==3466==    by 0x40015C1: _dl_catch_exception (dl-catch.c:211)
+==3466==    by 0x400C13B: dl_open_worker (dl-open.c:829)
+==3466==    by 0x4001522: _dl_catch_exception (dl-catch.c:237)
+==3466==    by 0x400C533: _dl_open (dl-open.c:905)
+==3466==    by 0x55A19E3: dlopen_doit (dlopen.c:56)
+==3466==    by 0x4001522: _dl_catch_exception (dl-catch.c:237)
+==3466==  Address 0x62cfd90 is 0 bytes after a block of size 0 alloc'd
+==3466==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==3466==    by 0x70B8BFF: ??? (in /usr/lib/libnvidia-glcore.so.550.90.07)
+==3466==    by 0x6550986: ??? (in /usr/lib/libGLX_nvidia.so.550.90.07)
+==3466==    by 0x65AA6A1: ??? (in /usr/lib/libGLX_nvidia.so.550.90.07)
+==3466==    by 0x6550012: ??? (in /usr/lib/libGLX_nvidia.so.550.90.07)
+==3466==    by 0x40053DC: _dl_init (dl-init.c:121)
+==3466==    by 0x40015C1: _dl_catch_exception (dl-catch.c:211)
+==3466==    by 0x400C13B: dl_open_worker (dl-open.c:829)
+==3466==    by 0x4001522: _dl_catch_exception (dl-catch.c:237)
+==3466==    by 0x400C533: _dl_open (dl-open.c:905)
+==3466==    by 0x55A19E3: dlopen_doit (dlopen.c:56)
+==3466==    by 0x4001522: _dl_catch_exception (dl-catch.c:237)
+==3466== 
+==3466== posix_memalign() invalid size value: 0
+==3466==    at 0x484A908: posix_memalign (vg_replace_malloc.c:2216)
+==3466==    by 0x70B8C45: ??? (in /usr/lib/libnvidia-glcore.so.550.90.07)
+==3466==    by 0x6550986: ??? (in /usr/lib/libGLX_nvidia.so.550.90.07)
+==3466==    by 0x65AA6A1: ??? (in /usr/lib/libGLX_nvidia.so.550.90.07)
+==3466==    by 0x6550012: ??? (in /usr/lib/libGLX_nvidia.so.550.90.07)
+==3466==    by 0x40053DC: _dl_init (dl-init.c:121)
+==3466==    by 0x40015C1: _dl_catch_exception (dl-catch.c:211)
+==3466==    by 0x400C13B: dl_open_worker (dl-open.c:829)
+==3466==    by 0x4001522: _dl_catch_exception (dl-catch.c:237)
+==3466==    by 0x400C533: _dl_open (dl-open.c:905)
+==3466==    by 0x55A19E3: dlopen_doit (dlopen.c:56)
+==3466==    by 0x4001522: _dl_catch_exception (dl-catch.c:237)
+==3466== 
+IMGUI INIT
+Hello Main Menu
+RECREATE SWAP CHAIN 
+Window Width: 1000Window Height: 684SWAP CHAIN CLEANED
+SWAP CHAIN RECREATED
+Done Initializing ... 
+Begin Network Loop
+Begin Audio Loop
+Begin Render Loop
+Begin Update Loop
+Beginning Render Loop
+UPDATE THREAD : Time taken by program is :299.568984 sec
+UPDATE THREAD : Frames per sec 23.86811
+Deleting Main Menu DATA
+Clearing States
+Deleting MAchine
+==3466== Mismatched new/delete size value: 8
+==3466==    at 0x4846859: operator delete(void*, unsigned long) (vg_replace_malloc.c:1181)
+==3466==    by 0x1F2E67: std::default_delete<State>::operator()(State*) const (unique_ptr.h:93)
+==3466==    by 0x1F22BF: std::unique_ptr<State, std::default_delete<State> >::~unique_ptr() (unique_ptr.h:398)
+==3466==    by 0x1F4256: void std::_Destroy<std::unique_ptr<State, std::default_delete<State> > >(std::unique_ptr<State, std::default_delete<State> >*) (stl_construct.h:151)
+==3466==    by 0x1F413E: void std::_Destroy_aux<false>::__destroy<std::unique_ptr<State, std::default_delete<State> >*>(std::unique_ptr<State, std::default_delete<State> >*, std::unique_ptr<State, std::default_delete<State> >*) (stl_construct.h:163)
+==3466==    by 0x1F3FA3: void std::_Destroy<std::unique_ptr<State, std::default_delete<State> >*>(std::unique_ptr<State, std::default_delete<State> >*, std::unique_ptr<State, std::default_delete<State> >*) (stl_construct.h:196)
+==3466==    by 0x1F38D6: _Destroy<std::unique_ptr<State>*, std::unique_ptr<State> > (alloc_traits.h:944)
+==3466==    by 0x1F38D6: std::deque<std::unique_ptr<State, std::default_delete<State> >, std::allocator<std::unique_ptr<State, std::default_delete<State> > > >::_M_destroy_data_aux(std::_Deque_iterator<std::unique_ptr<State, std::default_delete<State> >, std::unique_ptr<State, std::default_delete<State> >&, std::unique_ptr<State, std::default_delete<State> >*>, std::_Deque_iterator<std::unique_ptr<State, std::default_delete<State> >, std::unique_ptr<State, std::default_delete<State> >&, std::unique_ptr<State, std::default_delete<State> >*>) (deque.tcc:875)
+==3466==    by 0x1F2DD1: std::deque<std::unique_ptr<State, std::default_delete<State> >, std::allocator<std::unique_ptr<State, std::default_delete<State> > > >::_M_destroy_data(std::_Deque_iterator<std::unique_ptr<State, std::default_delete<State> >, std::unique_ptr<State, std::default_delete<State> >&, std::unique_ptr<State, std::default_delete<State> >*>, std::_Deque_iterator<std::unique_ptr<State, std::default_delete<State> >, std::unique_ptr<State, std::default_delete<State> >&, std::unique_ptr<State, std::default_delete<State> >*>, std::allocator<std::unique_ptr<State, std::default_delete<State> > > const&) (stl_deque.h:2091)
+==3466==    by 0x1F217B: std::deque<std::unique_ptr<State, std::default_delete<State> >, std::allocator<std::unique_ptr<State, std::default_delete<State> > > >::~deque() (stl_deque.h:1028)
+==3466==    by 0x1F12E5: std::stack<std::unique_ptr<State, std::default_delete<State> >, std::deque<std::unique_ptr<State, std::default_delete<State> >, std::allocator<std::unique_ptr<State, std::default_delete<State> > > > >::~stack() (stl_stack.h:99)
+==3466==    by 0x1F134C: StateMachine::~StateMachine() (state_machine.h:18)
+==3466==    by 0x1E8501: Game::Render() (game.cpp:395)
+==3466==  Address 0x6259fc0 is 0 bytes inside a block of size 496 alloc'd
+==3466==    at 0x4842F73: operator new(unsigned long) (vg_replace_malloc.c:487)
+==3466==    by 0x1E747D: Game::Initialize() (game.cpp:56)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+CLEANING UP VULKAN
+Cleaned IMGUI
+GameData Destroyed
+Time taken by program is :281.49168 sec
+Frames per sec -nan
+==3466== Invalid write of size 1
+==3466==    at 0x1E8686: Game::Render() (game.cpp:410)
+==3466==    by 0x19BBEF: main (main.cpp:55)
+==3466==  Address 0x59c23b1 is 225 bytes inside a block of size 264 free'd
+==3466==    at 0x48468BD: operator delete(void*, unsigned long) (vg_replace_malloc.c:1181)
+==3466==    by 0x1E853F: Game::Render() (game.cpp:397)
+==3466==    by 0x19BBEF: main (main.cpp:55)
+==3466==  Block was alloc'd at
+==3466==    at 0x4842F73: operator new(unsigned long) (vg_replace_malloc.c:487)
+==3466==    by 0x1E72DD: Game::Game() (game.cpp:33)
+==3466==    by 0x19DC02: void std::_Construct<Game>(Game*) (stl_construct.h:119)
+==3466==    by 0x19D91A: construct<Game> (alloc_traits.h:657)
+==3466==    by 0x19D91A: std::_Sp_counted_ptr_inplace<Game, std::allocator<void>, (__gnu_cxx::_Lock_policy)2>::_Sp_counted_ptr_inplace<>(std::allocator<void>) (shared_ptr_base.h:607)
+==3466==    by 0x19D65A: std::__shared_count<(__gnu_cxx::_Lock_policy)2>::__shared_count<Game, std::allocator<void>>(Game*&, std::_Sp_alloc_shared_tag<std::allocator<void> >) (shared_ptr_base.h:969)
+==3466==    by 0x19D459: std::__shared_ptr<Game, (__gnu_cxx::_Lock_policy)2>::__shared_ptr<std::allocator<void>>(std::_Sp_alloc_shared_tag<std::allocator<void> >) (shared_ptr_base.h:1713)
+==3466==    by 0x19D24E: std::shared_ptr<Game>::shared_ptr<std::allocator<void>>(std::_Sp_alloc_shared_tag<std::allocator<void> >) (shared_ptr.h:463)
+==3466==    by 0x19D056: std::shared_ptr<std::enable_if<!std::is_array<Game>::value, Game>::type> std::make_shared<Game>() (shared_ptr.h:1008)
+==3466==    by 0x19BB12: main (main.cpp:32)
+==3466== 
+Total Number of Textures 0
+Total Number of NPC 0
+Total Number of Animator 0
+Total Number of Projectile 0
+Total Number of RenderComponents 0
+Total Number of TransformComponents 0
+Total Number of PhysicsComponents 0
+Total Number of AI Componets 0
+APPLICATION CLOSED
+Deleting GAME !!!!!!!
+==3466== 
+==3466== HEAP SUMMARY:
+==3466==     in use at exit: 350,037 bytes in 3,081 blocks
+==3466==   total heap usage: 73,605 allocs, 70,524 frees, 1,363,926,075 bytes allocated
+==3466== 
+==3466== 8 bytes in 1 blocks are definitely lost in loss record 9 of 2,258
+==3466==    at 0x4849E20: realloc (vg_replace_malloc.c:1800)
+==3466==    by 0xD2674DA: ???
+==3466==    by 0xD250E9C: ???
+==3466==    by 0xD25443F: ???
+==3466==    by 0xD2547C2: ???
+==3466==    by 0x7122B0E: ???
+==3466==    by 0x7135512: ???
+==3466==    by 0x7135B07: ???
+==3466==    by 0x761943C: ???
+==3466==    by 0x70C0713: ???
+==3466==    by 0x74AC0F2: ???
+==3466==    by 0x73E30A6: ???
+==3466== 
+==3466== 19 bytes in 1 blocks are definitely lost in loss record 17 of 2,258
+==3466==    at 0x4842F73: operator new(unsigned long) (vg_replace_malloc.c:487)
+==3466==    by 0x1B5CE1: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) (basic_string.tcc:229)
+==3466==    by 0x1B1BFF: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) (basic_string.h:654)
+==3466==    by 0x1FA1C3: MainMenuState::MainMenuState(GameData&) (main_menu_state.cpp:57)
+==3466==    by 0x1E7499: Game::Initialize() (game.cpp:56)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+==3466== 20 bytes in 1 blocks are definitely lost in loss record 19 of 2,258
+==3466==    at 0x4842F73: operator new(unsigned long) (vg_replace_malloc.c:487)
+==3466==    by 0x1B5CE1: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) (basic_string.tcc:229)
+==3466==    by 0x1B1BFF: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) (basic_string.h:654)
+==3466==    by 0x1FA181: MainMenuState::MainMenuState(GameData&) (main_menu_state.cpp:57)
+==3466==    by 0x1E7499: Game::Initialize() (game.cpp:56)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+==3466== 20 bytes in 1 blocks are definitely lost in loss record 20 of 2,258
+==3466==    at 0x4842F73: operator new(unsigned long) (vg_replace_malloc.c:487)
+==3466==    by 0x1B5CE1: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) (basic_string.tcc:229)
+==3466==    by 0x1B1BFF: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) (basic_string.h:654)
+==3466==    by 0x1FA226: MainMenuState::MainMenuState(GameData&) (main_menu_state.cpp:57)
+==3466==    by 0x1E7499: Game::Initialize() (game.cpp:56)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+==3466== 21 bytes in 1 blocks are definitely lost in loss record 33 of 2,258
+==3466==    at 0x4842F73: operator new(unsigned long) (vg_replace_malloc.c:487)
+==3466==    by 0x1B5CE1: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) (basic_string.tcc:229)
+==3466==    by 0x1B1BFF: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) (basic_string.h:654)
+==3466==    by 0x1FA1A2: MainMenuState::MainMenuState(GameData&) (main_menu_state.cpp:57)
+==3466==    by 0x1E7499: Game::Initialize() (game.cpp:56)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+==3466== 29 bytes in 1 blocks are definitely lost in loss record 157 of 2,258
+==3466==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==3466==    by 0xD26E954: ???
+==3466==    by 0xD254BB8: ???
+==3466==    by 0x7122B0E: ???
+==3466==    by 0x7135512: ???
+==3466==    by 0x7135B07: ???
+==3466==    by 0x761943C: ???
+==3466==    by 0x70C0713: ???
+==3466==    by 0x74AC0F2: ???
+==3466==    by 0x73E30A6: ???
+==3466==    by 0x659BDFB: ???
+==3466==    by 0x49FF28E: terminator_CreateInstance (loader.c:5524)
+==3466== 
+==3466== 29 bytes in 1 blocks are definitely lost in loss record 158 of 2,258
+==3466==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==3466==    by 0xD26E954: ???
+==3466==    by 0xD254B6B: ???
+==3466==    by 0x7122B0E: ???
+==3466==    by 0x7135512: ???
+==3466==    by 0x7135B07: ???
+==3466==    by 0x761943C: ???
+==3466==    by 0x70C0713: ???
+==3466==    by 0x74AC0F2: ???
+==3466==    by 0x73E30A6: ???
+==3466==    by 0x659BDFB: ???
+==3466==    by 0x49FF28E: terminator_CreateInstance (loader.c:5524)
+==3466== 
+==3466== 38 bytes in 1 blocks are definitely lost in loss record 895 of 2,258
+==3466==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==3466==    by 0xD26E954: ???
+==3466==    by 0xD25499A: ???
+==3466==    by 0x7122B0E: ???
+==3466==    by 0x7135512: ???
+==3466==    by 0x7135B07: ???
+==3466==    by 0x761943C: ???
+==3466==    by 0x70C0713: ???
+==3466==    by 0x74AC0F2: ???
+==3466==    by 0x73E30A6: ???
+==3466==    by 0x659BDFB: ???
+==3466==    by 0x49FF28E: terminator_CreateInstance (loader.c:5524)
+==3466== 
+==3466== 40 bytes in 1 blocks are definitely lost in loss record 1,104 of 2,258
+==3466==    at 0x4849BF3: calloc (vg_replace_malloc.c:1675)
+==3466==    by 0xD26EC18: ???
+==3466==    by 0xD275A2F: ???
+==3466==    by 0xD275ABF: ???
+==3466==    by 0xD275B2D: ???
+==3466==    by 0xD24BD2E: ???
+==3466==    by 0xD2532FC: ???
+==3466==    by 0xD254873: ???
+==3466==    by 0x7122B0E: ???
+==3466==    by 0x7135512: ???
+==3466==    by 0x7135B07: ???
+==3466==    by 0x761943C: ???
+==3466== 
+==3466== 43 bytes in 1 blocks are definitely lost in loss record 1,390 of 2,258
+==3466==    at 0x4842F73: operator new(unsigned long) (vg_replace_malloc.c:487)
+==3466==    by 0x1B5CE1: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) (basic_string.tcc:229)
+==3466==    by 0x1B1BFF: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) (basic_string.h:654)
+==3466==    by 0x1FA247: MainMenuState::MainMenuState(GameData&) (main_menu_state.cpp:57)
+==3466==    by 0x1E7499: Game::Initialize() (game.cpp:56)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+==3466== 47 bytes in 1 blocks are definitely lost in loss record 1,714 of 2,258
+==3466==    at 0x4842F73: operator new(unsigned long) (vg_replace_malloc.c:487)
+==3466==    by 0x1B5CE1: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) (basic_string.tcc:229)
+==3466==    by 0x1B1BFF: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) (basic_string.h:654)
+==3466==    by 0x1FA268: MainMenuState::MainMenuState(GameData&) (main_menu_state.cpp:57)
+==3466==    by 0x1E7499: Game::Initialize() (game.cpp:56)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+==3466== 51 bytes in 1 blocks are definitely lost in loss record 1,906 of 2,258
+==3466==    at 0x4842F73: operator new(unsigned long) (vg_replace_malloc.c:487)
+==3466==    by 0x1B5CE1: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) (basic_string.tcc:229)
+==3466==    by 0x1B1BFF: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) (basic_string.h:654)
+==3466==    by 0x1FA1E4: MainMenuState::MainMenuState(GameData&) (main_menu_state.cpp:57)
+==3466==    by 0x1E7499: Game::Initialize() (game.cpp:56)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+==3466== 51 bytes in 1 blocks are definitely lost in loss record 1,907 of 2,258
+==3466==    at 0x4842F73: operator new(unsigned long) (vg_replace_malloc.c:487)
+==3466==    by 0x1B5CE1: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) (basic_string.tcc:229)
+==3466==    by 0x1B1BFF: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) (basic_string.h:654)
+==3466==    by 0x1FA205: MainMenuState::MainMenuState(GameData&) (main_menu_state.cpp:57)
+==3466==    by 0x1E7499: Game::Initialize() (game.cpp:56)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+==3466== 64 bytes in 1 blocks are possibly lost in loss record 2,147 of 2,258
+==3466==    at 0x4849BF3: calloc (vg_replace_malloc.c:1675)
+==3466==    by 0x70ADABD: ???
+==3466==    by 0x76B4168: ???
+==3466==    by 0x1AA351: VulkanRenderer::createDescriptorSetLayout() (VulkanRenderer.cpp:956)
+==3466==    by 0x1A66FE: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:28)
+==3466==    by 0x1E74EB: Game::Initialize() (game.cpp:63)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+==3466== 80 bytes in 1 blocks are possibly lost in loss record 2,173 of 2,258
+==3466==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==3466==    by 0x70AD801: ???
+==3466==    by 0x751D9F5: ???
+==3466==    by 0x7506948: ???
+==3466==    by 0x7506AC8: ???
+==3466==    by 0x73E2B97: ???
+==3466==    by 0x1ABEE9: VulkanRenderer::createGraphicsPipeline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (VulkanRenderer.cpp:1463)
+==3466==    by 0x1A7087: VulkanRenderer::recreateSwapChain() (VulkanRenderer.cpp:125)
+==3466==    by 0x1FA649: MainMenuState::Init() (main_menu_state.cpp:106)
+==3466==    by 0x1E7587: Game::Initialize() (game.cpp:80)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+==3466== 96 (24 direct, 72 indirect) bytes in 1 blocks are definitely lost in loss record 2,180 of 2,258
+==3466==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==3466==    by 0xD27635F: ???
+==3466==    by 0xD2619F6: ???
+==3466==    by 0xD266C70: ???
+==3466==    by 0xD254259: ???
+==3466==    by 0xD2544ED: ???
+==3466==    by 0xD2547C2: ???
+==3466==    by 0x7122B0E: ???
+==3466==    by 0x7135512: ???
+==3466==    by 0x7135B07: ???
+==3466==    by 0x761943C: ???
+==3466==    by 0x70C0713: ???
+==3466== 
+==3466== 152 bytes in 1 blocks are definitely lost in loss record 2,188 of 2,258
+==3466==    at 0x4842F73: operator new(unsigned long) (vg_replace_malloc.c:487)
+==3466==    by 0x1E7447: Game::Initialize() (game.cpp:54)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+==3466== 152 (112 direct, 40 indirect) bytes in 1 blocks are definitely lost in loss record 2,189 of 2,258
+==3466==    at 0x4849BF3: calloc (vg_replace_malloc.c:1675)
+==3466==    by 0xD26D970: ???
+==3466==    by 0xD253518: ???
+==3466==    by 0xD254873: ???
+==3466==    by 0x7122B0E: ???
+==3466==    by 0x7135512: ???
+==3466==    by 0x7135B07: ???
+==3466==    by 0x761943C: ???
+==3466==    by 0x70C0713: ???
+==3466==    by 0x74AC0F2: ???
+==3466==    by 0x73E30A6: ???
+==3466==    by 0x659BDFB: ???
+==3466== 
+==3466== 192 bytes in 1 blocks are possibly lost in loss record 2,202 of 2,258
+==3466==    at 0x4849BF3: calloc (vg_replace_malloc.c:1675)
+==3466==    by 0x70ADABD: ???
+==3466==    by 0x76B4168: ???
+==3466==    by 0x1AA258: VulkanRenderer::createDescriptorSetLayout() (VulkanRenderer.cpp:933)
+==3466==    by 0x1A66FE: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:28)
+==3466==    by 0x1E74EB: Game::Initialize() (game.cpp:63)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+==3466== 352 bytes in 1 blocks are possibly lost in loss record 2,211 of 2,258
+==3466==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==3466==    by 0x70AD801: ???
+==3466==    by 0x7501653: ???
+==3466==    by 0x7529910: ???
+==3466==    by 0x7506BB7: ???
+==3466==    by 0x73E2B97: ???
+==3466==    by 0x1ABEE9: VulkanRenderer::createGraphicsPipeline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (VulkanRenderer.cpp:1463)
+==3466==    by 0x1A7087: VulkanRenderer::recreateSwapChain() (VulkanRenderer.cpp:125)
+==3466==    by 0x1FA649: MainMenuState::Init() (main_menu_state.cpp:106)
+==3466==    by 0x1E7587: Game::Initialize() (game.cpp:80)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+==3466== 368 bytes in 1 blocks are possibly lost in loss record 2,212 of 2,258
+==3466==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==3466==    by 0x70AD801: ???
+==3466==    by 0x76B3E6B: ???
+==3466==    by 0x1AA258: VulkanRenderer::createDescriptorSetLayout() (VulkanRenderer.cpp:933)
+==3466==    by 0x1A66FE: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:28)
+==3466==    by 0x1E74EB: Game::Initialize() (game.cpp:63)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+==3466== 368 bytes in 1 blocks are possibly lost in loss record 2,213 of 2,258
+==3466==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==3466==    by 0x70AD801: ???
+==3466==    by 0x76B3E6B: ???
+==3466==    by 0x1AA351: VulkanRenderer::createDescriptorSetLayout() (VulkanRenderer.cpp:956)
+==3466==    by 0x1A66FE: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:28)
+==3466==    by 0x1E74EB: Game::Initialize() (game.cpp:63)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+==3466== 520 bytes in 13 blocks are definitely lost in loss record 2,219 of 2,258
+==3466==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==3466==    by 0xD272248: ???
+==3466==    by 0xD26684C: ???
+==3466==    by 0xD2546B6: ???
+==3466==    by 0x7122B0E: ???
+==3466==    by 0x7135512: ???
+==3466==    by 0x7135B07: ???
+==3466==    by 0x761943C: ???
+==3466==    by 0x70C0713: ???
+==3466==    by 0x74AC0F2: ???
+==3466==    by 0x73E30A6: ???
+==3466==    by 0x659BDFB: ???
+==3466== 
+==3466== 567 (184 direct, 383 indirect) bytes in 1 blocks are definitely lost in loss record 2,220 of 2,258
+==3466==    at 0x4849BF3: calloc (vg_replace_malloc.c:1675)
+==3466==    by 0xD260D8A: ???
+==3466==    by 0xD262082: ???
+==3466==    by 0xD253E5B: ???
+==3466==    by 0xD254227: ???
+==3466==    by 0xD2544ED: ???
+==3466==    by 0xD2547C2: ???
+==3466==    by 0x7122B0E: ???
+==3466==    by 0x7135512: ???
+==3466==    by 0x7135B07: ???
+==3466==    by 0x761943C: ???
+==3466==    by 0x70C0713: ???
+==3466== 
+==3466== 2,432 bytes in 2 blocks are possibly lost in loss record 2,236 of 2,258
+==3466==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==3466==    by 0x70AD801: ???
+==3466==    by 0x76A841B: ???
+==3466==    by 0x74FB523: ???
+==3466==    by 0x7510A07: ???
+==3466==    by 0x75F9173: ???
+==3466==    by 0x7513825: ???
+==3466==    by 0x752936F: ???
+==3466==    by 0x7506BB7: ???
+==3466==    by 0x73E2B97: ???
+==3466==    by 0x1ABE4A: VulkanRenderer::createGraphicsPipeline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (VulkanRenderer.cpp:1457)
+==3466==    by 0x1A7087: VulkanRenderer::recreateSwapChain() (VulkanRenderer.cpp:125)
+==3466== 
+==3466== 2,544 bytes in 1 blocks are possibly lost in loss record 2,237 of 2,258
+==3466==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==3466==    by 0x70AD801: ???
+==3466==    by 0x7506AA1: ???
+==3466==    by 0x73E2B97: ???
+==3466==    by 0x1ABEE9: VulkanRenderer::createGraphicsPipeline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (VulkanRenderer.cpp:1463)
+==3466==    by 0x1A7087: VulkanRenderer::recreateSwapChain() (VulkanRenderer.cpp:125)
+==3466==    by 0x1FA649: MainMenuState::Init() (main_menu_state.cpp:106)
+==3466==    by 0x1E7587: Game::Initialize() (game.cpp:80)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+==3466== 2,976 (352 direct, 2,624 indirect) bytes in 1 blocks are definitely lost in loss record 2,241 of 2,258
+==3466==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==3466==    by 0x70AD801: ???
+==3466==    by 0x7501653: ???
+==3466==    by 0x7529910: ???
+==3466==    by 0x7506BB7: ???
+==3466==    by 0x73E2B97: ???
+==3466==    by 0x1ABEE9: VulkanRenderer::createGraphicsPipeline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (VulkanRenderer.cpp:1463)
+==3466==    by 0x1A67AF: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:31)
+==3466==    by 0x1E74EB: Game::Initialize() (game.cpp:63)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+==3466== 8,064 bytes in 2 blocks are possibly lost in loss record 2,246 of 2,258
+==3466==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==3466==    by 0x70AD801: ???
+==3466==    by 0x7511ED0: ???
+==3466==    by 0x75F8F51: ???
+==3466==    by 0x7513825: ???
+==3466==    by 0x752936F: ???
+==3466==    by 0x7506BB7: ???
+==3466==    by 0x73E2B97: ???
+==3466==    by 0x1ABE4A: VulkanRenderer::createGraphicsPipeline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (VulkanRenderer.cpp:1457)
+==3466==    by 0x1A7087: VulkanRenderer::recreateSwapChain() (VulkanRenderer.cpp:125)
+==3466==    by 0x1FA649: MainMenuState::Init() (main_menu_state.cpp:106)
+==3466==    by 0x1E7587: Game::Initialize() (game.cpp:80)
+==3466== 
+==3466== 9,948 (184 direct, 9,764 indirect) bytes in 1 blocks are definitely lost in loss record 2,251 of 2,258
+==3466==    at 0x4849BF3: calloc (vg_replace_malloc.c:1675)
+==3466==    by 0xD260D8A: ???
+==3466==    by 0xD262D1A: ???
+==3466==    by 0xD26B073: ???
+==3466==    by 0xD26B25C: ???
+==3466==    by 0xD26C30E: ???
+==3466==    by 0xD26C932: ???
+==3466==    by 0xD25247D: ???
+==3466==    by 0xD266F30: ???
+==3466==    by 0xD254242: ???
+==3466==    by 0xD2544ED: ???
+==3466==    by 0xD2547C2: ???
+==3466== 
+==3466== 26,781 bytes in 2 blocks are possibly lost in loss record 2,255 of 2,258
+==3466==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==3466==    by 0x70AD801: ???
+==3466==    by 0x76A8581: ???
+==3466==    by 0x74FB523: ???
+==3466==    by 0x7510A07: ???
+==3466==    by 0x75F9173: ???
+==3466==    by 0x7513825: ???
+==3466==    by 0x752936F: ???
+==3466==    by 0x7506BB7: ???
+==3466==    by 0x73E2B97: ???
+==3466==    by 0x1ABE4A: VulkanRenderer::createGraphicsPipeline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (VulkanRenderer.cpp:1457)
+==3466==    by 0x1A7087: VulkanRenderer::recreateSwapChain() (VulkanRenderer.cpp:125)
+==3466== 
+==3466== 61,344 (352 direct, 60,992 indirect) bytes in 1 blocks are definitely lost in loss record 2,258 of 2,258
+==3466==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==3466==    by 0x70AD801: ???
+==3466==    by 0x7501653: ???
+==3466==    by 0x7529910: ???
+==3466==    by 0x7506BB7: ???
+==3466==    by 0x73E2B97: ???
+==3466==    by 0x1ABE4A: VulkanRenderer::createGraphicsPipeline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (VulkanRenderer.cpp:1457)
+==3466==    by 0x1A67AF: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:31)
+==3466==    by 0x1E74EB: Game::Initialize() (game.cpp:63)
+==3466==    by 0x19BB45: main (main.cpp:38)
+==3466== 
+==3466== LEAK SUMMARY:
+==3466==    definitely lost: 2,296 bytes in 33 blocks
+==3466==    indirectly lost: 73,875 bytes in 73 blocks
+==3466==      possibly lost: 41,245 bytes in 13 blocks
+==3466==    still reachable: 232,621 bytes in 2,962 blocks
+==3466==         suppressed: 0 bytes in 0 blocks
+==3466== Reachable blocks (those to which a pointer was found) are not shown.
+==3466== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==3466== 
+==3466== For lists of detected and suppressed errors, rerun with: -s
+==3466== ERROR SUMMARY: 35 errors from 35 contexts (suppressed: 0 from 0)
+

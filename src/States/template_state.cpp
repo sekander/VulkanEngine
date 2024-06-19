@@ -55,9 +55,9 @@ TemplateState::~TemplateState()
 {
     printf("Deleting Template State\n");
 //    DeleteData();
-    auto v = static_cast<VulkanRenderer*>(_data->vk);
+    // auto v = static_cast<VulkanRenderer*>(_data->vk);
 	//v->cleanup();
-    v->recreateSwapChain();
+    // v->recreateSwapChain();
 }
 
 void TemplateState::DeleteData()
@@ -247,8 +247,8 @@ void TemplateState::Render(float delta)
 
                 // Model's initial position
                 glm::vec3 modelPosition = glm::vec3(0.0f + i, 0.0f, 0.0f);
-                std::cout << "Model position for model " << i << ": " 
-                << glm::to_string(modelPosition) << std::endl;
+                // std::cout << "Model position for model " << i << ": " 
+                // << glm::to_string(modelPosition) << std::endl;
 
 
                 // firstModel = glm::translate(firstModel, glm::vec3(0.0f + i, 0.0f, -1.5f));
@@ -285,8 +285,8 @@ void TemplateState::Render(float delta)
                 // firstModel = glm::translate(firstModel, glm::vec3(0.0f + i, 0.0f, 1.5f));
         
                 v->updateModel(i, firstModel);
-                std::cout << "\nModel Matrix for model " << i << std::endl;
-                printMat4(firstModel);
+                // std::cout << "\nModel Matrix for model " << i << std::endl;
+                // printMat4(firstModel);
             }
 
 			wave0 = 1.0f * sin(2 * 3.14 * 0.001f * (int)(glfwGetTime() * 100)); 

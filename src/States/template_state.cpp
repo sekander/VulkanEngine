@@ -239,7 +239,8 @@ void TemplateState::Render(float delta)
 			if(m_angle > 360.0f){m_angle -= 360.0f;}
             
             auto v = static_cast<VulkanRenderer*>(_data->vk);
-            v->drawUI(nullptr);
+            //v->drawUI(nullptr);
+            v->drawUI(nullptr, _data);
             for (int i = 0; i < v->modelList.size(); i++)
             {
                 // printf("Model Size: %d\n", v->modelList.size());

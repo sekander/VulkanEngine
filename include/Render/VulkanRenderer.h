@@ -27,6 +27,7 @@
 #include "Mesh.h"
 #include "MeshModel.h"
 #include "Utilities.h"
+#include "../GameData/GameData.h"
 
 /////////////////////////////////////////////////////////////////////////////
 ///------------------------------IMGUI--------------------------------------
@@ -91,7 +92,8 @@ public:
 	}
 	
 	void initUI();
-    void drawUI(std::function<void()> customUIRenderCallback );
+    void drawUI(std::function<void()> customUIRenderCallback , GameData *_data = nullptr);
+    // void drawUI(std::function<void()> customUIRenderCallback );
 
 private:
 	GLFWwindow * window;
@@ -118,9 +120,6 @@ private:
 	VkSwapchainKHR swapchain;
 		    // std::vector<VkImageView> swapchainImageViews;
 			    VkExtent2D swapchainExtent;
-
-
-
 
 	std::vector<SwapchainImage> swapChainImages;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
@@ -160,8 +159,6 @@ private:
 	//Model data uniform buffer	
 	std::vector<VkBuffer> modelDUniformBuffer;
 	std::vector<VkDeviceMemory> modelDUniformBufferMemory;
-
-
 	
 	VkDeviceSize minUniformBufferOffset;
 	size_t modelUniformAlignment;

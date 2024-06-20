@@ -403,7 +403,7 @@ void MainMenuState::Render(float delta)
 
 
 
-  v->drawUI( [&]() { this->_ui(matrixData); });
+  v->drawUI( [&]() { this->_ui(matrixData); }, _data);
 
   mwave0 = 1.0f * sin(2 * 3.14 * 0.001f * (int)(glfwGetTime() * 100)); 
   mwave1 = 1.0f * cos(2 * 3.14 * 0.001f * (int)(glfwGetTime() * 100)); 
@@ -929,45 +929,4 @@ void MainMenuState::_ui(std::vector<std::string> gui_data)
 
     ImGui::End();
 	
-    ImGui::Begin("Scenes");
-		// Assuming ImGui::Button returns true when clicked
-		if (ImGui::Button("Splah Scene", ImVec2(100, 0))) {
-			// Handle button click for Scene 1
-    		_data->state_switch = SPLASH_STATE;
-		}
-
-		ImGui::SameLine(); // Move subsequent items to the same line
-
-		if (ImGui::Button("Main Menu Scene", ImVec2(100, 0))) {
-			// Handle button click for Scene 2
-    		_data->state_switch = MAIN_MENU_STATE;
-		}
-
-		ImGui::SameLine();
-
-		if (ImGui::Button("Loading Scene", ImVec2(100, 0))) {
-			// Handle button click for Scene 3
-    		_data->state_switch = LOADING_PLAY_STATE;
-		}
-
-		ImGui::SameLine();
-
-		if (ImGui::Button("Play Scene", ImVec2(100, 0))) {
-			// Handle button click for Scene 4
-    		_data->state_switch = PLAY_STATE;
-		}
-
-		ImGui::SameLine();
-
-		if (ImGui::Button("Game Over Scene", ImVec2(100, 0))) {
-			// Handle button click for Scene 5
-    		_data->state_switch = GAME_OVER_STATE;
-		}
-		if (ImGui::Button("Template Scene", ImVec2(100, 0))) {
-			// Handle button click for Scene 5
-    		_data->state_switch = TEMPLATE_STATE;
-		}
-		
-		
-    ImGui::End();
 }

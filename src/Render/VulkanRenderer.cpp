@@ -2696,7 +2696,7 @@ void VulkanRenderer::createUIDescriptorPool()
 //     vkFreeCommandBuffers(mainDevice.logicalDevice, cmdPool, 1, &commandBuffer);
 // }
 
-void VulkanRenderer::drawUI(std::function<void()> customUIRenderCallback = nullptr)
+void VulkanRenderer::drawUI(std::function<void()> customUIRenderCallback = nullptr, GameData* _data)
 {
 	// printf("IMGUI RENDERING\n");
   // Start the Dear ImGui frame
@@ -2773,6 +2773,48 @@ void VulkanRenderer::drawUI(std::function<void()> customUIRenderCallback = nullp
 		}	
 		
 	ImGui::End();
+    ImGui::Begin("Scenes");
+		// Assuming ImGui::Button returns true when clicked
+		if (ImGui::Button("Splah Scene", ImVec2(100, 0))) {
+			// Handle button click for Scene 1
+    		_data->state_switch = SPLASH_STATE;
+		}
+
+		ImGui::SameLine(); // Move subsequent items to the same line
+
+		if (ImGui::Button("Main Menu Scene", ImVec2(100, 0))) {
+			// Handle button click for Scene 2
+    		_data->state_switch = MAIN_MENU_STATE;
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Loading Scene", ImVec2(100, 0))) {
+			// Handle button click for Scene 3
+    		_data->state_switch = LOADING_PLAY_STATE;
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Play Scene", ImVec2(100, 0))) {
+			// Handle button click for Scene 4
+    		_data->state_switch = PLAY_STATE;
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Game Over Scene", ImVec2(100, 0))) {
+			// Handle button click for Scene 5
+    		_data->state_switch = GAME_OVER_STATE;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Template Scene", ImVec2(100, 0))) {
+			// Handle button click for Scene 5
+    		_data->state_switch = TEMPLATE_STATE;
+		}
+		
+		
+    ImGui::End();
 
 
 	if (customUIRenderCallback)

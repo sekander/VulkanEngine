@@ -34,7 +34,7 @@ int VulkanRenderer::init(GLFWwindow * newWindow)
 		
 		graphicsPipeline = createGraphicsPipeline("Shaders/vert.spv","Shaders/frag.spv", "Shaders/baseG.spv");
         // graphicsPipeline = createGraphicsPipeline("Shaders/baseV.spv", "Shaders/baseF.spv", "Shaders/baseG.spv");
-		graphicsPipeline_2 =createGraphicsPipeline("Shaders/phong_vert.spv","Shaders/phong_frag.spv", "Shaders/baseG.spv");
+		graphicsPipeline_2 =createGraphicsPipeline("Shaders/phong_vert.spv","Shaders/phong_frag.spv", "");
         // graphicsPipeline = createGraphicsPipeline("Shaders/normals_shader.vert.spv", "Shaders/normals_shader.frag.spv", "Shaders/normals_shader.geom.spv");
 		
 		
@@ -1775,10 +1775,10 @@ void VulkanRenderer::recordCommands(uint32_t currentIndex)
 						
 						// Bind Pipeline to be used in render pass
 						//vkCmdBindPipeline(commandBuffers[currentIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-						if (j == 0)
+						// if (j == 0)
 							vkCmdBindPipeline(commandBuffers[currentIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-						else
-							vkCmdBindPipeline(commandBuffers[currentIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline_2);
+						// else
+							// vkCmdBindPipeline(commandBuffers[currentIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline_2);
 
 						
 
@@ -2741,7 +2741,12 @@ void VulkanRenderer::drawUI(std::function<void()> customUIRenderCallback = nullp
 
 
     // Add a combo box for selecting shaders
-    static const char* items[] = { "Shader 1", "Shader 2", "Shader 3" , "Shader 4"};
+    static const char* items[] = { "Basic", 
+								   "Texture", 
+								   "Phong",
+								   "WireFrame",
+								   "Normals"
+								   };
     static int selectedItem = 0;
 
     if (ImGui::Combo("Select Shader", &selectedItem, items, IM_ARRAYSIZE(items)))
@@ -2760,7 +2765,10 @@ void VulkanRenderer::drawUI(std::function<void()> customUIRenderCallback = nullp
 				recreateGraphicsPipeline("Shaders/phong_vert.spv","Shaders/phong_frag.spv", "");
                 break;
             case 3:
-				recreateGraphicsPipeline("Shaders/baseV.spv","Shaders/baseF.spv", "Shaders/baseG.spv");
+				recreateGraphicsPipeline("Shaders/wireframeV.spv","Shaders/wireframeF.spv", "Shaders/wireframeG.spv");
+                break;
+            case 4:
+				recreateGraphicsPipeline("Shaders/vertN.spv","Shaders/fragN.spv", "Shaders/geoN.spv");
                 break;
             // Add more cases as needed for additional shaders
         }

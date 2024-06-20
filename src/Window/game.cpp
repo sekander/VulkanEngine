@@ -156,13 +156,9 @@ void Game::Initialize()
       //io.Fonts->AddFontFromFileTTF("assets/font/Minecraft.ttf", 24.0f);
       io.Fonts->AddFontFromFileTTF("assets/font/Antonio-Bold.ttf", 24.0f);
       */
-
-
 	    //x_cam = 0.0f;
 	    //y_cam = -5.0f;
 	    //z_cam = 3.0f;
-
-
 	    //vk_render.createMeshModel("Mario.obj", "mario_main.png");
 }
 
@@ -415,40 +411,32 @@ void Game::Render()
 // ---------------------------------------------------------------------------------------------------------
 void Game::processInput(GLFWwindow *window)
 {
-  if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
-	{
-    _data->state_switch = SPLASH_STATE;
-	}
-	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
-			{
-				_data->state_switch = MAIN_MENU_STATE;
-			}
-		    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
-			{
-				_data->state_switch = LOADING_PLAY_STATE;
-			}
-        /*
-		    if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
-			  {
-				  _data->state_switch = PLAY_STATE;
-			  }
-        */
+    if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
+    {
+      _data->state_switch = SPLASH_STATE;
+    }
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+    {
+      _data->state_switch = MAIN_MENU_STATE;
+    }
+    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+    {
+      _data->state_switch = LOADING_PLAY_STATE;
+    }
+    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+    {
+      _data->state_switch = GAME_OVER_STATE;
+    }
+    
+    if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
+    {
+      _data->state_switch = TEMPLATE_STATE;
+    }
 
-			  if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
-			  {
-				  _data->state_switch = GAME_OVER_STATE;
-			  }
-			  
-        if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS)
-			  {
-				  _data->state_switch = TEMPLATE_STATE;
-			  }
-
-			  if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
-			  {
-				  _data->machine->GetActiveState()->DeleteData();
-			  }
-
+    if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
+    {
+      _data->machine->GetActiveState()->DeleteData();
+    }
 			// if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS || _data->gs.fullScreen )
 			// //if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
       // {
@@ -465,8 +453,6 @@ void Game::processInput(GLFWwindow *window)
       //   glfwSetWindowMonitor(window, NULL, 0, 0, SCR_WIDTH, SCR_HEIGHT, 0);
       //   _data->gs.windowMode = false;
       // }
-
-
 }
 
 //error handling function
@@ -491,9 +477,6 @@ void Game::key_callback( GLFWwindow* window, int key, int scancode, int action, 
       printf("Enter Full Screen\n");      
       glfwSetWindowMonitor(window, NULL, 0, 0, 800, 600, 0);
     }
-
-
-
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

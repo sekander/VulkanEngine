@@ -59,24 +59,8 @@ public:
 
 	void removeModel(size_t index);
 
-
 	//IMGUI IMPLEMENTATION
-
-
-	
-
-
     // std::vector<VkFramebuffer> uiFramebuffers;
-
-
-
-
-
-
-
-
-	
-
 	~VulkanRenderer();
 
 	// Scene Settings
@@ -84,7 +68,6 @@ public:
 		glm::mat4 projection;
 		glm::mat4 view;
 	} uboViewProjection;
-
 
 
 //Create Light data
@@ -100,20 +83,12 @@ public:
 
 	std::vector<MeshModel> modelList;
 
-	
-
-
 	void destroyModels(){
 		for(size_t i = 0; i < modelList.size(); i++)
 		{
 			modelList[i].destroyMeshModel();
 		}
 	}
-
-
-
-
-
 	
 	void initUI();
     void drawUI(std::function<void()> customUIRenderCallback );
@@ -340,7 +315,6 @@ private:
 	void createUIDescriptorPool();
 	// VkCommandBuffer beginSingleTimeCommands(VkCommandPool cmdPool);
 	// void endSingleTimeCommands(VkCommandBuffer commandBuffer, VkCommandPool cmdPool);
-
     // static void drawUI();
 
 

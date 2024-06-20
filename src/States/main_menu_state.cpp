@@ -928,4 +928,46 @@ void MainMenuState::_ui(std::vector<std::string> gui_data)
     ImGui::SliderAngle("Camera Degree", &cam_degree, 0.0f, 360.0f);
 
     ImGui::End();
+	
+    ImGui::Begin("Scenes");
+		// Assuming ImGui::Button returns true when clicked
+		if (ImGui::Button("Splah Scene", ImVec2(100, 0))) {
+			// Handle button click for Scene 1
+    		_data->state_switch = SPLASH_STATE;
+		}
+
+		ImGui::SameLine(); // Move subsequent items to the same line
+
+		if (ImGui::Button("Main Menu Scene", ImVec2(100, 0))) {
+			// Handle button click for Scene 2
+    		_data->state_switch = MAIN_MENU_STATE;
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Loading Scene", ImVec2(100, 0))) {
+			// Handle button click for Scene 3
+    		_data->state_switch = LOADING_PLAY_STATE;
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Play Scene", ImVec2(100, 0))) {
+			// Handle button click for Scene 4
+    		_data->state_switch = PLAY_STATE;
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Game Over Scene", ImVec2(100, 0))) {
+			// Handle button click for Scene 5
+    		_data->state_switch = GAME_OVER_STATE;
+		}
+		if (ImGui::Button("Template Scene", ImVec2(100, 0))) {
+			// Handle button click for Scene 5
+    		_data->state_switch = TEMPLATE_STATE;
+		}
+		
+		
+    ImGui::End();
 }

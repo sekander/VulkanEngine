@@ -49,7 +49,7 @@ class Game {
 		void Run();
 		void NetworkUpdate();
 		void SoundUpdate();
-    void Update();
+		void Update();
 		void Render();                                                                                  
 
 		void processInput(GLFWwindow *window);
@@ -92,7 +92,4 @@ class Game {
 
 		bool firstMouse = true;
 
-
-
 };
-

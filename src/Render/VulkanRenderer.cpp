@@ -28,9 +28,14 @@ int VulkanRenderer::init(GLFWwindow * newWindow)
 		createDescriptorSetLayout();
 		createPushConstantRange();
 		//createGraphicsPipeline("Shaders/phongVert.spv","Shaders/phongFrag.spv", "Shaders/geo.spv");
-        // graphicsPipeline = createGraphicsPipeline("Shaders/normalVert.spv", "Shaders/normalFrag.spv", "Shaders/geo.spv");
-		graphicsPipeline = createGraphicsPipeline("Shaders/vert.spv","Shaders/frag.spv", "Shaders/normalPhongG.spv");
-		graphicsPipeline_2 =createGraphicsPipeline("Shaders/phong_vert.spv","Shaders/phong_frag.spv", "Shaders/normalPhongG.spv");
+        // graphicsPipeline = createGraphicsPipeline("Shaders/normalPhongV.spv", "Shaders/normalPhongF.spv", "Shaders/normalPhongG.spv");
+        // graphicsPipeline = createGraphicsPipeline("Shaders/normals_shaderV.spv", "Shaders/normals_shaderF.spv", "Shaders/normals_shader.geom.spv");
+        // graphicsPipeline = createGraphicsPipeline("Shaders/normalVert.spv", "Shaders/normalFrag.spv", "Shaders/normalGeo.spv");
+		
+		graphicsPipeline = createGraphicsPipeline("Shaders/vert.spv","Shaders/frag.spv", "Shaders/baseG.spv");
+        // graphicsPipeline = createGraphicsPipeline("Shaders/baseV.spv", "Shaders/baseF.spv", "Shaders/baseG.spv");
+		graphicsPipeline_2 =createGraphicsPipeline("Shaders/phong_vert.spv","Shaders/phong_frag.spv", "Shaders/baseG.spv");
+        // graphicsPipeline = createGraphicsPipeline("Shaders/normals_shader.vert.spv", "Shaders/normals_shader.frag.spv", "Shaders/normals_shader.geom.spv");
 		
 		
 		//recreateSwapChain();
@@ -1244,7 +1249,12 @@ VkPipeline VulkanRenderer::createGraphicsPipeline(const std::string& vertexShade
 	// Read in SPIR-V code of shaders
 	auto vertexShaderCode = readFile(vertexShaderPath);
 	auto fragmentShaderCode = readFile(fragmentShaderPath);
-	auto geoShaderCode = readFile(geometryShaderPath);
+	//auto geoShaderCode = readFile(geometryShaderPath);
+  	std::vector<char> geoShaderCode;
+    if (!geometryShaderPath.empty()) {
+        geoShaderCode = readFile(geometryShaderPath);
+    }
+
 
   	std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
   	std::vector<VkPipelineShaderStageCreateInfo> normalShaderStages;
@@ -1253,7 +1263,11 @@ VkPipeline VulkanRenderer::createGraphicsPipeline(const std::string& vertexShade
 	// Create Shader Modules
 	VkShaderModule vertexShaderModule = createShaderModule(vertexShaderCode);
 	VkShaderModule fragmentShaderModule = createShaderModule(fragmentShaderCode);
-	VkShaderModule geoShaderModule = createShaderModule(geoShaderCode);
+	//VkShaderModule geoShaderModule = createShaderModule(geoShaderCode);
+	VkShaderModule geoShaderModule = VK_NULL_HANDLE;
+    if (!geometryShaderPath.empty()) {
+        geoShaderModule = createShaderModule(geoShaderCode);
+    }
 
 
 	// -- SHADER STAGE CREATION INFORMATION --
@@ -1275,11 +1289,23 @@ VkPipeline VulkanRenderer::createGraphicsPipeline(const std::string& vertexShade
 
 	
 	//Geo Shader 
-	VkPipelineShaderStageCreateInfo geoShaderCreateInfo = {};
-	geoShaderCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-	geoShaderCreateInfo.stage = VK_SHADER_STAGE_GEOMETRY_BIT;					// Shader Stage name
-	geoShaderCreateInfo.module = geoShaderModule;							// Shader module to be used by stage
-	geoShaderCreateInfo.pName = "main";										// Entry point in to shader
+    // Geometry Shader Stage (conditionally added)
+    if (!geometryShaderPath.empty()) {
+        VkPipelineShaderStageCreateInfo geoShaderStageInfo = {};
+        geoShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+        geoShaderStageInfo.stage = VK_SHADER_STAGE_GEOMETRY_BIT;
+        geoShaderStageInfo.module = geoShaderModule;
+        geoShaderStageInfo.pName = "main";
+        shaderStages.push_back(geoShaderStageInfo);
+    }
+
+	//VkPipelineShaderStageCreateInfo geoShaderCreateInfo = {};
+	//geoShaderCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	//geoShaderCreateInfo.stage = VK_SHADER_STAGE_GEOMETRY_BIT;					// Shader Stage name
+	//geoShaderCreateInfo.module = geoShaderModule;							// Shader module to be used by stage
+	//geoShaderCreateInfo.pName = "main";										// Entry point in to shader
+
+	// if (geometryShaderPath != "")
 	// shaderStages.push_back(geoShaderCreateInfo);
 	//normalShaderStages.push_back(geoShaderCreateInfo);
 	
@@ -1494,7 +1520,10 @@ VkPipeline VulkanRenderer::createGraphicsPipeline(const std::string& vertexShade
 	// Destroy Shader Modules, no longer needed after Pipeline created
 	vkDestroyShaderModule(mainDevice.logicalDevice, fragmentShaderModule, nullptr);
 	vkDestroyShaderModule(mainDevice.logicalDevice, vertexShaderModule, nullptr);
-	vkDestroyShaderModule(mainDevice.logicalDevice, geoShaderModule, nullptr);
+	//vkDestroyShaderModule(mainDevice.logicalDevice, geoShaderModule, nullptr);
+	if (geoShaderModule != VK_NULL_HANDLE) {
+        vkDestroyShaderModule(mainDevice.logicalDevice, geoShaderModule, nullptr);
+    }
 
 	return pipeLine;
 
@@ -2721,16 +2750,17 @@ void VulkanRenderer::drawUI(std::function<void()> customUIRenderCallback = nullp
         switch (selectedItem)
         {
             case 0:
-				recreateGraphicsPipeline("Shaders/vert.spv","Shaders/frag.spv", "Shaders/normalPhongG.spv");
+				recreateGraphicsPipeline("Shaders/vert.spv","Shaders/frag.spv", "Shaders/geo.spv");
                 break;
             case 1:
-		 		recreateGraphicsPipeline("Shaders/tex_vert.spv","Shaders/tex_frag.spv", "Shaders/normalPhongG.spv");
+		 		recreateGraphicsPipeline("Shaders/tex_vert.spv","Shaders/tex_frag.spv", "");
+		 		// recreateGraphicsPipeline("Shaders/tex_vert.spv","Shaders/tex_frag.spv", "Shaders/tex_geo.spv");
                 break;
             case 2:
-				recreateGraphicsPipeline("Shaders/phong_vert.spv","Shaders/phong_frag.spv", "Shaders/normalPhongG.spv");
+				recreateGraphicsPipeline("Shaders/phong_vert.spv","Shaders/phong_frag.spv", "");
                 break;
             case 3:
-				recreateGraphicsPipeline("Shaders/toon_vert.spv","Shaders/metal_frag.spv", "Shaders/normalPhongG.spv");
+				recreateGraphicsPipeline("Shaders/baseV.spv","Shaders/baseF.spv", "Shaders/baseG.spv");
                 break;
             // Add more cases as needed for additional shaders
         }

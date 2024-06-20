@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <vulkan/vulkan_core.h>
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -214,7 +215,7 @@ private:
 								// const std::string& geometryShaderPath /*= ""*/);
 	VkPipeline createGraphicsPipeline(const std::string& vertexShaderPath, 
 								const std::string& fragmentShaderPath, 
-								const std::string& geometryShaderPath);
+								const std::string& geometryShaderPath = "");
 	void createDepthBufferImage();
 	void createFramebuffers();
 	void createCommandPool();

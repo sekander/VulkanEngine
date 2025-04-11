@@ -34,7 +34,8 @@ Game::Game(){
 
   _data->vk = &vk_render;
     
-	_data->machine =  new StateMachine();
+	_data->machine = std::make_unique<StateMachine>();
+	// _data->machine =  new StateMachine();
 
 }
 Game::~Game(){
@@ -389,7 +390,7 @@ void Game::Render()
     //_data->gs.connection_established = false;
 
     _data->machine->Clear();
-    delete _data->machine;
+    //delete _data->machine;
     // vk_render.cleanup();
     delete _data; 
 

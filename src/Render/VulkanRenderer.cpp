@@ -244,6 +244,23 @@ void VulkanRenderer::draw()
 		//throw std::runtime_error("Failed to present Image!");
 	}
 
+	 // Just for one frame: save image 0 after rendering
+	 static bool saved = false;
+	//  if (!saved) 
+	 {
+		 SaveFramebufferToPNG(
+			 mainDevice.logicalDevice,
+			 mainDevice.physicalDevice,
+			 graphicsCommandPool,
+			 graphicsQueue,
+			 swapChainImages[imageIndex].image, // Access the VkImage member of SwapchainImage
+			 swapChainExtent.width,
+			 swapChainExtent.height,
+			 swapChainImageFormat
+		 );
+		 saved = true;
+	 }
+
 	// Get next frame (use % MAX_FRAME_DRAWS to keep value below MAX_FRAME_DRAWS)
 	currentFrame = (currentFrame + 1) % MAX_FRAME_DRAWS;
 }
@@ -2152,6 +2169,144 @@ VkFormat VulkanRenderer::chooseSupportedFormat(const std::vector<VkFormat> & for
 
 	throw std::runtime_error("Failed to find a mathcing format!");
 }
+
+void VulkanRenderer::SaveFramebufferToPNG(VkDevice device, VkPhysicalDevice physicalDevice, VkCommandPool commandPool, VkQueue queue,
+                          VkImage srcImage, uint32_t width, uint32_t height, VkFormat format) {
+
+    VkDeviceSize imageSize = width * height * 4;
+
+    // 1. Create staging buffer (CPU-visible)
+    VkBuffer stagingBuffer;
+    VkDeviceMemory stagingMemory;
+
+    VkBufferCreateInfo bufferInfo = {
+        .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+        .size = imageSize,
+        .usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+        .sharingMode = VK_SHARING_MODE_EXCLUSIVE
+    };
+    vkCreateBuffer(device, &bufferInfo, nullptr, &stagingBuffer);
+
+    VkMemoryRequirements memRequirements;
+    vkGetBufferMemoryRequirements(device, stagingBuffer, &memRequirements);
+
+    VkMemoryAllocateInfo allocInfo = {
+        .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+        .allocationSize = memRequirements.size
+    };
+
+    VkPhysicalDeviceMemoryProperties memProps;
+    vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProps);
+    for (uint32_t i = 0; i < memProps.memoryTypeCount; ++i) {
+        if (memRequirements.memoryTypeBits & (1 << i)) {
+            if (memProps.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) {
+                allocInfo.memoryTypeIndex = i;
+                break;
+            }
+        }
+    }
+
+    vkAllocateMemory(device, &allocInfo, nullptr, &stagingMemory);
+    vkBindBufferMemory(device, stagingBuffer, stagingMemory, 0);
+
+    // 2. Create command buffer to copy image → buffer
+    VkCommandBufferAllocateInfo cmdBufAllocInfo = {
+        .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+        .commandPool = commandPool,
+        .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+        .commandBufferCount = 1
+    };
+
+    VkCommandBuffer cmdBuffer;
+    vkAllocateCommandBuffers(device, &cmdBufAllocInfo, &cmdBuffer);
+
+    VkCommandBufferBeginInfo beginInfo = {
+        .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+        .flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT
+    };
+    vkBeginCommandBuffer(cmdBuffer, &beginInfo);
+
+    // 3. Transition image layout to TRANSFER_SRC_OPTIMAL
+    VkImageMemoryBarrier barrier = {
+        .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+        .srcAccessMask = VK_ACCESS_MEMORY_READ_BIT,
+        .dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT,
+        .oldLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+        .newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+        .image = srcImage,
+        .subresourceRange = {
+            .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+            .baseMipLevel = 0,
+            .levelCount = 1,
+            .baseArrayLayer = 0,
+            .layerCount = 1
+        }
+    };
+    vkCmdPipelineBarrier(cmdBuffer,
+                         VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
+                         0, 0, nullptr, 0, nullptr, 1, &barrier);
+
+    // 4. Copy image to buffer
+    VkBufferImageCopy region = {};
+    region.bufferOffset = 0;
+    region.bufferRowLength = 0;
+    region.bufferImageHeight = 0;
+    region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    region.imageSubresource.mipLevel = 0;
+    region.imageSubresource.baseArrayLayer = 0;
+    region.imageSubresource.layerCount = 1;
+    region.imageOffset = {0, 0, 0};
+    region.imageExtent = {width, height, 1};
+
+    vkCmdCopyImageToBuffer(cmdBuffer, srcImage, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                           stagingBuffer, 1, &region);
+
+    // 5. Transition back to PRESENT layout
+    std::swap(barrier.oldLayout, barrier.newLayout);
+    std::swap(barrier.srcAccessMask, barrier.dstAccessMask);
+
+    vkCmdPipelineBarrier(cmdBuffer,
+                         VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                         0, 0, nullptr, 0, nullptr, 1, &barrier);
+
+    vkEndCommandBuffer(cmdBuffer);
+
+    // 6. Submit and wait
+    VkSubmitInfo submitInfo = {
+        .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+        .commandBufferCount = 1,
+        .pCommandBuffers = &cmdBuffer
+    };
+    vkQueueSubmit(queue, 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(queue);
+
+    // 7. Map memory and write image
+    void* data;
+    vkMapMemory(device, stagingMemory, 0, imageSize, 0, &data);
+
+    // Optional: Flip vertically (Vulkan origin is bottom-left)
+    std::vector<unsigned char> flipped(width * height * 4);
+    for (uint32_t y = 0; y < height; ++y) {
+        memcpy(&flipped[y * width * 4],
+               (char*)data + (height - y - 1) * width * 4,
+               width * 4);
+    }
+	
+	static int frameCounter = 0;
+	std::string filename = "frames/frame_" + std::to_string(frameCounter++) + ".png";
+	stbi_write_png(filename.c_str(), width, height, 4, flipped.data(), width * 4);
+    // stbi_write_png("frame.png", width, height, 4, flipped.data(), width * 4);
+    vkUnmapMemory(device, stagingMemory);
+
+    // 8. Cleanup
+    vkFreeMemory(device, stagingMemory, nullptr);
+    vkDestroyBuffer(device, stagingBuffer, nullptr);
+    vkFreeCommandBuffers(device, commandPool, 1, &cmdBuffer);
+
+    printf("✅ Frame saved to frame.png\n");
+}
+
+
 
 VkImage VulkanRenderer::createImage(uint32_t width, 
 						uint32_t height, 

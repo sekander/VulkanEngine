@@ -610,3 +610,387 @@ Deleting GAME !!!!!!!
 ==3466== For lists of detected and suppressed errors, rerun with: -s
 ==3466== ERROR SUMMARY: 35 errors from 35 contexts (suppressed: 0 from 0)
 
+#############################################################################
+#############################################################################
+Thu Jun 20 06:23:51 AM UTC 2024
+
+IMGUI INIT
+Hello Template State
+RECREATE SWAP CHAIN 
+Window Width: 1000Window Height: 684SWAP CHAIN CLEANED
+SWAP CHAIN RECREATED
+Done Initializing ... 
+Begin Network Loop
+Begin Audio Loop
+Begin Update Loop
+Begin Render Loop
+Beginning Render Loop
+UPDATE THREAD : Time taken by program is :200.710321 sec
+UPDATE THREAD : Frames per sec 8.10256
+CLEANING UP VULKAN
+Cleaned IMGUI
+Deleting Template State
+Clearing States
+Deleting MAchine
+==36715== Mismatched new/delete size value: 8
+==36715==    at 0x4846859: operator delete(void*, unsigned long) (vg_replace_malloc.c:1181)
+==36715==    by 0x1F348F: std::default_delete<State>::operator()(State*) const (unique_ptr.h:93)
+==36715==    by 0x1F28E7: std::unique_ptr<State, std::default_delete<State> >::~unique_ptr() (unique_ptr.h:398)
+==36715==    by 0x1F487E: void std::_Destroy<std::unique_ptr<State, std::default_delete<State> > >(std::unique_ptr<State, std::default_delete<State> >*) (stl_construct.h:151)
+==36715==    by 0x1F4766: void std::_Destroy_aux<false>::__destroy<std::unique_ptr<State, std::default_delete<State> >*>(std::unique_ptr<State, std::default_delete<State> >*, std::unique_ptr<State, std::default_delete<State> >*) (stl_construct.h:163)
+==36715==    by 0x1F45CB: void std::_Destroy<std::unique_ptr<State, std::default_delete<State> >*>(std::unique_ptr<State, std::default_delete<State> >*, std::unique_ptr<State, std::default_delete<State> >*) (stl_construct.h:196)
+==36715==    by 0x1F3EFE: _Destroy<std::unique_ptr<State>*, std::unique_ptr<State> > (alloc_traits.h:944)
+==36715==    by 0x1F3EFE: std::deque<std::unique_ptr<State, std::default_delete<State> >, std::allocator<std::unique_ptr<State, std::default_delete<State> > > >::_M_destroy_data_aux(std::_Deque_iterator<std::unique_ptr<State, std::default_delete<State> >, std::unique_ptr<State, std::default_delete<State> >&, std::unique_ptr<State, std::default_delete<State> >*>, std::_Deque_iterator<std::unique_ptr<State, std::default_delete<State> >, std::unique_ptr<State, std::default_delete<State> >&, std::unique_ptr<State, std::default_delete<State> >*>) (deque.tcc:875)
+==36715==    by 0x1F33F9: std::deque<std::unique_ptr<State, std::default_delete<State> >, std::allocator<std::unique_ptr<State, std::default_delete<State> > > >::_M_destroy_data(std::_Deque_iterator<std::unique_ptr<State, std::default_delete<State> >, std::unique_ptr<State, std::default_delete<State> >&, std::unique_ptr<State, std::default_delete<State> >*>, std::_Deque_iterator<std::unique_ptr<State, std::default_delete<State> >, std::unique_ptr<State, std::default_delete<State> >&, std::unique_ptr<State, std::default_delete<State> >*>, std::allocator<std::unique_ptr<State, std::default_delete<State> > > const&) (stl_deque.h:2091)
+==36715==    by 0x1F27A3: std::deque<std::unique_ptr<State, std::default_delete<State> >, std::allocator<std::unique_ptr<State, std::default_delete<State> > > >::~deque() (stl_deque.h:1028)
+==36715==    by 0x1F190D: std::stack<std::unique_ptr<State, std::default_delete<State> >, std::deque<std::unique_ptr<State, std::default_delete<State> >, std::allocator<std::unique_ptr<State, std::default_delete<State> > > > >::~stack() (stl_stack.h:99)
+==36715==    by 0x1F1974: StateMachine::~StateMachine() (state_machine.h:18)
+==36715==    by 0x1E8B38: Game::Render() (game.cpp:392)
+==36715==  Address 0x6259990 is 0 bytes inside a block of size 32 alloc'd
+==36715==    at 0x4842F73: operator new(unsigned long) (vg_replace_malloc.c:487)
+==36715==    by 0x1E7AA5: Game::Initialize() (game.cpp:57)
+==36715==    by 0x19BB35: main (main.cpp:38)
+==36715== 
+GameData Destroyed
+Time taken by program is :68.45013 sec
+Frames per sec -nan
+==36715== Invalid write of size 1
+==36715==    at 0x1E8CAE: Game::Render() (game.cpp:407)
+==36715==    by 0x19BBDF: main (main.cpp:55)
+==36715==  Address 0x59c23b1 is 225 bytes inside a block of size 264 free'd
+==36715==    at 0x48468BD: operator delete(void*, unsigned long) (vg_replace_malloc.c:1181)
+==36715==    by 0x1E8B67: Game::Render() (game.cpp:394)
+==36715==    by 0x19BBDF: main (main.cpp:55)
+==36715==  Block was alloc'd at
+==36715==    at 0x4842F73: operator new(unsigned long) (vg_replace_malloc.c:487)
+==36715==    by 0x1E7905: Game::Game() (game.cpp:33)
+==36715==    by 0x19DBF2: void std::_Construct<Game>(Game*) (stl_construct.h:119)
+==36715==    by 0x19D90A: construct<Game> (alloc_traits.h:657)
+==36715==    by 0x19D90A: std::_Sp_counted_ptr_inplace<Game, std::allocator<void>, (__gnu_cxx::_Lock_policy)2>::_Sp_counted_ptr_inplace<>(std::allocator<void>) (shared_ptr_base.h:607)
+==36715==    by 0x19D64A: std::__shared_count<(__gnu_cxx::_Lock_policy)2>::__shared_count<Game, std::allocator<void>>(Game*&, std::_Sp_alloc_shared_tag<std::allocator<void> >) (shared_ptr_base.h:969)
+==36715==    by 0x19D449: std::__shared_ptr<Game, (__gnu_cxx::_Lock_policy)2>::__shared_ptr<std::allocator<void>>(std::_Sp_alloc_shared_tag<std::allocator<void> >) (shared_ptr_base.h:1713)
+==36715==    by 0x19D23E: std::shared_ptr<Game>::shared_ptr<std::allocator<void>>(std::_Sp_alloc_shared_tag<std::allocator<void> >) (shared_ptr.h:463)
+==36715==    by 0x19D046: std::shared_ptr<std::enable_if<!std::is_array<Game>::value, Game>::type> std::make_shared<Game>() (shared_ptr.h:1008)
+==36715==    by 0x19BB02: main (main.cpp:32)
+==36715== 
+Total Number of Textures 0
+Total Number of NPC 0
+Total Number of Animator 0
+Total Number of Projectile 0
+Total Number of RenderComponents 0
+Total Number of TransformComponents 0
+Total Number of PhysicsComponents 0
+Total Number of AI Componets 0
+APPLICATION CLOSED
+Deleting GAME !!!!!!!
+==36715== 
+==36715== HEAP SUMMARY:
+==36715==     in use at exit: 316,807 bytes in 3,061 blocks
+==36715==   total heap usage: 65,190 allocs, 62,129 frees, 1,347,630,066 bytes allocated
+==36715== 
+==36715== 8 bytes in 1 blocks are definitely lost in loss record 9 of 2,240
+==36715==    at 0x4849E20: realloc (vg_replace_malloc.c:1800)
+==36715==    by 0xCE6B4DA: ???
+==36715==    by 0xCE54E9C: ???
+==36715==    by 0xCE5843F: ???
+==36715==    by 0xCE587C2: ???
+==36715==    by 0x7122B0E: ???
+==36715==    by 0x7135512: ???
+==36715==    by 0x7135B07: ???
+==36715==    by 0x761943C: ???
+==36715==    by 0x70C0713: ???
+==36715==    by 0x74AC0F2: ???
+==36715==    by 0x73E30A6: ???
+==36715== 
+==36715== 29 bytes in 1 blocks are definitely lost in loss record 152 of 2,240
+==36715==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==36715==    by 0xCE72954: ???
+==36715==    by 0xCE58BB8: ???
+==36715==    by 0x7122B0E: ???
+==36715==    by 0x7135512: ???
+==36715==    by 0x7135B07: ???
+==36715==    by 0x761943C: ???
+==36715==    by 0x70C0713: ???
+==36715==    by 0x74AC0F2: ???
+==36715==    by 0x73E30A6: ???
+==36715==    by 0x659BDFB: ???
+==36715==    by 0x49FF28E: terminator_CreateInstance (loader.c:5524)
+==36715== 
+==36715== 29 bytes in 1 blocks are definitely lost in loss record 153 of 2,240
+==36715==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==36715==    by 0xCE72954: ???
+==36715==    by 0xCE58B6B: ???
+==36715==    by 0x7122B0E: ???
+==36715==    by 0x7135512: ???
+==36715==    by 0x7135B07: ???
+==36715==    by 0x761943C: ???
+==36715==    by 0x70C0713: ???
+==36715==    by 0x74AC0F2: ???
+==36715==    by 0x73E30A6: ???
+==36715==    by 0x659BDFB: ???
+==36715==    by 0x49FF28E: terminator_CreateInstance (loader.c:5524)
+==36715== 
+==36715== 38 bytes in 1 blocks are definitely lost in loss record 890 of 2,240
+==36715==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==36715==    by 0xCE72954: ???
+==36715==    by 0xCE5899A: ???
+==36715==    by 0x7122B0E: ???
+==36715==    by 0x7135512: ???
+==36715==    by 0x7135B07: ???
+==36715==    by 0x761943C: ???
+==36715==    by 0x70C0713: ???
+==36715==    by 0x74AC0F2: ???
+==36715==    by 0x73E30A6: ???
+==36715==    by 0x659BDFB: ???
+==36715==    by 0x49FF28E: terminator_CreateInstance (loader.c:5524)
+==36715== 
+==36715== 40 bytes in 1 blocks are definitely lost in loss record 1,099 of 2,240
+==36715==    at 0x4849BF3: calloc (vg_replace_malloc.c:1675)
+==36715==    by 0xCE72C18: ???
+==36715==    by 0xCE79A2F: ???
+==36715==    by 0xCE79ABF: ???
+==36715==    by 0xCE79B2D: ???
+==36715==    by 0xCE4FD2E: ???
+==36715==    by 0xCE572FC: ???
+==36715==    by 0xCE58873: ???
+==36715==    by 0x7122B0E: ???
+==36715==    by 0x7135512: ???
+==36715==    by 0x7135B07: ???
+==36715==    by 0x761943C: ???
+==36715== 
+==36715== 64 bytes in 1 blocks are possibly lost in loss record 2,138 of 2,240
+==36715==    at 0x4849BF3: calloc (vg_replace_malloc.c:1675)
+==36715==    by 0x70ADABD: ???
+==36715==    by 0x76B4168: ???
+==36715==    by 0x1AA37B: VulkanRenderer::createDescriptorSetLayout() (VulkanRenderer.cpp:980)
+==36715==    by 0x1A66EE: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:28)
+==36715==    by 0x1E7B13: Game::Initialize() (game.cpp:63)
+==36715==    by 0x19BB35: main (main.cpp:38)
+==36715== 
+==36715== 80 bytes in 1 blocks are possibly lost in loss record 2,164 of 2,240
+==36715==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==36715==    by 0x70AD801: ???
+==36715==    by 0x751D9F5: ???
+==36715==    by 0x7506948: ???
+==36715==    by 0x7506AC8: ???
+==36715==    by 0x73E2B97: ???
+==36715==    by 0x1ABF0A: VulkanRenderer::createGraphicsPipeline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (VulkanRenderer.cpp:1508)
+==36715==    by 0x1A68A3: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:37)
+==36715==    by 0x1E7B13: Game::Initialize() (game.cpp:63)
+==36715==    by 0x19BB35: main (main.cpp:38)
+==36715== 
+==36715== 96 (24 direct, 72 indirect) bytes in 1 blocks are definitely lost in loss record 2,169 of 2,240
+==36715==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==36715==    by 0xCE7A35F: ???
+==36715==    by 0xCE659F6: ???
+==36715==    by 0xCE6AC70: ???
+==36715==    by 0xCE58259: ???
+==36715==    by 0xCE584ED: ???
+==36715==    by 0xCE587C2: ???
+==36715==    by 0x7122B0E: ???
+==36715==    by 0x7135512: ???
+==36715==    by 0x7135B07: ???
+==36715==    by 0x761943C: ???
+==36715==    by 0x70C0713: ???
+==36715== 
+==36715== 152 bytes in 1 blocks are definitely lost in loss record 2,177 of 2,240
+==36715==    at 0x4842F73: operator new(unsigned long) (vg_replace_malloc.c:487)
+==36715==    by 0x1E7A6F: Game::Initialize() (game.cpp:54)
+==36715==    by 0x19BB35: main (main.cpp:38)
+==36715== 
+==36715== 152 (112 direct, 40 indirect) bytes in 1 blocks are definitely lost in loss record 2,178 of 2,240
+==36715==    at 0x4849BF3: calloc (vg_replace_malloc.c:1675)
+==36715==    by 0xCE71970: ???
+==36715==    by 0xCE57518: ???
+==36715==    by 0xCE58873: ???
+==36715==    by 0x7122B0E: ???
+==36715==    by 0x7135512: ???
+==36715==    by 0x7135B07: ???
+==36715==    by 0x761943C: ???
+==36715==    by 0x70C0713: ???
+==36715==    by 0x74AC0F2: ???
+==36715==    by 0x73E30A6: ???
+==36715==    by 0x659BDFB: ???
+==36715== 
+==36715== 160 bytes in 1 blocks are possibly lost in loss record 2,181 of 2,240
+==36715==    at 0x4849E20: realloc (vg_replace_malloc.c:1800)
+==36715==    by 0xCE738CC: ???
+==36715==    by 0xCE77A3E: ???
+==36715==    by 0xCE61A2E: ???
+==36715==    by 0xCE61D75: ???
+==36715==    by 0xCE62322: ???
+==36715==    by 0xCE623A4: ???
+==36715==    by 0xCE660D5: ???
+==36715==    by 0xCE57E5B: ???
+==36715==    by 0xCE58227: ???
+==36715==    by 0xCE584ED: ???
+==36715==    by 0xCE587C2: ???
+==36715== 
+==36715== 184 bytes in 1 blocks are possibly lost in loss record 2,187 of 2,240
+==36715==    at 0x4849BF3: calloc (vg_replace_malloc.c:1675)
+==36715==    by 0xCE64D8A: ???
+==36715==    by 0xCE66082: ???
+==36715==    by 0xCE57E5B: ???
+==36715==    by 0xCE58227: ???
+==36715==    by 0xCE584ED: ???
+==36715==    by 0xCE587C2: ???
+==36715==    by 0x7122B0E: ???
+==36715==    by 0x7135512: ???
+==36715==    by 0x7135B07: ???
+==36715==    by 0x761943C: ???
+==36715==    by 0x70C0713: ???
+==36715== 
+==36715== 192 bytes in 1 blocks are possibly lost in loss record 2,191 of 2,240
+==36715==    at 0x4849BF3: calloc (vg_replace_malloc.c:1675)
+==36715==    by 0x70ADABD: ???
+==36715==    by 0x76B4168: ???
+==36715==    by 0x1AA282: VulkanRenderer::createDescriptorSetLayout() (VulkanRenderer.cpp:957)
+==36715==    by 0x1A66EE: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:28)
+==36715==    by 0x1E7B13: Game::Initialize() (game.cpp:63)
+==36715==    by 0x19BB35: main (main.cpp:38)
+==36715== 
+==36715== 223 bytes in 1 blocks are possibly lost in loss record 2,192 of 2,240
+==36715==    at 0x4849E20: realloc (vg_replace_malloc.c:1800)
+==36715==    by 0xCE72A4F: ???
+==36715==    by 0xCE74129: ???
+==36715==    by 0xCE76666: ???
+==36715==    by 0xCE61BF9: ???
+==36715==    by 0xCE65561: ???
+==36715==    by 0xCE66100: ???
+==36715==    by 0xCE57E5B: ???
+==36715==    by 0xCE58227: ???
+==36715==    by 0xCE584ED: ???
+==36715==    by 0xCE587C2: ???
+==36715==    by 0x7122B0E: ???
+==36715== 
+==36715== 352 bytes in 1 blocks are possibly lost in loss record 2,200 of 2,240
+==36715==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==36715==    by 0x70AD801: ???
+==36715==    by 0x7501653: ???
+==36715==    by 0x7529910: ???
+==36715==    by 0x7506BB7: ???
+==36715==    by 0x73E2B97: ???
+==36715==    by 0x1ABF0A: VulkanRenderer::createGraphicsPipeline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (VulkanRenderer.cpp:1508)
+==36715==    by 0x1A68A3: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:37)
+==36715==    by 0x1E7B13: Game::Initialize() (game.cpp:63)
+==36715==    by 0x19BB35: main (main.cpp:38)
+==36715== 
+==36715== 368 bytes in 1 blocks are possibly lost in loss record 2,201 of 2,240
+==36715==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==36715==    by 0x70AD801: ???
+==36715==    by 0x76B3E6B: ???
+==36715==    by 0x1AA282: VulkanRenderer::createDescriptorSetLayout() (VulkanRenderer.cpp:957)
+==36715==    by 0x1A66EE: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:28)
+==36715==    by 0x1E7B13: Game::Initialize() (game.cpp:63)
+==36715==    by 0x19BB35: main (main.cpp:38)
+==36715== 
+==36715== 368 bytes in 1 blocks are possibly lost in loss record 2,202 of 2,240
+==36715==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==36715==    by 0x70AD801: ???
+==36715==    by 0x76B3E6B: ???
+==36715==    by 0x1AA37B: VulkanRenderer::createDescriptorSetLayout() (VulkanRenderer.cpp:980)
+==36715==    by 0x1A66EE: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:28)
+==36715==    by 0x1E7B13: Game::Initialize() (game.cpp:63)
+==36715==    by 0x19BB35: main (main.cpp:38)
+==36715== 
+==36715== 520 bytes in 13 blocks are definitely lost in loss record 2,209 of 2,240
+==36715==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==36715==    by 0xCE76248: ???
+==36715==    by 0xCE6A84C: ???
+==36715==    by 0xCE586B6: ???
+==36715==    by 0x7122B0E: ???
+==36715==    by 0x7135512: ???
+==36715==    by 0x7135B07: ???
+==36715==    by 0x761943C: ???
+==36715==    by 0x70C0713: ???
+==36715==    by 0x74AC0F2: ???
+==36715==    by 0x73E30A6: ???
+==36715==    by 0x659BDFB: ???
+==36715== 
+==36715== 2,544 bytes in 1 blocks are possibly lost in loss record 2,224 of 2,240
+==36715==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==36715==    by 0x70AD801: ???
+==36715==    by 0x7506AA1: ???
+==36715==    by 0x73E2B97: ???
+==36715==    by 0x1ABF0A: VulkanRenderer::createGraphicsPipeline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (VulkanRenderer.cpp:1508)
+==36715==    by 0x1A68A3: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:37)
+==36715==    by 0x1E7B13: Game::Initialize() (game.cpp:63)
+==36715==    by 0x19BB35: main (main.cpp:38)
+==36715== 
+==36715== 6,400 bytes in 2 blocks are possibly lost in loss record 2,230 of 2,240
+==36715==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==36715==    by 0x70AD801: ???
+==36715==    by 0x76A841B: ???
+==36715==    by 0x74FB523: ???
+==36715==    by 0x7510A07: ???
+==36715==    by 0x75F9173: ???
+==36715==    by 0x7513825: ???
+==36715==    by 0x752936F: ???
+==36715==    by 0x7506BB7: ???
+==36715==    by 0x73E2B97: ???
+==36715==    by 0x1ABF0A: VulkanRenderer::createGraphicsPipeline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (VulkanRenderer.cpp:1508)
+==36715==    by 0x1A68A3: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:37)
+==36715== 
+==36715== 8,064 bytes in 2 blocks are possibly lost in loss record 2,231 of 2,240
+==36715==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==36715==    by 0x70AD801: ???
+==36715==    by 0x7511ED0: ???
+==36715==    by 0x75F8F51: ???
+==36715==    by 0x7513825: ???
+==36715==    by 0x752936F: ???
+==36715==    by 0x7506BB7: ???
+==36715==    by 0x73E2B97: ???
+==36715==    by 0x1ABF0A: VulkanRenderer::createGraphicsPipeline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (VulkanRenderer.cpp:1508)
+==36715==    by 0x1A68A3: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:37)
+==36715==    by 0x1E7B13: Game::Initialize() (game.cpp:63)
+==36715==    by 0x19BB35: main (main.cpp:38)
+==36715== 
+==36715== 9,997 (16 direct, 9,981 indirect) bytes in 1 blocks are definitely lost in loss record 2,235 of 2,240
+==36715==    at 0x4849E20: realloc (vg_replace_malloc.c:1800)
+==36715==    by 0xCE777D3: ???
+==36715==    by 0xCE54D30: ???
+==36715==    by 0xCE54F01: ???
+==36715==    by 0xCE5843F: ???
+==36715==    by 0xCE587C2: ???
+==36715==    by 0x7122B0E: ???
+==36715==    by 0x7135512: ???
+==36715==    by 0x7135B07: ???
+==36715==    by 0x761943C: ???
+==36715==    by 0x70C0713: ???
+==36715==    by 0x74AC0F2: ???
+==36715== 
+==36715== 15,440 (14,448 direct, 992 indirect) bytes in 1 blocks are definitely lost in loss record 2,236 of 2,240
+==36715==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==36715==    by 0x70AD801: ???
+==36715==    by 0x74925C1: ???
+==36715==    by 0x1ABD2A: VulkanRenderer::createGraphicsPipeline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (VulkanRenderer.cpp:1465)
+==36715==    by 0x1A679F: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:35)
+==36715==    by 0x1E7B13: Game::Initialize() (game.cpp:63)
+==36715==    by 0x19BB35: main (main.cpp:38)
+==36715== 
+==36715== 38,686 bytes in 2 blocks are possibly lost in loss record 2,239 of 2,240
+==36715==    at 0x4842788: malloc (vg_replace_malloc.c:446)
+==36715==    by 0x70AD801: ???
+==36715==    by 0x76A8581: ???
+==36715==    by 0x74FB523: ???
+==36715==    by 0x7510A07: ???
+==36715==    by 0x75F9173: ???
+==36715==    by 0x7513825: ???
+==36715==    by 0x752936F: ???
+==36715==    by 0x7506BB7: ???
+==36715==    by 0x73E2B97: ???
+==36715==    by 0x1ABF0A: VulkanRenderer::createGraphicsPipeline(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (VulkanRenderer.cpp:1508)
+==36715==    by 0x1A68A3: VulkanRenderer::init(GLFWwindow*) (VulkanRenderer.cpp:37)
+==36715== 
+==36715== LEAK SUMMARY:
+==36715==    definitely lost: 15,416 bytes in 23 blocks
+==36715==    indirectly lost: 11,085 bytes in 60 blocks
+==36715==      possibly lost: 57,685 bytes in 16 blocks
+==36715==    still reachable: 232,621 bytes in 2,962 blocks
+==36715==         suppressed: 0 bytes in 0 blocks
+==36715== Reachable blocks (those to which a pointer was found) are not shown.
+==36715== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==36715== 
+==36715== For lists of detected and suppressed errors, rerun with: -s
+==36715== ERROR SUMMARY: 28 errors from 28 contexts (suppressed: 0 from 0)
+

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Frame Player</title>
+  <style>
+    body {
+      background: #111;
+      color: white;
+      text-align: center;
+      font-family: sans-serif;
+    }
+    #frame {
+      
+      max-width: 90vw;
+      max-height: 80vh;
+      border: 4px solid #555;
+      margin-top: 20px;
+    }
+
+    #frame img {
+      width: 180px;
+      height: 180px;
+      transform: rotate(180deg); /* Rotate the image 180 degrees */
+      object-fit: cover; /* Ensures that the image fills the space without distorting */
+      border: 4px solid #555;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Frame Viewer</h1>
+  <img id="frame" src="" alt="Loading frame..." />
+  <p id="frame-count"></p>
+
+  <script>
+    const frameImg = document.getElementById("frame");
+    const frameCount = document.getElementById("frame-count");
+    let frames = [];
+    let index = 0;
+    const fps = 10; // Change to adjust speed
+
+    async function fetchFrames() {
+      const response = await fetch("http://127.0.0.1:8000/frames");
+      frames = await response.json();
+      playFrames();
+    }
+
+    function playFrames() {
+      setInterval(() => {
+        if (frames.length === 0) return;
+
+        const currentFrame = frames[index];
+        frameImg.src = `http://127.0.0.1:8000/frame/${currentFrame}`;
+        frameCount.textContent = `Frame ${index + 1} / ${frames.length}`;
+        index = (index + 1) % frames.length;
+      }, 1000 / fps);
+    }
+
+    fetchFrames();
+  </script>
+</body>
+</html>

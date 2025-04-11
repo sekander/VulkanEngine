@@ -24,6 +24,10 @@
 #include <set>
 #include <algorithm>
 #include <array>
+// #define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+#include <fstream>
+
 #include "stb_image.h"
 #include "Mesh.h"
 #include "MeshModel.h"
@@ -255,6 +259,14 @@ private:
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR &surfaceCapabilities);
 	VkFormat chooseSupportedFormat(const std::vector<VkFormat> &formats, VkImageTiling tiling, VkFormatFeatureFlags featureFlags);
 
+	void SaveFramebufferToPNG(VkDevice device, 
+							  VkPhysicalDevice physicalDevice, 
+							  VkCommandPool commandPool, 
+							  VkQueue queue,
+							  VkImage srcImage, 
+							  uint32_t width, 
+							  uint32_t height, 
+							  VkFormat format = VK_FORMAT_R8G8B8A8_UNORM);
 
 
 	// -- Create Functions

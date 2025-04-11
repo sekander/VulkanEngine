@@ -29,7 +29,7 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 CPPFLAGS := $(INC_FLAGS) -MMD -MP -g
 
 #LINKER_FLAGS specifies the libraries we're linking against
-LINKER_FLAGS = -lGL -lGLU -lglfw -lvulkan -lassimp -ldl -lpthread
+LINKER_FLAGS = -lGL -lGLU -lglfw -lvulkan -lassimp -ldl -lpthread -ldraco
 
 
 # The final build step.

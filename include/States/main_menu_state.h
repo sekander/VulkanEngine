@@ -95,11 +95,11 @@ class MainMenuState : public State {
                          std::to_string(q.x) + ", " + std::to_string(q.y) + ", " + 
                          std::to_string(q.z) + ")\n";
             
-            std::cout << name << ": (" 
+            /* std::cout << name << ": (" 
               << q.w << ", " 
               << q.x << ", " 
               << q.y << ", " 
-              << q.z << ")" << std::endl;
+              << q.z << ")" << std::endl; */
             
             
             return result;

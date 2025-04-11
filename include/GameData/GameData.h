@@ -129,7 +129,8 @@ struct Game_Setting
 struct GameData 
 {
 	GLFWwindow* 			window;
-	StateMachine* 			machine;
+	std::unique_ptr<StateMachine> machine;
+	// StateMachine* 			machine;
 	//LoadingGameObjects*		ld;
 	States					state_switch;
 	Levels					level;
@@ -145,7 +146,8 @@ struct GameData
 		std::cout << "Default Constructor" << std::endl;
 	}
 
-	GameData(const GameData& gameData) : window(gameData.window), machine(gameData.machine)
+	// GameData(const GameData& gameData) : window(gameData.window), machine(gameData.machine)
+	GameData(const GameData& gameData) : window(gameData.window)
 	//GameData(const GameData& gameData) : window(gameData.window), o_cam(gameData.o_cam), world(gameData.world)
 	{
 		std::cout << "Copy Constructor" << std::endl;
@@ -155,7 +157,7 @@ struct GameData
 	{
 		std::cout << "Move Constructor" << std::endl;
 		window = moveData.window;
-		machine = moveData.machine;
+		// machine = moveData.machine;
 		//ld    = moveData.ld;
 		//state_switch = moveData.state_switch;
 

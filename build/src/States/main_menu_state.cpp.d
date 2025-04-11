@@ -9,6 +9,7 @@ build/../src/States/main_menu_state.cpp.o: \
  ../src/States/../../include/States/../../include/IMGUI/imconfig.h \
  ../src/States/../../include/GameData/ObjectCounter.h \
  ../src/States/../../include/Render/VulkanRenderer.h \
+ ../src/States/../../include/Render/stb_image_write.h \
  ../src/States/../../include/Render/stb_image.h \
  ../src/States/../../include/Render/Mesh.h \
  ../src/States/../../include/Render/Utilities.h \
@@ -24,6 +25,7 @@ build/../src/States/main_menu_state.cpp.o: \
 ../src/States/../../include/States/../../include/IMGUI/imconfig.h:
 ../src/States/../../include/GameData/ObjectCounter.h:
 ../src/States/../../include/Render/VulkanRenderer.h:
+../src/States/../../include/Render/stb_image_write.h:
 ../src/States/../../include/Render/stb_image.h:
 ../src/States/../../include/Render/Mesh.h:
 ../src/States/../../include/Render/Utilities.h:

@@ -13,6 +13,7 @@ build/../src/Window/game.cpp.o: ../src/Window/game.cpp \
  ../src/Window/../../include/Window/../States/loading_play_state.h \
  ../src/Window/../../include/Window/../States/template_state.h \
  ../src/Window/../../include/Render/VulkanRenderer.h \
+ ../src/Window/../../include/Render/stb_image_write.h \
  ../src/Window/../../include/Render/stb_image.h \
  ../src/Window/../../include/Render/Mesh.h \
  ../src/Window/../../include/Render/Utilities.h \
@@ -33,6 +34,7 @@ build/../src/Window/game.cpp.o: ../src/Window/game.cpp \
 ../src/Window/../../include/Window/../States/loading_play_state.h:
 ../src/Window/../../include/Window/../States/template_state.h:
 ../src/Window/../../include/Render/VulkanRenderer.h:
+../src/Window/../../include/Render/stb_image_write.h:
 ../src/Window/../../include/Render/stb_image.h:
 ../src/Window/../../include/Render/Mesh.h:
 ../src/Window/../../include/Render/Utilities.h:

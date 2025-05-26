@@ -919,7 +919,8 @@ void VulkanRenderer::createRenderPass()
 //Create Push Constant Range
 void VulkanRenderer::createPushConstantRange()
 {
-	pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	// pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
 	pushConstantRange.offset = 0;
 	//pushConstantRange.size = sizeof(UboModel);
 	pushConstantRange.size = sizeof(MeshPushConstants);
@@ -935,6 +936,7 @@ void VulkanRenderer::createDescriptorSetLayout()
 	vpLayoutBinding.binding = 0;													// Binding point in shader (designated by binding number in shader)
 	vpLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;				// Type of descriptor (uniform, dynamic uniform, image sampler, etc)
 	vpLayoutBinding.descriptorCount = 1;											// Number of descriptors for binding
+	// vpLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_GEOMETRY_BIT;						// Shader stage to bind to
 	vpLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_GEOMETRY_BIT;						// Shader stage to bind to
 	vpLayoutBinding.pImmutableSamplers = nullptr;									// For Texture: Can make sampler data unchangeable (immutable) by specifying in layout
 //EDIt THIS 
@@ -956,7 +958,7 @@ void VulkanRenderer::createDescriptorSetLayout()
 	lightLayoutBinding.binding = 2;													// Binding point in shader (designated by binding number in shader)
 	lightLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;			// Type of descriptor (uniform, dynamic uniform, image sampler, etc)
 	lightLayoutBinding.descriptorCount = 1;											// Number of descriptors for binding
-	lightLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;						// Shader stage to bind to
+	lightLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;						// Shader stage to bind to
 	lightLayoutBinding.pImmutableSamplers = nullptr;								// For Texture: Can make sampler data unchangeable (immutable) by specifying in layout
 	
 	std::vector<VkDescriptorSetLayoutBinding> layoutBindings = { vpLayoutBinding, modelLayoutBinding, lightLayoutBinding };
@@ -980,6 +982,7 @@ void VulkanRenderer::createDescriptorSetLayout()
 	//Create Texture sampler descriptor set Layout
 	//Texture binding info
 
+	// Binding for the base color texture (sampler2D)
 	VkDescriptorSetLayoutBinding samplerLayoutBinding = {};
 	samplerLayoutBinding.binding = 0;
 	samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -987,11 +990,21 @@ void VulkanRenderer::createDescriptorSetLayout()
 	samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 	samplerLayoutBinding.pImmutableSamplers = nullptr;
 
-	//Create a Descriptor Set Layout with given bindings for texture
+	// Binding for the normal map (sampler2D)
+	VkDescriptorSetLayoutBinding normalMapLayoutBinding = {};
+	normalMapLayoutBinding.binding = 1; // binding = 1
+	normalMapLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	normalMapLayoutBinding.descriptorCount = 1;
+	normalMapLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+	normalMapLayoutBinding.pImmutableSamplers = nullptr;
+
+	// Create a Descriptor Set Layout with given bindings for texture and normal map
+	std::array<VkDescriptorSetLayoutBinding, 2> samplerBindings = {samplerLayoutBinding, normalMapLayoutBinding};
+
 	VkDescriptorSetLayoutCreateInfo textureLayoutCreateInfo = {};
 	textureLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-	textureLayoutCreateInfo.bindingCount = 1;
-	textureLayoutCreateInfo.pBindings = &samplerLayoutBinding;
+	textureLayoutCreateInfo.bindingCount = static_cast<uint32_t>(samplerBindings.size());
+	textureLayoutCreateInfo.pBindings = samplerBindings.data();
 
 	//Create Descriptor Set Layout
 	result = vkCreateDescriptorSetLayout(mainDevice.logicalDevice, &textureLayoutCreateInfo, nullptr, &samplerSetLayout);
@@ -1343,7 +1356,8 @@ VkPipeline VulkanRenderer::createGraphicsPipeline(const std::string& vertexShade
 																				// VK_VERTEX_INPUT_RATE_INSTANCE	: Move to a vertex for the next instance
 
 	// How the data for an attribute is defined within a vertex
-	std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions;
+	// std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions;
+	std::array<VkVertexInputAttributeDescription, 4> attributeDescriptions;
 
 	// Position Attribute
 	attributeDescriptions[0].binding = 0;										// Which binding the data is at (should be same as above)
@@ -1366,6 +1380,31 @@ VkPipeline VulkanRenderer::createGraphicsPipeline(const std::string& vertexShade
 	attributeDescriptions[2].location = 2;							
 	attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;	
 	attributeDescriptions[2].offset = offsetof(Vertex, tex);
+
+	//In Tangentt Vector
+	// Example (C++) Vulkan input binding
+	attributeDescriptions[3].binding = 0;							
+	attributeDescriptions[3].location = 3;							
+	attributeDescriptions[3].format = VK_FORMAT_R32G32_SFLOAT;	
+	attributeDescriptions[3].offset = offsetof(Vertex, tangent);
+
+
+	//TBN
+	// attributeDescriptions[3].binding = 0;
+	// attributeDescriptions[3].location = 3;
+	// attributeDescriptions[3].format = VK_FORMAT_R32G32B32_SFLOAT;
+	// attributeDescriptions[3].offset = offsetof(Vertex, tangent);
+
+	// attributeDescriptions[4].binding = 0;
+	// attributeDescriptions[4].location = 4;
+	// attributeDescriptions[4].format = VK_FORMAT_R32G32B32_SFLOAT;
+	// attributeDescriptions[4].offset = offsetof(Vertex, bitangent);
+
+	// attributeDescriptions[5].binding = 0;
+	// attributeDescriptions[5].location = 5;
+	// attributeDescriptions[5].format = VK_FORMAT_R32G32B32_SFLOAT;
+	// attributeDescriptions[5].offset = offsetof(Vertex, normal);
+
 
 	// -- VERTEX INPUT --
 	VkPipelineVertexInputStateCreateInfo vertexInputCreateInfo = {};
@@ -1821,7 +1860,8 @@ void VulkanRenderer::recordCommands(uint32_t currentIndex)
 						vkCmdPushConstants(
 								commandBuffers[currentIndex],
 								pipelineLayout,
-								VK_SHADER_STAGE_FRAGMENT_BIT,			//Stage to push constants to
+								// VK_SHADER_STAGE_FRAGMENT_BIT,			//Stage to push constants to
+								VK_SHADER_STAGE_FRAGMENT_BIT | VK_SHADER_STAGE_VERTEX_BIT,			//Stage to push constants to
 								0,										//Offset of push constant to update
 								sizeof(MeshPushConstants),				//Size of data being pushed 
 								&pushData								//Actual data being pushed
@@ -2292,9 +2332,10 @@ void VulkanRenderer::SaveFramebufferToPNG(VkDevice device, VkPhysicalDevice phys
                width * 4);
     }
 	
-	static int frameCounter = 0;
-	std::string filename = "frames/frame_" + std::to_string(frameCounter++) + ".png";
-	stbi_write_png(filename.c_str(), width, height, 4, flipped.data(), width * 4);
+	//SAVE IMAGE TO PNG
+	// static int frameCounter = 0;
+	// std::string filename = "frames/frame_" + std::to_string(frameCounter++) + ".png";
+	// stbi_write_png(filename.c_str(), width, height, 4, flipped.data(), width * 4);
     // stbi_write_png("frame.png", width, height, 4, flipped.data(), width * 4);
     vkUnmapMemory(device, stagingMemory);
 
@@ -2303,7 +2344,7 @@ void VulkanRenderer::SaveFramebufferToPNG(VkDevice device, VkPhysicalDevice phys
     vkDestroyBuffer(device, stagingBuffer, nullptr);
     vkFreeCommandBuffers(device, commandPool, 1, &cmdBuffer);
 
-    printf("✅ Frame saved to frame.png\n");
+    // printf("✅ Frame saved to frame.png\n");
 }
 
 
@@ -2466,22 +2507,46 @@ int VulkanRenderer::createTextureImage(std::string fileName)
 	return textureImages.size() -1;	
 }
 
-int VulkanRenderer::createTexture(std::string fileName)
+// int VulkanRenderer::createTexture(std::string baseTexFile, std::string normalMapFile)
+int VulkanRenderer::createTexture(std::string baseTexFile, std::string normalMapFile)
+// int VulkanRenderer::createTexture(std::string baseTexFile, std::string normalMapFile, bool isSkyBox)
 {
-	//Create Texture Image and get its location in array
-	int textureImageLoc = createTextureImage(fileName);
+	// Create base texture image and view
+	int baseTexImageLoc = createTextureImage(baseTexFile);
+	VkImageView baseImageView = createImageView(textureImages[baseTexImageLoc], VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
+	textureImageView.push_back(baseImageView);
 
-	//Create Image View and add to list
-	VkImageView imageView = createImageView(textureImages[textureImageLoc], VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
-	textureImageView.push_back(imageView);
+	// Create normal map image and view (if provided)
+	VkImageView normalImageView = VK_NULL_HANDLE;
+	if (!normalMapFile.empty()) {
+		int normalMapImageLoc = createTextureImage(normalMapFile);
+		normalImageView = createImageView(textureImages[normalMapImageLoc], VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
+		textureImageView.push_back(normalImageView);
+	}
 
-	//Create Texture Descriptor
-	int descriptorLoc = createTextureDescriptor(imageView);
+	// Create Texture Descriptor with both base and normal map
+	int descriptorLoc = createTextureDescriptor(baseImageView, normalImageView);
 
 	return descriptorLoc;
 }
 
-int VulkanRenderer::createTextureDescriptor(VkImageView textureImage)
+// int VulkanRenderer::createTexture(std::string fileName)
+// {
+// 	//Create Texture Image and get its location in array
+// 	int textureImageLoc = createTextureImage(fileName);
+
+// 	//Create Image View and add to list
+// 	VkImageView imageView = createImageView(textureImages[textureImageLoc], VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
+// 	textureImageView.push_back(imageView);
+
+// 	//Create Texture Descriptor
+// 	int descriptorLoc = createTextureDescriptor(imageView);
+
+// 	return descriptorLoc;
+// }
+
+// int VulkanRenderer::createTextureDescriptor(VkImageView textureImage)
+int VulkanRenderer::createTextureDescriptor(VkImageView textureImage, VkImageView normalMapImage)
 {
 	VkDescriptorSet descriptorSet;
 
@@ -2496,26 +2561,47 @@ int VulkanRenderer::createTextureDescriptor(VkImageView textureImage)
 	VkResult result = vkAllocateDescriptorSets(mainDevice.logicalDevice, &setAllocInfo, &descriptorSet);
 	if(result != VK_SUCCESS)
 		throw std::runtime_error("Failed to allocate Texture Descriptor Sets ");
-
 	//Texture Image Info
 	VkDescriptorImageInfo imageInfo = {};
 	imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;		//Image layout when in use
 	imageInfo.imageView = textureImage;										//Image to bind to set
 	imageInfo.sampler = textureSampler;										//Sampler to use for set
 
+	// Normal Map Image Info (for binding at binding = 1)
+		VkDescriptorImageInfo normalMapInfo = {};
+		normalMapInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		normalMapInfo.imageView = normalMapImage; // Set to a valid VkImageView if you have a normal map
+		normalMapInfo.sampler = textureSampler;
 
+
+	// Prepare descriptor writes
+	std::array<VkWriteDescriptorSet, 2> descriptorWrites = {};
+
+	//Base Descriptor Write Info
 	//Descriptor Write Info
-	VkWriteDescriptorSet descriptorWrite = {};
-	descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-	descriptorWrite.dstSet = descriptorSet;
-	descriptorWrite.dstBinding = 0;
-	descriptorWrite.dstArrayElement = 0;
-	descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	descriptorWrite.descriptorCount = 1;
-	descriptorWrite.pImageInfo = &imageInfo;
+	// VkWriteDescriptorSet descriptorWrite = {};
+	descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+	descriptorWrites[0].dstSet = descriptorSet;
+	descriptorWrites[0].dstBinding = 0;
+	descriptorWrites[0].dstArrayElement = 0;
+	descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	descriptorWrites[0].descriptorCount = 1;
+	descriptorWrites[0].pImageInfo = &imageInfo;
+
+	// Normal map write
+	descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+	descriptorWrites[1].dstSet = descriptorSet;
+	descriptorWrites[1].dstBinding = 1;
+	descriptorWrites[1].dstArrayElement = 0;
+	descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	descriptorWrites[1].descriptorCount = 1;
+	descriptorWrites[1].pImageInfo = &normalMapInfo;
 
 	//Update new descriptor set
-	vkUpdateDescriptorSets(mainDevice.logicalDevice, 1, &descriptorWrite, 0, nullptr);
+	// vkUpdateDescriptorSets(mainDevice.logicalDevice, 1, &descriptorWrite, 0, nullptr);
+	vkUpdateDescriptorSets(mainDevice.logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+		
+
 
 	//Add descriptor set to list
 	samplerDescriptorSets.push_back(descriptorSet);
@@ -2527,7 +2613,9 @@ int VulkanRenderer::createTextureDescriptor(VkImageView textureImage)
 
 
 //void VulkanRenderer::createMeshModel(std::string modelFile){
-void VulkanRenderer::createMeshModel(std::string modelFile, std::string texFile){
+void VulkanRenderer::createMeshModel(std::string modelFile, std::string baseTexFile, std::string normalMapFile) {
+// void VulkanRenderer::createMeshModel(std::string modelFile, std::string texFile){
+
 	
 	//Import model scene
 	Assimp::Importer importer;
@@ -2560,16 +2648,35 @@ void VulkanRenderer::createMeshModel(std::string modelFile, std::string texFile)
 	}
 	*/
 
-	auto materialToTex = createTexture(texFile);
-
-	//Load in all our meshes
-	//std::vector<Mesh> modelMeshes = MeshModel::LoadNode(mainDevice.physicalDevice, mainDevice.logicalDevice, graphicsQueue, graphicsCommandPool, scene->mRootNode, scene, matToTex);
-	std::vector<Mesh> modelMeshes = MeshModel::LoadNode(mainDevice.physicalDevice, mainDevice.logicalDevice, graphicsQueue, graphicsCommandPool, scene->mRootNode, scene, materialToTex);
+	auto materialToTex = createTexture(baseTexFile, normalMapFile);
+	
+	// std::vector<Mesh> modelMeshes = MeshModel::LoadNode(mainDevice.physicalDevice, mainDevice.logicalDevice, graphicsQueue, graphicsCommandPool, scene->mRootNode, scene, materialToTex, normalMapIndex);
+	std::vector<Mesh> modelMeshes = MeshModel::LoadNode(mainDevice.physicalDevice, 
+														mainDevice.logicalDevice, 
+														graphicsQueue, 
+														graphicsCommandPool, 
+														scene->mRootNode, 
+														scene, 
+														materialToTex);
 
 	//Create mesh model and add to list
 	MeshModel meshModel = MeshModel(modelMeshes);
 	modelList.push_back(meshModel);
 
+
+
+
+
+
+	// int normalMapIndex = -1;
+	// if(normalMapFile != "")
+	// {
+	// 	// throw std::runtime_error("Failed to create texture for model! (" + modelFile + ")");
+	// 	normalMapIndex = createTexture(normalMapFile);
+	// }
+
+	//Load in all our meshes
+	//std::vector<Mesh> modelMeshes = MeshModel::LoadNode(mainDevice.physicalDevice, mainDevice.logicalDevice, graphicsQueue, graphicsCommandPool, scene->mRootNode, scene, matToTex);
 }
 
 stbi_uc * VulkanRenderer::loadTextureFile(std::string fileName, int * width, int * height, VkDeviceSize * imageSize)
@@ -2900,7 +3007,20 @@ void VulkanRenderer::drawUI(std::function<void()> customUIRenderCallback = nullp
 								   "Texture", 
 								   "Phong",
 								   "WireFrame",
-								   "Normals"
+								   "Normals",
+								   "NormalMap Shader",
+								   "NormaMap Phong Shader",
+								   "NormalMap Phong Directional Shader",
+								   "NormalMap Phong Point Shader",
+								   "NormalMap Phong Spot Shader",
+								   "Signed Distance Field Shader",
+								   "Test Shader",
+								   "Ambient Occlusion",
+								   "Outline",
+								   "SDF Light Source",
+								//    "Soft Shadow Raymarch",
+								   "Fog",
+
 								   };
     static int selectedItem = 0;
 
@@ -2910,22 +3030,87 @@ void VulkanRenderer::drawUI(std::function<void()> customUIRenderCallback = nullp
         switch (selectedItem)
         {
             case 0:
-				recreateGraphicsPipeline("Shaders/vert.spv","Shaders/frag.spv", "Shaders/geo.spv");
+				recreateGraphicsPipeline("Shaders/vert.spv",
+										 "Shaders/frag.spv", 
+										 "");
                 break;
             case 1:
-		 		recreateGraphicsPipeline("Shaders/tex_vert.spv","Shaders/tex_frag.spv", "");
-		 		// recreateGraphicsPipeline("Shaders/tex_vert.spv","Shaders/tex_frag.spv", "Shaders/tex_geo.spv");
+		 		recreateGraphicsPipeline("Shaders/tex_vert.spv",
+										 "Shaders/tex_frag.spv", 
+										 "");
                 break;
             case 2:
-				recreateGraphicsPipeline("Shaders/phong_vert.spv","Shaders/phong_frag.spv", "");
+				recreateGraphicsPipeline("Shaders/phong_vert.spv",
+										 "Shaders/phong_frag.spv", 
+										 "");
                 break;
             case 3:
-				recreateGraphicsPipeline("Shaders/wireframeV.spv","Shaders/wireframeF.spv", "Shaders/wireframeG.spv");
+				recreateGraphicsPipeline("Shaders/wireframeV.spv",
+										 "Shaders/wireframeF.spv", 
+										 "Shaders/wireframeG.spv");
                 break;
             case 4:
-				recreateGraphicsPipeline("Shaders/vertN.spv","Shaders/fragN.spv", "Shaders/geoN.spv");
+				recreateGraphicsPipeline("Shaders/vertex_shader.vert.spv",
+										 "Shaders/norm_fragment_shader.frag.spv", 
+										 "Shaders/norm_geometry_shader.geom.spv");
+                break;
+            case 5:
+				recreateGraphicsPipeline("Shaders/vertex_shader.vert.spv",
+										 "Shaders/fragment_shader.frag.spv", 
+										 "");
+                break;
+            case 6:
+				recreateGraphicsPipeline("Shaders/phong_vertex_shader.vert.spv",
+										 "Shaders/phong_fragment_shader.frag.spv", 
+										 "");
+                break;
+            case 7:
+				recreateGraphicsPipeline("Shaders/phong_vertex_shader.vert.spv",
+										 "Shaders/phong_directional.frag.spv", 
+										 "");
+                break;
+            case 8:
+				recreateGraphicsPipeline("Shaders/phong_vertex_shader.vert.spv",
+										 "Shaders/phong_point.frag.spv", 
+										 "");
+                break;
+			case 9:
+				recreateGraphicsPipeline("Shaders/phong_vertex_shader.vert.spv",
+										 "Shaders/phong_spotlight.frag.spv", 
+										 "");
+                break;
+			case 10:
+				recreateGraphicsPipeline("Shaders/vertex_shader.vert.spv",
+										 "Shaders/signed_distance_fields.frag.spv", 
+										 "");
+                break;
+			case 11:
+				recreateGraphicsPipeline("Shaders/vertex_shader.vert.spv",
+										 "Shaders/toon.frag.spv", 
+										 "");
                 break;
             // Add more cases as needed for additional shaders
+			case 12:
+				recreateGraphicsPipeline("Shaders/vertex_shader.vert.spv",
+										 "Shaders/ambient_occulusion.frag.spv", 
+										 "");
+				break;
+			case 13:
+				recreateGraphicsPipeline("Shaders/vertex_shader.vert.spv",
+										 "Shaders/outline.frag.spv", 
+										 "");
+				break;
+			case 14:
+				recreateGraphicsPipeline("Shaders/vertex_shader.vert.spv",
+										 "Shaders/sdf-light-source.frag.spv", 
+										 "");
+				break;
+			case 15:
+				recreateGraphicsPipeline("Shaders/vertex_shader.vert.spv",
+										//  "Shaders/soft_shadow_raymarching.frag.spv", 
+										 "Shaders/fog.frag.spv", 
+										 "");
+				break;
         }
     }
     ImGui::End();

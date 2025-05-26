@@ -2,31 +2,40 @@
 
 Camera::Camera()
 {
-    //projectionMatrix = glm::perspective(glm::radians());
+    // Create a perspective projection matrix and flip the Y-axis to fix upside down camera
+    projectionMatrix = glm::perspective(glm::radians(45.0f), 16.0f/9.0f, 0.1f, 100.0f);
+    projectionMatrix[1][1] *= -1;
 
     viewMatrix = glm::mat4(1.0f);
+    m_rotationQuat = glm::quat(glm::vec3(0.0f)); // Identity rotation
 }
 
 void Camera::UpdateViewMatrix()
 {
+    glm::mat4 rotationMatrix = glm::toMat4(glm::conjugate(m_rotationQuat));
     glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_positon) * 
                                 glm::rotate(glm::mat4(1.0f), m_rotation,
-                                glm::vec3(0, 0, 1));
+                                glm::vec3(1, 0, 0));
 
-    viewMatrix = glm::inverse(transform);    
+    // viewMatrix = glm::inverse(transform);    
+    viewMatrix = glm::inverse(transform * rotationMatrix);    
 }
 
+
+void Camera::SetEulerRotation(const glm::vec3& eulerRadians)
+{
+    // Full Euler rotation: pitch (X), yaw (Y), roll (Z)
+    m_rotationQuat = glm::quat(eulerRadians);
+    UpdateViewMatrix();
+}
 void Camera::RotateAroundPosition(float angle, const glm::vec3& rotationPoint)
 {
-    // Translate the view matrix to the rotation point
-    mat4 translateToRotationPoint = translate(mat4(1.0f), -rotationPoint);
+    // Perform a full rotation (360 degrees) around the given point
+    float fullRotationAngle = glm::radians(angle); // angle in degrees, e.g., 360.0f for a full rotation
 
-    // Rotate the view matrix around the rotation point
-    mat4 rotateAroundRotationPoint = rotate(mat4(1.0f), radians(angle), vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 translateToRotationPoint = glm::translate(glm::mat4(1.0f), -rotationPoint);
+    glm::mat4 rotateAroundRotationPoint = glm::rotate(glm::mat4(1.0f), fullRotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 translateBack = glm::translate(glm::mat4(1.0f), rotationPoint);
 
-    // Translate the view matrix back to the original position
-    mat4 translateBack = translate(mat4(1.0f), rotationPoint);
-
-    // Update the view matrix by applying the transformations
     viewMatrix = translateBack * rotateAroundRotationPoint * translateToRotationPoint * viewMatrix;
 }

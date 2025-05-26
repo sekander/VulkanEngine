@@ -25,6 +25,14 @@ struct Vertex
 	glm::vec3 normVert;
 	//glm::vec3 colour; 	// Vertex Colour (r, g, b)
 	glm::vec2 tex;		// Texture Coords (u, v)
+	// glm::vec2 uv;		// Texture Coords (u, v)
+	glm::vec3 tangent;	// Tangent Vector
+
+	//TBN
+	// glm::vec3 tangent;
+	// glm::vec3 bitangent;
+	// glm::vec3 normal;
+
 };
 
 // Indices (locations) of Queue Families (if they exist at all)

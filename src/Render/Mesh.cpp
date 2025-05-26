@@ -6,9 +6,30 @@ Mesh::Mesh()
 {
 }
 
+// Mesh::Mesh(VkPhysicalDevice newPhysicalDevice, VkDevice newDevice, 
+// 	VkQueue transferQueue, VkCommandPool transferCommandPool, 
+// 	std::vector<Vertex>* vertices, std::vector<uint32_t> * indices, 
+// 	int newTexID)
+// {
+// 	vertexCount = vertices->size();
+// 	indexCount = indices->size();
+// 	physicalDevice = newPhysicalDevice;
+// 	device = newDevice;
+// 	createVertexBuffer(transferQueue, transferCommandPool, vertices);
+// 	createIndexBuffer(transferQueue, transferCommandPool, indices);
+
+// 	uboModel.model = glm::mat4(1.0f);
+	
+
+
+// 	//uboModel.normMat = glm::transpose(glm::inverse(uboModel.model));
+// 	textID = newTexID;
+// }
+
 Mesh::Mesh(VkPhysicalDevice newPhysicalDevice, VkDevice newDevice, 
 	VkQueue transferQueue, VkCommandPool transferCommandPool, 
-	std::vector<Vertex>* vertices, std::vector<uint32_t> * indices, int newTexID)
+	std::vector<Vertex>* vertices, std::vector<uint32_t> * indices, 
+	int newTexID, int normalMapIndex)
 {
 	vertexCount = vertices->size();
 	indexCount = indices->size();
@@ -23,6 +44,7 @@ Mesh::Mesh(VkPhysicalDevice newPhysicalDevice, VkDevice newDevice,
 
 	//uboModel.normMat = glm::transpose(glm::inverse(uboModel.model));
 	textID = newTexID;
+	normalMapID = normalMapIndex;
 }
 
 void Mesh::setModel(glm::mat4 newModel)

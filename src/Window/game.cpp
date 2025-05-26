@@ -54,8 +54,8 @@ void Game::Initialize()
   //Instiate Camera
   _data->cm = new Camera();
 
-	  // _data->machine->AddState(St(new MainMenuState(*_data)), false);	
-	  _data->machine->AddState(St(new TemplateState(*_data)), false);	
+	  _data->machine->AddState(St(new MainMenuState(*_data)), false);	
+	  // _data->machine->AddState(St(new TemplateState(*_data)), false);	
 //	  _data->machine->AddState(St(new GameOverState(*_data)), false);	
 //	    _data->machine->AddState(St(new SplashState(*_data)), false);	
 //	  _data->machine->AddState(St(new LoadingPlayState(*_data)), false);	
@@ -381,7 +381,6 @@ void Game::Render()
     update_flag = false;
     keepLooping = false;
 	
-
     std::this_thread::sleep_for(50ms);
 
 		_data->gs.connection_established = false;
@@ -530,7 +529,8 @@ GLFWwindow* Game::create_vulkan_window(std::string w_name, const int width, cons
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
  	//Window Mode
-  GLFWwindow* window = glfwCreateWindow(1000, 800, w_name.c_str(), NULL, NULL);
+  // GLFWwindow* window = glfwCreateWindow(1000, 800, w_name.c_str(), NULL, NULL);
+  GLFWwindow* window = glfwCreateWindow(1800, 1000, w_name.c_str(), NULL, NULL);
     
     //Full Screen Mode   
     // window = glfwCreateWindow(width, height, w_name.c_str(), glfwGetPrimaryMonitor(),NULL);

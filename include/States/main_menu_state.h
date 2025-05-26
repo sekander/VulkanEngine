@@ -21,6 +21,7 @@ struct modelData {
     std::string data;
     glm::mat4 model;
     glm::vec3 position = glm::vec3(0.0f);
+    glm::vec3 scale = glm::vec3(1.0f);
     float rotation_control_ui_x = 0.0f;
     float rotation_control_ui_y = 0.0f;
     float rotation_control_ui_z = 0.0f;

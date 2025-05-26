@@ -48,8 +48,11 @@ public:
 
 	int init(GLFWwindow * newWindow);
 
-	void createMeshModel(std::string modelFile, std::string texFile);
-	int createTexture(std::string fileName);
+	// void createMeshModel(std::string modelFile, std::string texFile);
+	void createMeshModel(std::string modelFile, std::string baseTexFile, std::string normalMapFile = ""); 
+
+	// int createTexture(std::string fileName);
+	int createTexture(std::string fileName, std::string normalMapFile = "");
 	void updateModel(int modelId, glm::mat4 newModel);
 
 	void draw();
@@ -73,6 +76,7 @@ public:
 	struct UboViewProjection {
 		glm::mat4 projection;
 		glm::mat4 view;
+		glm::vec3 cameraPos;
 	} uboViewProjection;
 
 
@@ -80,11 +84,30 @@ public:
 	struct LightData{
 		glm::vec4 colour[3];
 		glm::vec3 position[3];
+		float radius[3];
+		float ambientStrength[3];
+		float diffuseStrength[3];
+		float specularStrength[3];
+		float shininess[3];
 	} lightData;
 
 	struct MeshPushConstants {
 		glm::vec4 push_constant_colour;
 		glm::mat4 push_constant_normalMat;
+    	alignas(16) glm::vec3 sdfCenter;
+    	float time;
+    	float sdfRadius;
+		// int push_constant_maxLights;
+		// glm::vec3 push_constant_rimLightColour;
+		// float push_constant_rimLightStrength;
+		// float push_constant_ambientStrength;
+		// float push_constant_diffuseStrength;
+		// float push_constant_specularStrength;
+		// float push_constant_shininess;
+		// glm::vec3 push_constant_tangent;
+		// float outlineThickness;
+		// glm::vec4 push_constant_colour_2;
+		// glm::vec4 push_constant_colour;
 	} pushData;
 
 	std::vector<MeshModel> modelList;
@@ -282,7 +305,8 @@ private:
 	VkShaderModule createShaderModule(const std::vector<char> &code);
 
 	int createTextureImage(std::string fileName);
-	int createTextureDescriptor(VkImageView textureImage);
+	// int createTextureDescriptor(VkImageView textureImage);
+	int createTextureDescriptor(VkImageView textureImage, VkImageView normalMapImage = VK_NULL_HANDLE);
 	//int createTexture(std::string fileName);
 	// -- Loader Functions
 	stbi_uc * loadTextureFile(std::string fileName, int* width, int* height, VkDeviceSize* imageSize);

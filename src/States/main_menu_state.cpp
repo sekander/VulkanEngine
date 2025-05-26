@@ -13,12 +13,15 @@
 #include "../../include/GameData/ObjectCounter.h"
 #include <GLFW/glfw3.h>
 #include <cstdio>
+#include <algorithm>
 
 
 #include <chrono>
 #include <memory>
 #include <mutex>
 #include <future>
+
+// Add ImGuiFileDialog include if using ImGuiFileDialog library
 
 
 #include "../../include/Render/VulkanRenderer.h"
@@ -37,7 +40,8 @@ float	mz = 1.0f;
 	float mdeltaTime = 0.0f;
 	float mlastTime = 0.0f;
   
-float cam_degree = 0.0f;
+float cam_degree = 0.0f;  glm::vec3 _eulerAngles = glm::vec3(0.0f, 0.0f, 0.0f);
+
 
 	float mwave0;
 	float mwave1;
@@ -47,10 +51,22 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 
+int maxLights = 0;
+std::vector<vec3> lightPositions = { vec3(2.0f, 2.0f, 2.0f), vec3(-2.0f, 2.0f, 2.0f), vec3(0.0f, -2.0f, 2.0f) };
+std::vector<vec3> lightColors = { vec3(1.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f) };
+std::vector<float> lightAmbientStrength = { 0.2f, 0.2f, 0.2f };
+std::vector<float> lightDiffuseStrength = { 0.5f, 0.5f, 0.5f };
+std::vector<float> lightSpecularStrength = { 1.0f, 1.0f, 1.0f };
+std::vector<float> lightShininess = { 32.0f, 32.0f, 32.0f };
+std::vector<float> lightRadius = { 1.0f, 1.0f, 1.0f }; // Default radius for each light
+glm::vec3 rimLightColour(1.0f, 0.0f, 1.0f); // White color
+float rimLightStrength = 0.5f; // Default strength
 
 int windowWidth = 0;
 int windowHeight = 0;
 float main_menu_volume = 0.25f;
+
+glm::vec3 scaleFactor(0.5f); // Change this as needed, e.g., glm::vec3(1.5f, 1.5f, 1.5f);
 
 using namespace std::chrono_literals;
 
@@ -110,9 +126,38 @@ void MainMenuState::Init()
       // v->cleanModels();
       // v->recreateSwapChain();
     }
-	  v->createMeshModel("Mario.obj", "mario_mime.png");
+	  // v->createMeshModel("Mario.obj", "mario_mime.png");
+	  v->createMeshModel("Mario.obj", "mario_mime.png", "mario_main_normal.png");
+    // v->createMeshModel("sphere.obj", "default-grey.jpg"); // Use your own mesh/texture
+    // v->createMeshModel("brick_wall.obj", "wall.jpeg", "");
+	  // v->createMeshModel("floor.obj", "floor.jpg", "floor_normal.jpeg");
+	  // v->createMeshModel("Mario.obj", "mario_main_normal.png");
+	  // v->createMeshModel("Mario.obj", "", "mario_main_normal.png");
     previousModelListSize = v->modelList.size();
+
+    maxLights = 3;
+    // v->pushData.push_constant_maxLights = maxLights;
+    // Resize lightPositions vector based on maxLights
+    lightPositions.resize(maxLights, glm::vec3(0.0f));
+    lightColors.resize(maxLights, glm::vec3(1.0f, 1.0f, 1.0f)); // Default color is white
 	  //v->createMeshModel("Mario.obj", "mario_fire.png");
+    // Lighting parameters (controlled by ImGui)
+    // v->pushData.push_constant_rimLightColour = glm::vec3(1.0f, 1.0f, 1.0f); // White color
+    // v->pushData.push_constant_rimLightStrength = 0.5f; // Default strength
+
+
+    // v->pushData.outlineThickness = 0.2f; // Default outline thickness
+    v->pushData.sdfCenter = glm::vec3(0.0f, 0.0f, 0.0f); // Default center
+    v->pushData.sdfRadius = 1.0f; // Default radius
+
+    // Rotate the camera 90 degrees around Y-axis
+    // mcamera.SetRotation(glm::radians(-180.0f));
+    r_cam = -179.0f;
+    z_cam = -10.0f;
+
+    // Or use Euler if needed (pitch, yaw, roll)
+
+
 }
 
 
@@ -188,7 +233,6 @@ void MainMenuState::Update(float delta)
  */
   //Input(delta);
   // mangle += 1.0f;
-
   // if (mangle >= 360.0f)
   //   mangle = 0.0f;
 
@@ -205,47 +249,33 @@ void MainMenuState::Update(float delta)
   //   // std::string quaternionData;
   //   // std::string modelPostionData; 
   //   std::string matrixDataInfo;
-
-
   //   glm::mat4 firstModel(1.0f);
   //   // Model's initial position
   //   glm::vec3 modelPosition = glm::vec3(xpos + i, ypos, zpos);
-
-
   //   // Define the center of rotation (if it's different from modelPosition)
   //   glm::vec3 rotationCenter = glm::vec3(0.0f); // Change this if needed
-
   //     // Translate to the model's position
   //   firstModel = glm::translate(firstModel, modelPosition);
-
   //   // Translate to the center of rotation
   //   firstModel = glm::translate(firstModel, rotationCenter);
-
   //   {
   //   // Quaternion representing no rotation
   //   glm::quat totalRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-
   //   glm::quat rotationY = glm::angleAxis(glm::radians((i == 0) ? ui_rotation_control_y: 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
   //   // glm::quat rotationY = glm::angleAxis(glm::radians((i == 0) ? ui_rotation_control_y: -mangle), glm::vec3(0.0f, 1.0f, 0.0f));
-
   //   totalRotation = rotationY * totalRotation;
-
   //   // Rotate 30 degrees around the X-axis
   //   glm::quat rotationX = glm::angleAxis(glm::radians(ui_rotation_control_x), glm::vec3(1.0f, 0.0f, 0.0f));
   //   totalRotation = rotationX * totalRotation;
-
   //   // Rotate 60 degrees around the Z-axis
   //   glm::quat rotationZ = glm::angleAxis(glm::radians(ui_rotation_control_z), glm::vec3(0.0f, 0.0f, 1.0f));
   //   totalRotation = rotationZ * totalRotation;
-
   //   // Convert the total quaternion rotation to a rotation matrix
   //   glm::mat4 rotationMatrix = glm::mat4(totalRotation);
-
   //   // Apply the rotation to the model matrix
   //   if (i == 0){
   //     firstModel = rotationMatrix * firstModel;                 // Apply rotation
   //     matrixDataInfo +=  demonstrateQuaternionProperties(quaternion_options, firstModel);
-
   //     // quaternionData[i] += demonstrateQuaternionProperties(quaternion_options, firstModel);
   //     // matrixData[i] += demonstrateQuaternionProperties(quaternion_options, firstModel);
   //     firstModel = glm::translate(firstModel, -rotationCenter);   // Translate back to position
@@ -256,14 +286,11 @@ void MainMenuState::Update(float delta)
   //     firstModel =  glm::rotate(firstModel, glm::radians(-mangle), glm::vec3(0.0f, 1.0f, 0.0f));
   //     firstModel = glm::translate(firstModel, -rotationCenter);  // Translate to position
   //   }
-
-
   //   }
   //   v->updateModel(i, firstModel);
   //   //std::cout << "Model Matrix for model " << i << ":\n" << glm::to_string(firstModel) << std::endl;
   //   std::cout << "\nModel Matrix for model " << i  << std::endl;
   //   std::cout << "###############################" << i  << std::endl;
-
   //   matrixDataInfo += printMat4ToString(firstModel);
   //   matrixDataInfo += glm::to_string(modelPosition);
   //   std::cout << matrixDataInfo << std::endl;
@@ -271,9 +298,7 @@ void MainMenuState::Update(float delta)
   //   // modelPostionData[i] += glm::to_string(modelPosition);
   //   // std::string collectedModelData = quaternionData[i] + modelData[i] + modelPostionData[i];
   //   // matrixData.push_back(matrixDataInfo);
-
   //   models.push_back(firstModel);
-
   // }
 }
 
@@ -284,18 +309,42 @@ void MainMenuState::Render(float delta)
 	mcamera.UpdateViewMatrix();
 	mcamera.SetRotation(r_cam);
   mcamera.SetPosition(glm::vec3(x_cam, y_cam, z_cam));
-  mcamera.RotateAroundPosition(cam_degree, glm::vec3(-1.0f, 0.0f, -2.5f));
-  float now = glfwGetTime();
+  
+    // Use the global eulerAngles variable instead of redeclaring it here
+    // mcamera.SetEulerRotation(glm::radians(eulerAngles));
+    // Control vector, e.g. updated by user input
+  glm::vec3 rotationInput = glm::radians(glm::vec3(_eulerAngles.x, _eulerAngles.y, _eulerAngles.z));
 
+  mcamera.SetEulerRotation(rotationInput);
+
+
+  // mcamera.RotateAroundPosition(cam_degree, glm::vec3(-1.0f, 0.0f, -2.5f));
+  static float lastTime = glfwGetTime();
+  static float totalElapsed = 0.0f;
+
+  float now = glfwGetTime();
+  float elapsedTime = now - lastTime;
+  totalElapsed += elapsedTime;
+
+  lastTime = now;
+
+  // printf("Elapsed Time: %f\n", totalElapsed);
   
   auto v = static_cast<VulkanRenderer*>(_data->vk);
+//  models[selectedModelIndex].position;
+
+  v->pushData.time = totalElapsed; // Update the time in push constants
 
 
- mangle += 1.0f;
+  printf("Time : %f\n", v->pushData.time);
+
+
+//  mangle += 1.0f;
 
  if (mangle >= 360.0f)
     mangle = 0.0f;
 
+  //Model Update
  for (int i = 0; i < v->modelList.size(); i++)
  {
     modelData model;
@@ -320,13 +369,18 @@ void MainMenuState::Render(float delta)
     // Translate to the center of rotation
     firstModel = glm::translate(firstModel, rotationCenter);
 
+    if(!models.empty())
+      v->pushData.sdfCenter = models[selectedModelIndex].position; // Default center
+      
+
     {
     // Quaternion representing no rotation
     glm::quat totalRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 
     glm::quat rotationY;
     if(!models.empty())
-      rotationY = glm::angleAxis(glm::radians((i == 0) ? models[i].rotation_control_ui_y: 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+      // rotationY = glm::angleAxis(glm::radians((i == 0) ? models[i].rotation_control_ui_y: 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+      rotationY = glm::angleAxis(glm::radians(models[i].rotation_control_ui_y), glm::vec3(0.0f, 1.0f, 0.0f));
     // glm::quat rotationY = glm::angleAxis(glm::radians((i == 0) ? ui_rotation_control_y: -mangle), glm::vec3(0.0f, 1.0f, 0.0f));
 
     totalRotation = rotationY * totalRotation;
@@ -349,21 +403,50 @@ void MainMenuState::Render(float delta)
     // Convert the total quaternion rotation to a rotation matrix
     glm::mat4 rotationMatrix = glm::mat4(totalRotation);
 
+    glm::vec3 scaleFactor(1.0f); // Change this as needed, e.g., glm::vec3(1.5f, 1.5f, 1.5f);
+
+
+    if(!models.empty())
+      scaleFactor = models[i].scale;
     // Apply the rotation to the model matrix
-    if (i == 0){
+    // if (i == 0)
+    {
       firstModel = rotationMatrix * firstModel;                 // Apply rotation
       matrixDataInfo +=  demonstrateQuaternionProperties(quaternion_options, firstModel);
       firstModel = glm::translate(firstModel, -rotationCenter);   // Translate back to position
+      firstModel = glm::scale(firstModel, scaleFactor);
     }
-    else{
-      // Apply translation and rotation to the model matrix
-      firstModel = rotationMatrix * firstModel;                 // Apply rotation
-      firstModel =  glm::rotate(firstModel, glm::radians(-mangle), glm::vec3(0.0f, 1.0f, 0.0f));
-      firstModel = glm::translate(firstModel, -rotationCenter);  // Translate to position
-    }
+    // else{
+    //   // Apply translation and rotation to the model matrix
+    //   firstModel = rotationMatrix * firstModel;                 // Apply rotation
+    //   firstModel =  glm::rotate(firstModel, glm::radians(-mangle), glm::vec3(0.0f, 1.0f, 0.0f));
+    //   firstModel = glm::translate(firstModel, -rotationCenter);  // Translate to position
+    // }
 
 
     }
+    // v->pushData.push_constant_normalMat= glm::mat4(1.0f);
+
+    // Apply scaling
+    // firstModel = glm::scale(firstModel, scaleFactor);
+    // Only scale the selected model
+    // if (i == selectedModelIndex) 
+    {
+      // firstModel = glm::scale(firstModel, models[i].scale);
+    }
+    // Calculate the normal matrix (transpose of the inverse of the upper-left 3x3 of the model matrix)
+    glm::mat3 normMat = glm::transpose(glm::inverse(glm::mat3(firstModel)));
+    v->pushData.push_constant_normalMat = normMat;
+    // Print the normal matrix in a pretty format
+    // printf("Normal Matrix:\n");
+    // for (int row = 0; row < 3; ++row) {
+    //   printf("[ ");
+    //   for (int col = 0; col < 3; ++col) {
+    //     printf("% .4f ", normMat[row][col]);
+    //   }
+    //   printf("]\n");
+    // }
+
     v->updateModel(i, firstModel);
     //std::cout << "Model Matrix for model " << i << ":\n" << glm::to_string(firstModel) << std::endl;
     // std::cout << "\nModel Matrix for model " << i  << std::endl;
@@ -411,152 +494,34 @@ void MainMenuState::Render(float delta)
 
   // v->pushData.push_constant_colour = vec4(1.0f, 1.0f, 0.0f, 0.0f);	
   //Move Red light with keyboard
-  v->lightData.position[0] = glm::vec3(mx, my, mz);
-  
+  // v->lightData.position[0] = glm::vec3(mx, my, mz);
+  // Update light data as before
+  for (int i = 0; i < maxLights && i < lightPositions.size(); ++i) {
+    v->lightData.position[i] = glm::vec3(lightPositions[i].x, lightPositions[i].y, lightPositions[i].z);
+    v->lightData.colour[i] = glm::vec4(lightColors[i].x, lightColors[i].y, lightColors[i].z, 0.0f);
+    v->lightData.ambientStrength[i] = lightAmbientStrength[i];
+    v->lightData.diffuseStrength[i] = lightDiffuseStrength[i];
+    v->lightData.specularStrength[i] = lightSpecularStrength[i];
+    v->lightData.shininess[i] = lightShininess[i];
+    v->lightData.radius[i] = lightRadius[i]; // Set the radius for each light
+  }
+
+  // v->pushData.push_constant_rimLightColour = rimLightColour; // White color
+  // v->pushData.push_constant_rimLightStrength = rimLightStrength; // Default strength
 
   //Red Light
-  v->lightData.colour[0] = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);	
-  //Blue Light
-  v->lightData.colour[1]   = glm::vec4(0.0f, 0.0f, abs(mwave0), 0.0f);
-  //Green Light
-  v->lightData.colour[2]   = glm::vec4(0.0f, abs(mwave1), 0.0f, 0.0f);
+  // v->lightData.colour[0] = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+  // //Blue Light
+  // v->lightData.colour[1]   = glm::vec4(0.0f, 0.0f, abs(mwave0), 0.0f);
+  // //Green Light
+  // v->lightData.colour[2]   = glm::vec4(0.0f, abs(mwave1), 0.0f, 0.0f);
   v->draw();
 
   v->uboViewProjection.projection = glm::perspective(glm::radians(1000.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
   v->uboViewProjection.projection[1][1] *= -1;
   v->uboViewProjection.view = mcamera.GetViewMatrix();
+  v->uboViewProjection.cameraPos = mcamera.GetPosition();
 
-  //std::cout << "Cos wave : " << abs(fadein_wave) << std::endl;
-    /*
-
-    // feed inputs to dear imgui, start new frame
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
-
-    glfwGetWindowSize(_data->window, &windowWidth, &windowHeight);
-    //std::cout << "Window Width " << windowWidth << ", " << windowHeight << std::endl;
-
-    ImGui::Begin("main", nullptr, ImGuiWindowFlags_NoDecoration |
-                                ImGuiWindowFlags_NoMove );
-      ImGui::SetWindowPos("main", ImVec2(10.0f, 10.0f));
-      ImGui::SetWindowSize("main", ImVec2(windowWidth - 25 , windowHeight - 25));
-      ImGui::CaptureMouseFromApp(false);
-      ImGui::SetWindowFontScale(1.0f);
-    
-
-        ImGui::BeginChild("Sub", ImVec2(600, 100), false, ImGuiWindowFlags_NoBackground);
-          ImGui::SetWindowFontScale(2.0f);
-          //ImGui::SetCursorPos(ImVec2(500, 100));
-          ImGui::Text("                 2D Zombie \n                   Survival", ImVec2(400, 50));
-        ImGui::EndChild();
-      
-
-      //ImGui::SetCursorPos(ImVec2(100, 50));
-      //ImGui::Text("Title", ImVec2(200, 600));
-
-      static bool start;
-      ImGui::SetCursorPos(ImVec2(windowWidth/2 - 50, windowHeight/2));
-      start = ImGui::Button("START", ImVec2(100, 50));
-      if(start || _data->gs.start_game)
-        _data->state_switch = LOADING_PLAY_STATE;
-
-      static bool network;
-      ImGui::SetCursorPos(ImVec2(windowWidth/2 - 50, windowHeight/2 + 60));
-      //ImGui::SetCursorPos(ImVec2(130, 200));
-      network = ImGui::Button("SERVER", ImVec2(100, 50));
-      if(network){
-//         ImGui::BeginChild("Network", ImVec2(100, 100), false, ImGuiWindowFlags_NoBackground);
-          _data->gs.server_on = true;
-          _data->gs.searching_for_connection = true;
-		    //glfwSetWindowShouldClose(_data->window, true);
-      }
-
-      if(_data->gs.connection_established && !_data->gs.searching_for_connection)
-      {
-          ImGui::SetCursorPos(ImVec2(400, 100));
-          ImGui::TextColored(ImColor(0, 255, 0), "Connection Established");
-      }
-
-
-
-      
-      static bool game_over;
-      ImGui::SetCursorPos(ImVec2(windowWidth/2 - 50, windowHeight/2 + 120));
-      //ImGui::SetCursorPos(ImVec2(130, 240));
-      game_over = ImGui::Button("MENU", ImVec2(100, 50));
-      if(game_over){
-          menu_screen = true;
-        //_data->state_switch = GAME_OVER_STATE;
-        //_data->gs.server_on = true;
-        //glfwSetWindowShouldClose(_data->window, true);
-      }
-
-      static bool exit;
-      ImGui::SetCursorPos(ImVec2(windowWidth/2 - 50, windowHeight/2 + 180));
-      //ImGui::SetCursorPos(ImVec2(100, 160));
-      exit = ImGui::Button("EXIT", ImVec2(100, 50));
-      if(exit){
-        _data->gs.server_listening = false;
-        _data->gs.connection_established = false;
-        _data->gs.exit_app = true;
-		    glfwSetWindowShouldClose(_data->window, true);
-      }
-
-
-
-
-    ImGui::End();
-    
-    if(menu_screen)
-    {
-        ImGui::Begin("MENU", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
-        ImGui::SetWindowPos("MENU", ImVec2(windowWidth/2 - 200, windowHeight/2 - 100));
-        ImGui::SetWindowSize("MENU", ImVec2(400 , 300));
-        ImGui::CaptureMouseFromApp(true);
-        ImGui::SetWindowFontScale(1.0f);
-        
-          ImGui::SetCursorPos(ImVec2(150, 10));
-          ImGui::Text("Menu Screen", ImVec2(100, 50));
-        
-          //ImGui::SetCursorPos(ImVec2(50, 50));
-          //ImGui::Text("Background Music", ImVec2(100, 50));
-
-          ImGui::SliderFloat("Background Music", &main_menu_volume, 0.0f, 1.0f); 
-          ImGui::Checkbox("Fullscreen", &_data->gs.fullScreen);
-          ImGui::Checkbox("Window Mode", &_data->gs.windowMode);
-          
-          //ImGui::SetCursorPos(ImVec2(50, 150));
-          //ImGui::Text("Sound FX", ImVec2(100, 50));
-
-
-        static bool exit_menu;
-        ImGui::SetCursorPos(ImVec2(150, 230));
-        exit_menu = ImGui::Button("EXIT MENU", ImVec2(100, 50));
-        if(exit_menu)
-            menu_screen = false;
-        ImGui::End();
-    }
-
-
-    if(_data->gs.searching_for_connection)
-    {
-        ImGui::Begin("Network", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
-        ImGui::SetWindowPos("Network", ImVec2(windowWidth/2 - 200, windowHeight/2 - 100));
-        //ImGui::SetWindowSize("Network", ImVec2(windowWidth - 200 , windowHeight - 200));
-        ImGui::SetWindowSize("Network", ImVec2(400 , 200));
-        ImGui::CaptureMouseFromApp(false);
-          ImGui::SetWindowFontScale(1.0f);
-          ImGui::SetCursorPos(ImVec2(150, 100));
-          ImGui::Text("Listening for Conection...", ImVec2(100, 50));
-        ImGui::End();
-    }
-
-	  ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    ImGui::EndFrame();
-    */
 }
 
 std::string MainMenuState::demonstrateQuaternionProperties(int choice, glm::mat4& modelMatrix) {
@@ -781,43 +746,69 @@ void MainMenuState::_ui(std::vector<std::string> gui_data)
     // Start a new ImGui window
     ImGui::Begin("Model Controls");
 
-
-      ImGui::ColorPicker4("Pick a Color", (float*)&selectedColor, ImGuiColorEditFlags_Float);
-      v->pushData.push_constant_colour = vec4(selectedColor.x, selectedColor.y, selectedColor.z, 0.0f);	
-      // Button to clear models
-      if (ImGui::Button("Clear Models")) {
-          v->cleanModels();
-      }
+    ImGui::ColorPicker4("Pick a Color", (float*)&selectedColor, ImGuiColorEditFlags_Float);
+    v->pushData.push_constant_colour = vec4(selectedColor.x, selectedColor.y, selectedColor.z, selectedColor.w);	
+    // Button to clear models
+    if (ImGui::Button("Clear Models")) {
+      v->cleanModels();
+    }
 
 
 
     // Pulldown list to select model and texture
     static int selectedItem = 0;
-    static const char* items[] = { "Model 1", "Model 2", "Model 3" , "Model 4"}; // Add model names here
+    static const char* items[] = { "Mario Main", 
+                                   "Pixel Mario", 
+                                   "Dragon", 
+                                   "Street",
+                                   "Wall",
+                                   "Ford",
+                                   "Charizard",
+                                   "Skull",
+                                   "Sphere",
+                                  }; // Add model names here
     if (ImGui::Combo("Select Model", &selectedItem, items, IM_ARRAYSIZE(items))) {
         // Load selected model based on selectedItem
         switch (selectedItem) {
             case 0:
               v->createMeshModel("Mario.obj", "mario_main.png");
-                // Load Model 1
-                // v->loadModel("model1.obj", "texture1.png");
                 break;
             case 1:
-              v->createMeshModel("Mario.obj", "mario_fire.png");
-                // Load Model 2
-                // v->loadModel("model2.obj", "texture2.png");
+              v->createMeshModel("PixelMario.obj", "mario2.jpg", "mario2_norm.png");
                 break;
             case 2:
-              v->createMeshModel("Mario.obj", "mario_mime.png");
-                // Load Model 3
-                // v->loadModel("model3.obj", "texture3.png");
+              v->createMeshModel("Dragon.3ds", "Dragon_ground_color.jpg");
                 break;
             case 3:
-              v->createMeshModel("Dragon.3ds", "Dragon_ground_color.jpg");
-
-                // Load Model 3
-                // v->loadModel("model3.obj", "texture3.png");
+              v->createMeshModel("street.obj", "street-diffuse.jpeg", "street-normal.jpeg");
                 break;
+            case 4:
+              v->createMeshModel("wall.obj", "brick.jpeg", "brick_normal.jpeg");
+                break;
+            case 5:
+              v->createMeshModel("ford.obj", "0000.jpg");
+                break;
+            case 6:
+              v->createMeshModel("charizard.obj", "charizard.jpg", "charizard_specular.png");
+                break;
+            case 7:
+              v->createMeshModel("Skull.obj", "skull_texture.jpg", "skull_norm.png");
+                break;
+            case 8:
+              v->createMeshModel("sphere.obj", "default-grey.jpg", "");
+                break;
+            // case 8:
+            //   v->createMeshModel("gameboyadv.obj", "gameboyadv.jpg", "gameboyadv_norm.png");
+            //     break;
+            // case 9:
+            //   v->createMeshModel("jigglypuff.obj", "jigglypuff.jpg", "jigglypuff_norm.png");
+            //     break;
+            // case 11:
+            //   v->createMeshModel("pineapple-juice.obj", "pineapple.jpg", "pineapple_norm.png");
+            //     break;
+            // case 12:
+            //   v->createMeshModel("watermellon.obj", "watermellon.png", "watermellon_norm.png");
+            //     break;
             // Add more cases for additional models
         }
     }
@@ -846,30 +837,92 @@ void MainMenuState::_ui(std::vector<std::string> gui_data)
 
       // Render dropdown list to select the model
     // if (ImGui::BeginCombo("Available Models", v->modelList[selectedModelIndex].name.c_str())) {
-    if (ImGui::BeginCombo("Available Models", std::to_string(selectedModelIndex).c_str())) {
-        for (int i = 0; i < v->modelList.size(); i++) {
-            bool isSelected = (selectedModelIndex == i);
-            if (ImGui::Selectable("Place Holder " + i, isSelected)) {
-                selectedModelIndex = i;
-            }
-            if (isSelected) {
-                ImGui::SetItemDefaultFocus();
-            }
+    // if (ImGui::BeginCombo("Available Models", std::to_string(selectedModelIndex).c_str())) {
+    //     for (int i = 0; i < v->modelList.size(); i++) {
+    //         bool isSelected = (selectedModelIndex == i);
+    //         if (ImGui::Selectable("Place Holder " + i, isSelected)) {
+    //             selectedModelIndex = i;
+    //         }
+    //         if (isSelected) {
+    //             ImGui::SetItemDefaultFocus();
+    //         }
+    //     }
+    //     ImGui::EndCombo();
+    // }
+
+        ImGui::Separator();
+
+    ImGui::Text("Manage Models");
+    // Combo box to select available models by name
+    if (ImGui::BeginCombo("Available Models", (models.empty() || selectedModelIndex >= models.size()) ? "" : models[selectedModelIndex].name.c_str())) {
+      for (int i = 0; i < v->modelList.size(); i++) {
+        bool isSelected = (selectedModelIndex == i);
+        const char* modelName = (i < models.size() && !models[i].name.empty())
+                      ? models[i].name.c_str()
+                      : ("Model " + std::to_string(i)).c_str();
+                      
+        if (ImGui::Selectable(modelName, isSelected)) {
+          selectedModelIndex = i;
         }
-        ImGui::EndCombo();
+        if (isSelected) {
+          ImGui::SetItemDefaultFocus();
+        }
+      }
+      ImGui::EndCombo();
     }
+    
+
+    // Show the world space position of the selected model
+    if (selectedModelIndex < models.size()) {
+      const glm::vec3& pos = models[selectedModelIndex].position;
+      ImGui::Text("World Position: (%.3f, %.3f, %.3f)", pos.x, pos.y, pos.z);
+    }
+
+    // Radio buttons to select texture for the selected model
+    static int textureOption = 0;
+    ImGui::Text("Apply Texture:");
+    ImGui::RadioButton("Mario Main", &textureOption, 0);
+    ImGui::RadioButton("Mario Fire", &textureOption, 1);
+    ImGui::RadioButton("Mario Mime", &textureOption, 2);
+
+    if (ImGui::Button("Apply Texture")) {
+      if (selectedModelIndex < v->modelList.size()) {
+        const char* texFile = nullptr;
+        switch (textureOption) {
+          case 0: texFile = "mario_main.png"; break;
+          case 1: texFile = "mario_fire.png"; break;
+          case 2: texFile = "mario_mime.png"; break;
+          default: texFile = "mario_main.png"; break;
+        }
+        v->modelList[selectedModelIndex].getMesh(0)->setTexID(v->createTexture(texFile));
+      }
+    }
+
+        // Apply button to open file dialog and apply texture to the selected model
+    // if (ImGui::Button("Apply Texture")) {
+    //   // Use ImGuiFileDialog or similar library for file browsing
+    //   // Example assumes ImGuiFileDialog is integrated and available
+    //   ImGuiFileDialog::Instance()->OpenDialog("ChooseTexFileDlgKey", "Choose Texture", ".png,.jpg,.jpeg,.bmp,.tga", ".");
+    // }
+
+    // // Show file dialog and handle selection
+    // if (ImGuiFileDialog::Instance()->Display("ChooseTexFileDlgKey")) {
+    //   if (ImGuiFileDialog::Instance()->IsOk()) {
+    //     std::string filePath = ImGuiFileDialog::Instance()->GetFilePathName();
+    //     if (selectedModelIndex < v->modelList.size()) {
+    //       v->modelList[selectedModelIndex].getMesh(0)->setTexID(v->createTexture(filePath.c_str()));
+    //     }
+    //   }
+    //   ImGuiFileDialog::Instance()->Close();
+    // }
+
+
+
     if (ImGui::Button("Delete Model")) {
         if (!v->modelList.empty()){
           v->removeModel(selectedModelIndex);
           matrixData.erase(matrixData.begin() + selectedModelIndex);
           selectedModelIndex = 0;
-        }
-    }
-     // Apply button to apply texture to the selected model
-    if (ImGui::Button("Apply Texture")) {
-        // Assuming vk_render.modelList is your list of models
-        if (selectedModelIndex < v->modelList.size()) {
-            v->modelList[selectedModelIndex].getMesh(0)->setTexID(v->createTexture("mario_main.png"));
         }
     }
 
@@ -894,38 +947,105 @@ void MainMenuState::_ui(std::vector<std::string> gui_data)
 
     // Slider for X position
     // ImGui::SliderFloat("X Position", &xpos, -10.0f, 10.0f);
-    ImGui::SliderFloat("X Position", &models[selectedModelIndex].position.x, -10.0f, 10.0f);
+    ImGui::SliderFloat("X Position", &models[selectedModelIndex].position.x, -100.0f, 100.0f);
 
     // Slider for Y position
     // ImGui::SliderFloat("Y Position", &ypos, -10.0f, 10.0f);
-    ImGui::SliderFloat("Y Position", &models[selectedModelIndex].position.y, -10.0f, 10.0f);
+    ImGui::SliderFloat("Y Position", &models[selectedModelIndex].position.y, -100.0f, 100.0f);
 
     // Slider for Z position
-    ImGui::SliderFloat("Z Position", &models[selectedModelIndex].position.z, -10.0f, 10.0f);
-    
+    ImGui::SliderFloat("Z Position", &models[selectedModelIndex].position.z, -100.0f, 100.0f);
+
     // Slider for Quaternion rotation
     ImGui::SliderFloat("X Quaternion Theta ", &models[selectedModelIndex].rotation_control_ui_x, 0.0f, 360.0f);
     ImGui::SliderFloat("Y Quaternion Theta ", &models[selectedModelIndex].rotation_control_ui_y, 0.0f, 360.0f);
     ImGui::SliderFloat("Z Quaternion Theta ", &models[selectedModelIndex].rotation_control_ui_z, 0.0f, 360.0f);
 
+    // Slider for scaling (X, Y, Z)
+    // Slider for scaling (X, Y, Z)
+    ImGui::SliderFloat3("Scale (X, Y, Z)", glm::value_ptr(models[selectedModelIndex].scale), 0.1f, 3.0f);
     ImGui::End();
+
+    // Light Position Controls
+    ImGui::Begin("Light Controls");
+    // ImGui::Text("Light Position Controls & Color Controls");
+    for (int i = 0; i < maxLights; ++i) {
+      std::string lightType = (i == 0) ? "Point" : (i == 1) ? "Directional" : "Spot";
+      std::string lightName = "Light Type: " + lightType;
+
+      ImGui::Text("%s", lightName.c_str());
+      ImGui::SliderFloat(("Light " + std::to_string(i) + " X").c_str(), &lightPositions[i].x, -100.0f, 100.0f);
+      ImGui::SliderFloat(("Light " + std::to_string(i) + " Y").c_str(), &lightPositions[i].y, -100.0f, 100.0f);
+      ImGui::SliderFloat(("Light " + std::to_string(i) + " Z").c_str(), &lightPositions[i].z, -100.0f, 100.0f);
+      ImGui::ColorEdit3(("Light " + std::to_string(i) + " Color").c_str(), glm::value_ptr(lightColors[i]));
+      ImGui::SliderFloat(("Light " + std::to_string(i) + " Ambient Strength").c_str(), &lightAmbientStrength[i], 0.0f, 1.0f);
+      ImGui::SliderFloat(("Light " + std::to_string(i) + " Diffuse Strength").c_str(), &lightDiffuseStrength[i], 0.0f, 1.0f);
+      ImGui::SliderFloat(("Light " + std::to_string(i) + " Specular Strength").c_str(), &lightSpecularStrength[i], 0.0f, 2.0f);
+      ImGui::SliderFloat(("Light " + std::to_string(i) + " Shininess").c_str(), &lightShininess[i], 1.0f, 128.0f);
+      ImGui::SliderFloat(("Light " + std::to_string(i) + " Radius").c_str(), &lightRadius[i], 0.1f, 100.0f);
+      // Reset button for each light
+      ImGui::SameLine();
+      if (ImGui::Button(("Reset##Light" + std::to_string(i)).c_str())) {
+        // Restore default values for this light
+        if (i == 0) {
+          lightPositions[i] = glm::vec3(2.0f, 2.0f, 2.0f);
+          lightColors[i] = glm::vec3(1.0f, 0.0f, 0.0f);
+        } else if (i == 1) {
+          lightPositions[i] = glm::vec3(-2.0f, 2.0f, 2.0f);
+          lightColors[i] = glm::vec3(0.0f, 1.0f, 0.0f);
+        } else if (i == 2) {
+          lightPositions[i] = glm::vec3(0.0f, -2.0f, 2.0f);
+          lightColors[i] = glm::vec3(0.0f, 0.0f, 1.0f);
+        } else {
+          lightPositions[i] = glm::vec3(0.0f);
+          lightColors[i] = glm::vec3(1.0f, 1.0f, 1.0f);
+        }
+        lightAmbientStrength[i] = 0.1f;
+        lightDiffuseStrength[i] = 0.5f;
+        lightSpecularStrength[i] = 1.0f;
+        lightShininess[i] = 32.0f;
+      }
+      ImGui::Separator();
+    }
+    // Rim Light Controls
+    ImGui::Text("Rim Light Controls");
+    ImGui::ColorEdit3("Rim Light Color", glm::value_ptr(rimLightColour));
+    ImGui::SliderFloat("Rim Light Strength", &rimLightStrength, 0.0f, 1.0f);
+    ImGui::End();
+
+
+    // ImGui::SliderFloat3("Scale (X, Y, Z)", glm::value_ptr(scaleFactor), 0.1f, 3.0f);
+
     ImGui::Begin("Camera Controls");
      ImGui::Text("Use Arrow Keys or Joystick to Control Camera:");
 
     // X Position
-    ImGui::SliderFloat("X Position", &x_cam, -10.0f, 10.0f);
+    ImGui::SliderFloat("X Position", &x_cam, -100.0f, 100.0f);
 
     // Y Position
-    ImGui::SliderFloat("Y Position", &y_cam, -10.0f, 10.0f);
+    ImGui::SliderFloat("Y Position", &y_cam, -100.0f, 100.0f);
 
     // Z Position
-    ImGui::SliderFloat("Z Position", &z_cam, -10.0f, 10.0f);
+    ImGui::SliderFloat("Z Position", &z_cam, -100.0f, 100.0f);
 
     // Rotation
     ImGui::SliderAngle("Rotation", &r_cam, -180.0f, 180.0f);
 
     // Camera Rotation (in degrees)
     ImGui::SliderAngle("Camera Degree", &cam_degree, 0.0f, 360.0f);
+
+        // Camera Euler Rotation Controls
+        // static glm::vec3 eulerAngles = glm::vec3(0.0f, 0.0f, 0.0f);
+        ImGui::Text("Euler Rotation (degrees):");
+        ImGui::SliderFloat("Pitch (X)", &_eulerAngles.x, -180.0f, 180.0f);
+        ImGui::SliderFloat("Yaw (Y)", &_eulerAngles.y, -180.0f, 180.0f);
+        ImGui::SliderFloat("Roll (Z)", &_eulerAngles.z, -180.0f, 180.0f);
+
+        // if (ImGui::Button("Apply Euler Rotation")) {
+        //   mcamera.SetEulerRotation(glm::radians(eulerAngles));
+        // }
+        // mcamera.SetEulerRotation(glm::vec3(glm::radians(-10.0f), glm::radians(45.0f), 0.0f));
+
 
     ImGui::End();
 	

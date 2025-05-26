@@ -95,7 +95,7 @@ void TemplateState::Init()
 
     }
     
-	v->createMeshModel("Mario.obj", "mario_main.png");
+	v->createMeshModel("Mario.obj", "mario_main.png", "");
     
 }
 

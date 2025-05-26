@@ -7,6 +7,7 @@
 
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 
 using namespace glm;
@@ -17,6 +18,7 @@ private:
     mat4 viewMatrix;
 	glm::vec3 m_positon;
 	glm::vec2 m_scale;
+	glm::quat m_rotationQuat;
 	float m_rotation = 0.0f;
 
 
@@ -37,6 +39,9 @@ public:
 			m_rotation = rotation;
 			UpdateViewMatrix();
 		}
+
+	void SetEulerRotation(const glm::vec3& eulerRadians); // pitch, yaw, roll if needed
+    glm::quat GetRotationQuat() const { return m_rotationQuat; }
     
     void UpdateViewMatrix();
 

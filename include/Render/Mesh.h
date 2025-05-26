@@ -22,7 +22,11 @@ public:
 	Mesh(VkPhysicalDevice newPhysicalDevice, VkDevice newDevice, 
 		VkQueue transferQueue, VkCommandPool transferCommandPool, 
 		std::vector<Vertex> * vertices, std::vector<uint32_t> * indices,
-		int newTexID);
+		int newTexID, int normalMapIndex = -1);
+	// Mesh(VkPhysicalDevice newPhysicalDevice, VkDevice newDevice, 
+	// 	VkQueue transferQueue, VkCommandPool transferCommandPool, 
+	// 	std::vector<Vertex> * vertices, std::vector<uint32_t> * indices,
+	// 	int newTexID);
 
 	void setModel(glm::mat4 newModel);
 	//void setNorm(glm::mat4 model)
@@ -56,6 +60,7 @@ private:
 	UboModel uboModel;
 
 	int textID;
+	int normalMapID = -1; // -1 means no normal map
 
 	int vertexCount;
 	VkBuffer vertexBuffer;

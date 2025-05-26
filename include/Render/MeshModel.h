@@ -43,13 +43,22 @@ class MeshModel
         }
 
         static std::vector<std::string> LoadMaterials(const aiScene* scene);
+        // static std::vector<Mesh> LoadNode(VkPhysicalDevice newPhysicalDevice, 
+        //                                   VkDevice newDevice, 
+        //                                   VkQueue transferQueue, 
+        //                                   VkCommandPool transferCommandPool, 
+        //                                   aiNode *node, 
+        //                                   const aiScene *scene,
+        //                                   int matToTex);
+        
         static std::vector<Mesh> LoadNode(VkPhysicalDevice newPhysicalDevice, 
                                           VkDevice newDevice, 
                                           VkQueue transferQueue, 
                                           VkCommandPool transferCommandPool, 
                                           aiNode *node, 
                                           const aiScene *scene,
-                                          int matToTex);
+                                          int matToTex,
+                                          int normalMapIndex = -1);
 
         static Mesh LoadMesh(VkPhysicalDevice newPhysicalDevice, 
                              VkDevice newDevice, 
@@ -57,7 +66,16 @@ class MeshModel
                              VkCommandPool transferCommandPool, 
                              aiMesh *mesh, 
                              const aiScene *scene,
-                             int matToTex);
+                             int matToTex,
+                             int normalMapIndex = -1);
+        
+        //  static Mesh LoadMesh(VkPhysicalDevice newPhysicalDevice, 
+        //                      VkDevice newDevice, 
+        //                      VkQueue transferQueue, 
+        //                      VkCommandPool transferCommandPool, 
+        //                      aiMesh *mesh, 
+        //                      const aiScene *scene,
+        //                      int matToTex);
     private:
         std::vector<Mesh> meshList;
         glm::mat4 model;
